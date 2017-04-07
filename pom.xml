@@ -7,6 +7,19 @@
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--  LIBRARIES -->
+        <sonya-version>1.0</sonya-version>
+        <lib-mysql-connector>6.0.6</lib-mysql-connector>
+        <lib-commons-dbcp2>2.1.1</lib-commons-dbcp2>
+        <lib-hibernate>5.2.9.Final</lib-hibernate>
+        <lib-hibernate-validator>5.4.1.Final</lib-hibernate-validator>
+        <lib-spring>4.3.7.RELEASE</lib-spring>
+        <lib-spring-security>4.2.2.RELEASE</lib-spring-security>
+        <lib-javax>7.0</lib-javax>
+        <lib-log4j>1.2.17</lib-log4j>
     </properties>
     <name>Sonya</name>
+    <modules>
+        <module>sonya-core</module>
+    </modules>
 </project>
