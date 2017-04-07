@@ -39,13 +39,13 @@ import ss.sonya.constants.UserRole;
 @Entity
 @Table(name = "user_profile")
 public class UserProfile implements Serializable {
-/** Default UID. */
+    /** Default UID. */
     private static final long serialVersionUID = 1L;
 // ======================== FIELDS ============================================
     /** Primary key. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     /** Login (email). */
     @Size(min = 1, max = 100)
     @Column(name = "email", nullable = false, length = 100)
@@ -76,13 +76,13 @@ public class UserProfile implements Serializable {
     /**
      * @return the id
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
     /**
      * @param id the id to set
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
     /**
