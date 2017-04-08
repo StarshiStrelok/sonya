@@ -17,9 +17,12 @@
         <lib-spring-security>4.2.2.RELEASE</lib-spring-security>
         <lib-javax>7.0</lib-javax>
         <lib-log4j>1.2.17</lib-log4j>
+        <lib-junit>4.12</lib-junit>
+        <lib-javax-el>3.0.1-b08</lib-javax-el>
     </properties>
     <name>Sonya</name>
     <modules>
         <module>sonya-core</module>
-    </modules>
+        <module>sonya-web-admin</module>
+  </modules>
 </project>

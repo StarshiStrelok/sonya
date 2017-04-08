@@ -60,7 +60,8 @@ public class Path implements Serializable {
     @OrderColumn(name = "path_busstop_order")
     private List<BusStop> busstops;
     /** Path schedule. */
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Trip> schedule;
     /** Path name. */
     @NotNull

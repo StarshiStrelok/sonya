@@ -48,8 +48,8 @@ public class UserProfile implements Serializable {
     private Long id;
     /** Login (email). */
     @Size(min = 1, max = 100)
-    @Column(name = "email", nullable = false, length = 100)
-    private String email;
+    @Column(name = "login", nullable = false, length = 100)
+    private String login;
     /** Password. */
     @Size(min = 1, max = 100)
     @Column(name = "password", nullable = false, length = 100)
@@ -68,10 +68,6 @@ public class UserProfile implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "last_visit")
     private Date lastVisit;
-    /** Nickname. */
-    @Size(min = 1, max = 100)
-    @Column(name = "nickname", length = 100, nullable = false)
-    private String nickname;
 // ======================== SET & GET =========================================
     /**
      * @return the id
@@ -86,16 +82,16 @@ public class UserProfile implements Serializable {
         this.id = id;
     }
     /**
-     * @return the email
+     * @return the login
      */
-    public String getEmail() {
-        return email;
+    public String getLogin() {
+        return login;
     }
     /**
-     * @param email the email to set
+     * @param login the login to set
      */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLogin(String login) {
+        this.login = login;
     }
     /**
      * @return the password
@@ -144,18 +140,6 @@ public class UserProfile implements Serializable {
      */
     public void setLastVisit(Date lastVisit) {
         this.lastVisit = lastVisit;
-    }
-    /**
-     * @return the nickname
-     */
-    public String getNickname() {
-        return nickname;
-    }
-    /**
-     * @param nickname the nickname to set
-     */
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
     }
 // ============================================================================    
     @Override

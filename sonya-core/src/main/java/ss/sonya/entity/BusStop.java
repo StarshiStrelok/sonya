@@ -62,12 +62,83 @@ public class BusStop implements Serializable {
     @Column(name = "external_id")
     private Long externalId;
 // =========================== SET & GET ======================================
-    
+    /**
+     * @return the id
+     */
+    public Integer getId() {
+        return id;
+    }
+    /**
+     * @param id the id to set
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    /**
+     * @return the latitude
+     */
+    public Double getLatitude() {
+        return latitude;
+    }
+    /**
+     * @param latitude the latitude to set
+     */
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+    /**
+     * @return the longitude
+     */
+    public Double getLongitude() {
+        return longitude;
+    }
+    /**
+     * @param longitude the longitude to set
+     */
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+    /**
+     * @return the paths
+     */
+    public List<Path> getPaths() {
+        return paths;
+    }
+    /**
+     * @param paths the paths to set
+     */
+    public void setPaths(List<Path> paths) {
+        this.paths = paths;
+    }
+    /**
+     * @return the externalId
+     */
+    public Long getExternalId() {
+        return externalId;
+    }
+    /**
+     * @param externalId the externalId to set
+     */
+    public void setExternalId(Long externalId) {
+        this.externalId = externalId;
+    }
 // ============================================================================
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (getId() != null ? getId().hashCode() : 0);
         return hash;
     }
     @Override
@@ -81,6 +152,6 @@ public class BusStop implements Serializable {
     }
     @Override
     public String toString() {
-        return "ss.sonya.entity.BusStop[ id=" + id + " ]";
+        return "ss.sonya.entity.BusStop[ id=" + getId() + " ]";
     }
 }

@@ -16,45 +16,36 @@
  */
 package ss.sonya.inject.dao;
 
-import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ss.sonya.inject.CommonDAO;
+import ss.sonya.entity.UserProfile;
+import ss.sonya.inject.UserProfileDAO;
 
 /**
- * Common DAO implementation.
+ * User profile DAO implementation.
  * @author ss
  */
 @Repository
-class CommonDAOImpl implements CommonDAO {
-    /** Hibernate session factory. */
+class UserProfileDAOImpl implements UserProfileDAO {
+    /** Entity manager. */
     @PersistenceContext
     private EntityManager em;
     @Override
-    @Transactional(propagation = Propagation.REQUIRED,
-            rollbackFor = Exception.class)
-    public <T> T create(final T entity) {
-        em.persist(entity);
-        return entity;
-    }
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED,
-            rollbackFor = Exception.class)
-    public <T> T update(final T entity) {
-        return em.merge(entity);
-    }
-    @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public <T> T findById(final Serializable id, final Class<T> cl) {
-        return em.find(cl, id);
-    }
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED,
-            rollbackFor = Exception.class)
-    public <T> void delete(final Serializable id, final Class<T> cl) {
-        em.remove(findById(id, cl));
-    }
+    public UserProfile findByLogin(final String login) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<UserProfile> criteria = builder
+                .createQuery(UserProfile.class);
+        Root<UserProfile> c = criteria.from(UserProfile.class);
+        criteria.select(c).where(builder.equal(c.get("login"), login));
+        Query query = em.createQuery(criteria);
+        return (UserProfile) query.getSingleResult();
+    } 
 }

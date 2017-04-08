@@ -1,3 +1,7 @@
 /sonya-core/nb-configuration.xml
 /sonya-core/target/
 /sonya-core/target/
+/sonya-web-admin/nb-configuration.xml
+/nbactions.xml
+/sonya-core/nbactions.xml
+/sonya-web-admin/target/

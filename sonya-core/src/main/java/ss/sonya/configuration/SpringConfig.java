@@ -16,18 +16,23 @@
  */
 package ss.sonya.configuration;
 
+import java.util.Properties;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import javax.validation.Validator;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import ss.sonya.constants.SonyaProperty;
@@ -46,7 +51,7 @@ public class SpringConfig {
      * Data source.
      * @return - data source.
      */
-    @Bean(name = "dataSource")
+    @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(
@@ -57,43 +62,54 @@ public class SpringConfig {
         return dataSource;
     }
     /**
-     * Hibernate session factory.
-     * @param dataSource - data source.
-     * @return - session factory.
+     * Entity manager factory.
+     * @return entity manager.
      */
-    @Bean(name = "sessionFactory")
-    public SessionFactory getSessionFactory(final DataSource dataSource) {
-        LocalSessionFactoryBuilder sessionBuilder =
-                new LocalSessionFactoryBuilder(dataSource());
-        sessionBuilder.scanPackages("ss.sonya.entity");
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean em =
+                new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(dataSource());
+        em.setPackagesToScan(new String[] {"ss.sonya.entity"});
+        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        Properties props = new Properties();
         for (String key : SonyaConfig.getKeys()) {
             if (key.startsWith("hibernate")) {
                 LOG.info("key [" + key + "] value [" + SonyaConfig.setting(
                         SonyaProperty.getConstantByKey(key)) + "]");
-                sessionBuilder.setProperty(key,
-                        SonyaConfig.setting(
-                                SonyaProperty.getConstantByKey(key)));
+                props.setProperty(key, SonyaConfig.setting(
+                        SonyaProperty.getConstantByKey(key)));
             }
         }
-        return sessionBuilder.buildSessionFactory();
+        em.setJpaProperties(props);
+        return em;
     }
     /**
      * Transaction manager.
-     * @param sessionFactory - session factory.
-     * @return - hibernate transaction manager.
+     * @param emf entity manager factory.
+     * @return transaction manager.
      */
-    @Bean(name = "transactionManager")
-    public HibernateTransactionManager getTransactionManager(
-            final SessionFactory sessionFactory) {
-        HibernateTransactionManager transactionManager =
-                new HibernateTransactionManager(sessionFactory);
+    @Bean
+    public PlatformTransactionManager transactionManager(
+            final EntityManagerFactory emf) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(emf);
         return transactionManager;
+    }
+    /**
+     * Persistence exception translator.
+     * @return translation processor.
+     */
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
     }
     /**
      * Hibernate validator.
      * @return - validator.
      */
-    @Bean(name = "validator")
+    @Bean
     public Validator localValidatorFactoryBean() {
         return new LocalValidatorFactoryBean();
     }
@@ -101,7 +117,7 @@ public class SpringConfig {
      * Password encoder.
      * @return - password encoder.
      */
-    @Bean(name = "passwordEncoder")
+    @Bean
     public PasswordEncoder passwordEncoder() {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder;

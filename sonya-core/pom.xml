@@ -76,12 +76,31 @@
             <artifactId>log4j</artifactId>
             <version>${lib-log4j}</version>
         </dependency>
+        <!-- Auxiliary libraries -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>${lib-javax-el}</version>
+        </dependency>
         <!-- =================== PROVIDED ================================== -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>${lib-javax}</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- =================== TEST ====================================== -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${lib-junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${lib-spring}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <name>sonya-core</name>
