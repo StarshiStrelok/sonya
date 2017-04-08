@@ -64,10 +64,6 @@ public class UserProfile implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created")
     private Date created;
-    /** Last visit. */
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "last_visit")
-    private Date lastVisit;
 // ======================== SET & GET =========================================
     /**
      * @return the id
@@ -128,18 +124,6 @@ public class UserProfile implements Serializable {
      */
     public void setCreated(Date created) {
         this.created = created;
-    }
-    /**
-     * @return the lastVisit
-     */
-    public Date getLastVisit() {
-        return lastVisit;
-    }
-    /**
-     * @param lastVisit the lastVisit to set
-     */
-    public void setLastVisit(Date lastVisit) {
-        this.lastVisit = lastVisit;
     }
 // ============================================================================    
     @Override

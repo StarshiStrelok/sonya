@@ -17,7 +17,9 @@
 package ss.sonya.inject.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,9 +27,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ss.sonya.constants.RegistrationStatus;
 import ss.sonya.constants.UserRole;
 import ss.sonya.entity.UserProfile;
+import ss.sonya.inject.CommonDAO;
 import ss.sonya.inject.SonyaSecurity;
 import ss.sonya.inject.UserProfileDAO;
 
@@ -43,6 +48,12 @@ public class SecurityServiceImpl implements SonyaSecurity {
     /** User profile DAO. */
     @Autowired
     private UserProfileDAO userProfileDAO;
+    /** Common DAO. */
+    @Autowired
+    private CommonDAO commonDAO;
+    /** Password encoder. */
+    @Resource
+    private PasswordEncoder passwordEncoder;
     @Override
     public UserDetails loadUserByUsername(final String login)
             throws UsernameNotFoundException {
@@ -52,6 +63,24 @@ public class SecurityServiceImpl implements SonyaSecurity {
                     "user profile not found in DB!");
         }
         return createSpringUser(profile);
+    }
+    @Override
+    public RegistrationStatus createProfile(final UserProfile profile) {
+        LOG.info("---------- create new user profile ------------------------");
+        try {
+            UserProfile exist = userProfileDAO.findByLogin(profile.getLogin());
+            if (exist != null) {
+                return RegistrationStatus.DUPLICATE;
+            }
+            profile.setCreated(new Date());
+            profile.setRole(UserRole.ROLE_ADMIN);
+            profile.setPassword(passwordEncoder.encode(profile.getPassword()));
+            commonDAO.create(profile);
+            return RegistrationStatus.CREATED;
+        } catch (Exception e) {
+            LOG.error("user profile creation error!", e);
+            return RegistrationStatus.ERROR;
+        }
     }
 // ============================= PRIVATE ======================================
     /**

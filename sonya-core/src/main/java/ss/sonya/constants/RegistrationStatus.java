@@ -14,21 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.inject;
-
-import org.springframework.security.core.userdetails.UserDetailsService;
-import ss.sonya.constants.RegistrationStatus;
-import ss.sonya.entity.UserProfile;
+package ss.sonya.constants;
 
 /**
- * Security service.
+ * User profile registration status.
  * @author ss
  */
-public interface SonyaSecurity extends UserDetailsService {
-    /**
-     * Create new user profile.
-     * @param profile user profile.
-     * @return registration status.
-     */
-    RegistrationStatus createProfile(UserProfile profile);
+public enum RegistrationStatus {
+    /** Profile created. */
+    CREATED,
+    /** Duplicate login. */
+    DUPLICATE,
+    /** Profile creation error. */
+    ERROR;
 }
