@@ -1,10 +1,10 @@
-import { AdminPage } from './app.po';
+import { HeroPage } from './app.po';
 
-describe('admin App', () => {
-  let page: AdminPage;
+describe('hero App', () => {
+  let page: HeroPage;
 
   beforeEach(() => {
-    page = new AdminPage();
+    page = new HeroPage();
   });
 
   it('should display message saying app works', () => {
