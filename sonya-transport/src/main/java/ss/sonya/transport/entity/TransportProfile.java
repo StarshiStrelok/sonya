@@ -1,0 +1,212 @@
+/*
+ * Copyright (C) 2017 ss
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package ss.sonya.transport.entity;
+
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Transport profile, include locality & search settings.
+ * @author ss
+ */
+@Entity
+@Table(name = "transport_profile")
+public class TransportProfile implements Serializable {
+    /** Default UID. */
+    private static final long serialVersionUID = 1L;
+// ================================= FIELDS ===================================
+    /** Primary key. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    /** South-west latitude. */
+    @NotNull
+    @Max(90)
+    @Min(-90)
+    private Double southWestLat;
+    /** South-west longitude. */
+    @NotNull
+    @Max(180)
+    @Min(-180)
+    private Double southWestLon;
+    /** North-east latitude. */
+    @NotNull
+    @Max(90)
+    @Min(-90)
+    private Double northEastLat;
+    /** North-east longitude. */
+    @NotNull
+    @Max(180)
+    @Min(-180)
+    private Double northEastLon;
+    /** Map initial zoom. */
+    @NotNull
+    @Min(0)
+    @Max(19)
+    private Integer initialZoom;
+    /** Minimal map zoom. */
+    @NotNull
+    @Min(0)
+    @Max(19)
+    private Integer minZoom;
+    /** Center latitude. */
+    @NotNull
+    @Max(90)
+    @Min(-90)
+    private Double centerLat;
+    /** Center longitude. */
+    @NotNull
+    @Max(180)
+    @Min(-180)
+    private Double centerLon;
+// ================================= SET & GET ================================
+    /**
+     * @return the id
+     */
+    public Integer getId() {
+        return id;
+    }
+    /**
+     * @param id the id to set
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    /**
+     * @return the southWestLat
+     */
+    public Double getSouthWestLat() {
+        return southWestLat;
+    }
+    /**
+     * @param southWestLat the southWestLat to set
+     */
+    public void setSouthWestLat(Double southWestLat) {
+        this.southWestLat = southWestLat;
+    }
+    /**
+     * @return the southWestLon
+     */
+    public Double getSouthWestLon() {
+        return southWestLon;
+    }
+    /**
+     * @param southWestLon the southWestLon to set
+     */
+    public void setSouthWestLon(Double southWestLon) {
+        this.southWestLon = southWestLon;
+    }
+    /**
+     * @return the northEastLat
+     */
+    public Double getNorthEastLat() {
+        return northEastLat;
+    }
+    /**
+     * @param northEastLat the northEastLat to set
+     */
+    public void setNorthEastLat(Double northEastLat) {
+        this.northEastLat = northEastLat;
+    }
+    /**
+     * @return the northEastLon
+     */
+    public Double getNorthEastLon() {
+        return northEastLon;
+    }
+    /**
+     * @param northEastLon the northEastLon to set
+     */
+    public void setNorthEastLon(Double northEastLon) {
+        this.northEastLon = northEastLon;
+    }
+    /**
+     * @return the initialZoom
+     */
+    public Integer getInitialZoom() {
+        return initialZoom;
+    }
+    /**
+     * @param initialZoom the initialZoom to set
+     */
+    public void setInitialZoom(Integer initialZoom) {
+        this.initialZoom = initialZoom;
+    }
+    /**
+     * @return the minZoom
+     */
+    public Integer getMinZoom() {
+        return minZoom;
+    }
+    /**
+     * @param minZoom the minZoom to set
+     */
+    public void setMinZoom(Integer minZoom) {
+        this.minZoom = minZoom;
+    }
+    /**
+     * @return the centerLat
+     */
+    public Double getCenterLat() {
+        return centerLat;
+    }
+    /**
+     * @param centerLat the centerLat to set
+     */
+    public void setCenterLat(Double centerLat) {
+        this.centerLat = centerLat;
+    }
+    /**
+     * @return the centerLon
+     */
+    public Double getCenterLon() {
+        return centerLon;
+    }
+    /**
+     * @param centerLon the centerLon to set
+     */
+    public void setCenterLon(Double centerLon) {
+        this.centerLon = centerLon;
+    }
+// ============================================================================
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (getId() != null ? getId().hashCode() : 0);
+        return hash;
+    }
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof TransportProfile)) {
+            return false;
+        }
+        TransportProfile other = (TransportProfile) object;
+        return !((this.id == null && other.id != null)
+                || (this.id != null && !this.id.equals(other.id)));
+    }
+    @Override
+    public String toString() {
+        return "ss.sonya.transport.entity.TransportProfile[ id=" + getId() + " ]";
+    }
+}
