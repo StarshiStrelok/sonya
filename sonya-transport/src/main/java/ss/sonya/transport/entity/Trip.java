@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.entity;
+package ss.sonya.transport.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;

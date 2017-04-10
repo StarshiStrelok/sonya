@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.constants;
+package ss.sonya.transport.constants;
 
 /**
  * Route type.
@@ -22,29 +22,13 @@ package ss.sonya.constants;
  */
 public enum RouteType {
     /** Autobus. */
-    AUTOBUS("common.route.autobus"),
+    AUTOBUS,
     /** Trolleybus. */
-    TROLLEYBUS("common.route.trolleybus"),
+    TROLLEYBUS,
     /** Routing taxi. */
-    TAXI("common.route.taxi"),
+    TAXI,
     /** Tram. */
-    TRAM("common.route.tram"),
+    TRAM,
     /** Metro. */
-    METRO("common.route.metro");
-    /** i18n key. */
-    private final String i18nKey;
-    /**
-     * Constructor.
-     * @param pI18nKey i18n key.
-     */
-    RouteType(final String pI18nKey) {
-        i18nKey = pI18nKey;
-    }
-    /**
-     * Get i18n key.
-     * @return key.
-     */
-    public String getI18nKey() {
-        return i18nKey;
-    }
+    METRO;
 }

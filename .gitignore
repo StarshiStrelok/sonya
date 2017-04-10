@@ -6,3 +6,6 @@
 /sonya-core/nbactions.xml
 /sonya-web-admin/target/
 /sonya-web-transport/nb-configuration.xml
+/sonya-transport/nb-configuration.xml
+/sonya-web-transport/target/
+/sonya-transport/target/

@@ -23,7 +23,8 @@
     <name>Sonya</name>
     <modules>
         <module>sonya-core</module>
-        <module>sonya-web-admin</module>
-    <module>sonya-web-transport</module>
-  </modules>
+        <!--module>sonya-web-admin</module-->
+        <!--module>sonya-web-transport</module-->
+        <module>sonya-transport</module>
+    </modules>
 </project>

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.entity;
+package ss.sonya.transport.entity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -31,7 +31,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import ss.sonya.constants.RouteType;
+import ss.sonya.transport.constants.RouteType;
+
 
 /**
  * Route.

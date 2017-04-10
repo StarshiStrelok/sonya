@@ -16,10 +16,12 @@
  */
 package ss.sonya.test;
 
+import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ss.sonya.entity.BusStop;
+import ss.sonya.constants.UserRole;
+import ss.sonya.entity.UserProfile;
 import ss.sonya.inject.CommonDAO;
 
 /**
@@ -32,25 +34,26 @@ public class CommonDAOTest extends TestConfig {
     private CommonDAO commonDAO;
     @Test
     public void test() {
-        BusStop bs = createValidBusStop();
-        bs = commonDAO.create(bs);
-        bs = commonDAO.findById(bs.getId(), BusStop.class);
-        Assert.assertNotNull(bs);
-        String newName = "New test bus stop name";
-        bs.setName(newName);
-        bs = commonDAO.update(bs);
-        bs = commonDAO.findById(bs.getId(), BusStop.class);
-        Assert.assertEquals(bs.getName(), newName);
-        Integer id = bs.getId();
-        commonDAO.delete(id, BusStop.class);
-        bs = commonDAO.findById(id, BusStop.class);
-        Assert.assertNull(bs);
+        UserProfile up = createValid();
+        up = commonDAO.create(up);
+        up = commonDAO.findById(up.getId(), UserProfile.class);
+        Assert.assertNotNull(up);
+        String newLogin = "New test login";
+        up.setLogin(newLogin);
+        up = commonDAO.update(up);
+        up = commonDAO.findById(up.getId(), UserProfile.class);
+        Assert.assertEquals(up.getLogin(), newLogin);
+        Integer id = up.getId();
+        commonDAO.delete(id, UserProfile.class);
+        up = commonDAO.findById(id, UserProfile.class);
+        Assert.assertNull(up);
     }
-    private BusStop createValidBusStop() {
-        BusStop bs = new BusStop();
-        bs.setLatitude(53.2345);
-        bs.setLongitude(29.2344);
-        bs.setName("Test bus stop");
-        return bs;
+    private UserProfile createValid() {
+        UserProfile up = new UserProfile();
+        up.setCreated(new Date());
+        up.setLogin("Test login");
+        up.setPassword("******");
+        up.setRole(UserRole.ROLE_ADMIN);
+        return up;
     }
 }

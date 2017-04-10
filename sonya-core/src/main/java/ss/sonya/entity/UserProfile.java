@@ -45,7 +45,7 @@ public class UserProfile implements Serializable {
     /** Primary key. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
     /** Login (email). */
     @Size(min = 1, max = 100)
     @Column(name = "login", nullable = false, length = 100)
@@ -68,13 +68,13 @@ public class UserProfile implements Serializable {
     /**
      * @return the id
      */
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
     /**
      * @param id the id to set
      */
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     /**
