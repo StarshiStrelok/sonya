@@ -17,6 +17,7 @@
 package ss.sonya.transport.entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +26,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Transport profile, include locality & search settings.
@@ -44,42 +46,55 @@ public class TransportProfile implements Serializable {
     @NotNull
     @Max(90)
     @Min(-90)
+    @Column(name = "south_west_lat")
     private Double southWestLat;
     /** South-west longitude. */
     @NotNull
     @Max(180)
     @Min(-180)
+    @Column(name = "south_west_lon")
     private Double southWestLon;
     /** North-east latitude. */
     @NotNull
     @Max(90)
     @Min(-90)
+    @Column(name = "north_east_lat")
     private Double northEastLat;
     /** North-east longitude. */
     @NotNull
     @Max(180)
     @Min(-180)
+    @Column(name = "north_east_lon")
     private Double northEastLon;
     /** Map initial zoom. */
     @NotNull
     @Min(0)
     @Max(19)
+    @Column(name = "initial_zoom")
     private Integer initialZoom;
     /** Minimal map zoom. */
     @NotNull
     @Min(0)
     @Max(19)
+    @Column(name = "min_zoom")
     private Integer minZoom;
     /** Center latitude. */
     @NotNull
     @Max(90)
     @Min(-90)
+    @Column(name = "center_lat")
     private Double centerLat;
     /** Center longitude. */
     @NotNull
     @Max(180)
     @Min(-180)
+    @Column(name = "center_lon")
     private Double centerLon;
+    /** Profile name. */
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "name", length = 100)
+    private String name;
 // ================================= SET & GET ================================
     /**
      * @return the id
@@ -188,6 +203,18 @@ public class TransportProfile implements Serializable {
      */
     public void setCenterLon(Double centerLon) {
         this.centerLon = centerLon;
+    }
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 // ============================================================================
     @Override
