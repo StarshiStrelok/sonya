@@ -8,11 +8,11 @@
   </parent>
 
     <groupId>ss.sonya</groupId>
-    <artifactId>sonya-web-transport</artifactId>
+    <artifactId>sonya-transport-client</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
 
-    <name>sonya-web-transport</name>
+    <name>sonya-transport-client</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>

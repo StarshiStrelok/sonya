@@ -9,3 +9,5 @@
 /sonya-transport/nb-configuration.xml
 /sonya-web-transport/target/
 /sonya-transport/target/
+/sonya-transport-client/target/
+/sonya-server/target/
