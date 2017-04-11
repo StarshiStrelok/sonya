@@ -1,7 +1,7 @@
 <div class="form-group" [ngClass]="{'has-danger': !sNumber.valid && (!sNumber.pristine || !sNumber.untouched),
      'has-success': (sNumber.valid && !sNumber.pristine)}">
     <label for="{{label}}" class="form-control-label">{{label}}</label>
-    <input type="number" class="form-control" id="{{label}}" maxNumber="{{max}}" min="{{min}}"
+    <input type="number" class="form-control" id="{{label}}" maxNumber="{{max}}" minNumber="{{min}}"
            name="{{label}}" [(ngModel)]="field" required
            (ngModelChange)="change($event)" #sNumber="ngModel"
            [ngClass]="{'form-control-danger': !sNumber.valid && (!sNumber.pristine || !sNumber.untouched),
@@ -11,5 +11,9 @@
     <div [hidden]="(sNumber.valid || sNumber.pristine) || !sNumber.errors.maxNumber"
         class="form-control-feedback">Big value</div>
     <small [hidden]="(sNumber.valid || sNumber.pristine) || !sNumber.errors.maxNumber">
-        must be less or equals then {{max}}</small>
+        must be less than or equals {{max}}</small>
+    <div [hidden]="(sNumber.valid || sNumber.pristine) || !sNumber.errors.minNumber"
+        class="form-control-feedback">Small value</div>
+    <small [hidden]="(sNumber.valid || sNumber.pristine) || !sNumber.errors.minNumber">
+        must be greater than or equals {{min}}</small>
 </div>

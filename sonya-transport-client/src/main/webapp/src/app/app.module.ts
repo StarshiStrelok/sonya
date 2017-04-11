@@ -6,14 +6,16 @@ import {HttpModule} from '@angular/http';
 import {AppComponent} from './app.component';
 import {TransportProfileComponent} from './form/transport-profile/transport-profile.component';
 import {NumberComponent} from './lib/input/number/number.component';
-import { MaxNumberDirective } from './directive/validator/max-number.directive';
+import {MaxNumberDirective} from './directive/validator/max-number.directive';
+import {MinNumberDirective} from './directive/validator/min-number.directive';
 
 @NgModule({
     declarations: [
         AppComponent,
         TransportProfileComponent,
         NumberComponent,
-        MaxNumberDirective
+        MaxNumberDirective,
+        MinNumberDirective
     ],
     imports: [
         BrowserModule,
