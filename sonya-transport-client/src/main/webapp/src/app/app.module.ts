@@ -5,11 +5,13 @@ import {HttpModule} from '@angular/http';
 
 import {AppComponent} from './app.component';
 import { TransportProfileComponent } from './form/transport-profile/transport-profile.component';
+import { NumberComponent } from './lib/input/number/number.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        TransportProfileComponent
+        TransportProfileComponent,
+        NumberComponent
     ],
     imports: [
         BrowserModule,

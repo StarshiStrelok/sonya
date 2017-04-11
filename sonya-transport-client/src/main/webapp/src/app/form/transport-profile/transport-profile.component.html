@@ -1,26 +1,43 @@
 <div class="container">
     <h1>Transport profile</h1>
     {{diagnostic}}
-    <form>
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" maxlength="100" name="name" required
-                   [(ngModel)]="model.name">
+    <form #transportProfileForm="ngForm">
+        <div class="form-group" [ngClass]="{'has-danger': !name.valid && (!name.pristine || !name.untouched),
+                'has-success': (name.valid && !name.pristine)}">
+            <label class="form-control-label" for="name">Name</label>
+            <input type="text" class="form-control" id="name" maxlength="100"
+                   [ngClass]="{'form-control-danger': !name.valid && (!name.pristine || !name.untouched),
+                            'form-control-success': (name.valid && !name.pristine)}"
+                   name="name" required [(ngModel)]="model.name" #name="ngModel">
+            <div [hidden]="name.valid || name.pristine" class="form-control-feedback">Profile name required</div>
+            <small [hidden]="name.valid || name.pristine" class="form-text text-muted">For example, named as geographical area</small>
         </div>
-        <fieldset>
-            <div class="form-group">
-                <label for="southWestLat">South-west latitude</label>
-                <input type="number" class="form-control" id="southWestLat" max="90" min="-90"
-                       name="southWestLat"
-                       [(ngModel)]="model.southWestLat">
-            </div>
-            <div class="form-group">
-                <label for="southWestLon">South-west longitude</label>
-                <input type="number" class="form-control" id="southWestLon" max="180" min="-180"
-                       name="southWestLon"
-                       [(ngModel)]="model.southWestLon">
+        <fieldset class="fieldset-border">
+            <legend class="legend-border">Map bounds</legend>
+            <div class="row">
+                <div class="col-3">
+                    <s-input-number label="South-west latitude" required="true"
+                                    [(field)]="model.southWestLat"
+                                    min="-90" max="90"></s-input-number>
+                </div>
+                <div class="col-3">
+                    <s-input-number label="South-west longitude" required="true"
+                                    [(field)]="model.southWestLon"
+                                    min="-180" max="180"></s-input-number>
+                </div>
+                <div class="col-3">
+                    <s-input-number label="North-east latitude" required="true"
+                                    [(field)]="model.northEastLat"
+                                    min="-90" max="90"></s-input-number>
+                </div>
+                <div class="col-3">
+                    <s-input-number label="North-east longitude" required="true"
+                                    [(field)]="model.northEastLon"
+                                    min="-180" max="180"></s-input-number>
+                </div>
             </div>
         </fieldset>
-        <button type="submit" class="btn btn-success">Create profile</button>
+        <button type="submit" class="btn btn-success"
+                [disabled]="!transportProfileForm.form.valid">Create profile</button>
     </form>
 </div>

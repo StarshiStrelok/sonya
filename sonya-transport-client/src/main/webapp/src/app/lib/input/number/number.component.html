@@ -1,0 +1,10 @@
+<div class="form-group" [ngClass]="{'has-danger': !sNumber.valid && (!sNumber.pristine || !sNumber.untouched),
+     'has-success': (sNumber.valid && !sNumber.pristine)}">
+    <label for="{{label}}" class="form-control-label">{{label}}</label>
+    <input type="number" class="form-control" id="{{label}}" max="{{max}}" min="{{min}}"
+           name="{{label}}" [(ngModel)]="field" required="{{required}}"
+           (ngModelChange)="change($event)" #sNumber="ngModel"
+           [ngClass]="{'form-control-danger': !sNumber.valid && (!sNumber.pristine || !sNumber.untouched),
+           'form-control-success': (sNumber.valid && !sNumber.pristine)}">
+    <div [hidden]="sNumber.valid || sNumber.pristine" class="form-control-feedback">Required</div>
+</div>
