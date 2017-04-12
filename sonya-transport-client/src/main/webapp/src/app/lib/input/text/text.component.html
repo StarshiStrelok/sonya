@@ -4,7 +4,7 @@
     <input type="text" class="form-control" id="{{id}}" maxlength="{{maxlength}}" minlength="{{minlength}}"
            [ngClass]="{'form-control-danger': !sText.valid && (!sText.pristine || !sText.untouched),
            'form-control-success': (sText.valid && !sText.pristine)}"
-           name="{{id}}" required="{{required}}" [(ngModel)]="field" #sText="ngModel">
+           name="{{fieldName}}" required="{{required}}" [(ngModel)]="field" #sText="ngModel">
     <div [hidden]="(sText.valid || sText.pristine) || !sText.errors.required"
         class="form-control-feedback">Required</div>
     <div [hidden]="(sText.valid || sText.pristine) || !sText.errors.minlength"

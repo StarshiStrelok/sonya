@@ -10,12 +10,13 @@ export class TextComponent implements OnInit {
     ngOnInit() {
     }
     @Input() label: string;
-    @Input() id: string;
-    @Input() field: number;
+    @Input() fieldName: string;
+    id: string = "s-text-" + (Math.random() * (100000 - 1) + 1).toFixed(0);
+    @Input() field: string;
     @Input() maxlength: number;
     @Input() minlength: number;
     @Output() fieldChange = new EventEmitter();
-    change(newValue: number) {
+    change(newValue: string) {
         this.field = newValue;
         this.fieldChange.emit(newValue);
     }

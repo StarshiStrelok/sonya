@@ -1,11 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 legend.legend-border {
     width:inherit; /* Or auto */
-    padding:0 10px; /* To give a bit of padding on the left and right */
+    padding:0 10px;
+    border-bottom:none;
+}
+legend.legend-border-inner {
+    font-size: 1.2rem;
+    color: #68c568;
+    width:inherit; /* Or auto */
+    padding:0 10px;
     border-bottom:none;
 }
 fieldset.fieldset-border {
-    border: 1px groove #ddd !important;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
     padding: 0 1.4em 1.4em 1.4em !important;
     margin: 0 0 1.5em 0 !important;
     -webkit-box-shadow:  0px 0px 0px 0px #000;

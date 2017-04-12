@@ -2,7 +2,7 @@
      'has-success': (sNumber.valid && !sNumber.pristine)}">
     <label for="{{id}}" class="form-control-label">{{label}}</label>
     <input type="number" class="form-control" id="{{id}}" maxNumber="{{max}}" minNumber="{{min}}"
-           name="{{id}}" [(ngModel)]="field" required
+           name="{{fieldName}}" [(ngModel)]="field" required
            (ngModelChange)="change($event)" #sNumber="ngModel"
            [ngClass]="{'form-control-danger': !sNumber.valid && (!sNumber.pristine || !sNumber.untouched),
            'form-control-success': (sNumber.valid && !sNumber.pristine)}">

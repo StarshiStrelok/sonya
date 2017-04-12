@@ -10,7 +10,8 @@ export class NumberComponent implements OnInit {
     ngOnInit() {
     }
     @Input() label: string;
-    @Input() id: string;
+    @Input() fieldName: string;
+    id: string = "s-number-" + (Math.random() * (100000 - 1) + 1).toFixed(0);
     @Input() field: number;
     @Output() fieldChange = new EventEmitter();
     change(newValue: number) {
