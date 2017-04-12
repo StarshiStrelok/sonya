@@ -8,6 +8,7 @@ import {TransportProfileComponent} from './form/transport-profile/transport-prof
 import {NumberComponent} from './lib/input/number/number.component';
 import {MaxNumberDirective} from './directive/validator/max-number.directive';
 import {MinNumberDirective} from './directive/validator/min-number.directive';
+import { TextComponent } from './lib/input/text/text.component';
 
 @NgModule({
     declarations: [
@@ -15,7 +16,8 @@ import {MinNumberDirective} from './directive/validator/min-number.directive';
         TransportProfileComponent,
         NumberComponent,
         MaxNumberDirective,
-        MinNumberDirective
+        MinNumberDirective,
+        TextComponent
     ],
     imports: [
         BrowserModule,

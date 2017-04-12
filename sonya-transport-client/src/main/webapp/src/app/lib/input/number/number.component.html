@@ -1,8 +1,8 @@
 <div class="form-group" [ngClass]="{'has-danger': !sNumber.valid && (!sNumber.pristine || !sNumber.untouched),
      'has-success': (sNumber.valid && !sNumber.pristine)}">
-    <label for="{{label}}" class="form-control-label">{{label}}</label>
-    <input type="number" class="form-control" id="{{label}}" maxNumber="{{max}}" minNumber="{{min}}"
-           name="{{label}}" [(ngModel)]="field" required
+    <label for="{{id}}" class="form-control-label">{{label}}</label>
+    <input type="number" class="form-control" id="{{id}}" maxNumber="{{max}}" minNumber="{{min}}"
+           name="{{id}}" [(ngModel)]="field" required
            (ngModelChange)="change($event)" #sNumber="ngModel"
            [ngClass]="{'form-control-danger': !sNumber.valid && (!sNumber.pristine || !sNumber.untouched),
            'form-control-success': (sNumber.valid && !sNumber.pristine)}">
