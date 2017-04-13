@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
 import {AppComponent} from './app.component';
@@ -8,7 +8,9 @@ import {TransportProfileComponent} from './form/transport-profile/transport-prof
 import {NumberComponent} from './lib/input/number/number.component';
 import {MaxNumberDirective} from './directive/validator/max-number.directive';
 import {MinNumberDirective} from './directive/validator/min-number.directive';
-import { TextComponent } from './lib/input/text/text.component';
+import {TextComponent} from './lib/input/text/text.component';
+import {TransportProfileFormComponent} from './form/transport-profile-form/transport-profile-form.component';
+import {TextfieldComponent} from './lib/input/textfield/textfield.component';
 
 @NgModule({
     declarations: [
@@ -17,11 +19,14 @@ import { TextComponent } from './lib/input/text/text.component';
         NumberComponent,
         MaxNumberDirective,
         MinNumberDirective,
-        TextComponent
+        TextComponent,
+        TransportProfileFormComponent,
+        TextfieldComponent
     ],
     imports: [
         BrowserModule,
         FormsModule,
+        ReactiveFormsModule,
         HttpModule
     ],
     providers: [],

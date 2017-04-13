@@ -1,0 +1,18 @@
+<div class="container">
+    <h1>Transport profile</h1>
+    <form [formGroup]="transportProfileForm" novalidate>
+        <textfield formControlName="name" [label]="'Transport profile name'"></textfield>
+<!--        <div class="form-group" [ngClass]="{'has-danger': formErrors.name
+             || (transportProfileForm.get('name').touched && !transportProfileForm.get('name').valid),
+             'has-success': !formErrors.name && !transportProfileForm.get('name').pristine }">
+            <label class="form-control-label" for="t-form-name">Profile name</label>
+            <input class="form-control form-control-danger" id="t-form-name"
+                   [ngClass]="{'form-control-danger': formErrors.name,
+                   'form-control-success': !formErrors.name && !transportProfileForm.get('name').pristine }"
+                   formControlName="name">
+                   <div class="form-control-feedback" *ngIf="formErrors.name">{{formErrors.name}}</div>
+        </div>-->
+    </form>
+    <p>Form value: {{ transportProfileForm.value | json }}</p>
+    <p>Form status: {{ transportProfileForm.status | json }}</p>
+</div>
