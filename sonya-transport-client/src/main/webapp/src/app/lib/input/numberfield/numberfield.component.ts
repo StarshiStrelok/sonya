@@ -3,17 +3,17 @@ import {NG_VALUE_ACCESSOR, FormControl} from '@angular/forms'
 import {ValueAccessorBase} from '../../common/value-accessor-base';
 
 @Component({
-    selector: 'textfield',
-    templateUrl: './textfield.component.html',
-    styleUrls: ['./textfield.component.css'],
+    selector: 'numberfield',
+    templateUrl: './numberfield.component.html',
+    styleUrls: ['./numberfield.component.css'],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => TextfieldComponent),
+        useExisting: forwardRef(() => NumberfieldComponent),
         multi: true
     }]
 })
-export class TextfieldComponent extends ValueAccessorBase<string> {
-    id: string = "textfield-" + (Math.random() * (100000 - 1) + 1).toFixed(0);
+export class NumberfieldComponent extends ValueAccessorBase<number> {
+    id: string = "numberfield-" + (Math.random() * (100000 - 1) + 1).toFixed(0);
     @Input() label: string;
     @Input() control: FormControl;
 }

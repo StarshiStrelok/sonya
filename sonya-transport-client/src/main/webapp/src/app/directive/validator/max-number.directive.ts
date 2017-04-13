@@ -31,6 +31,6 @@ export function maxNumberValidator(limit: number): ValidatorFn {
             return null;
         }
         const isValid = val <= limit
-        return isValid ? null : {'maxNumber': {val}};
+        return isValid ? null : {'maxNumber': {limit: limit, current: val}};
     };
 }

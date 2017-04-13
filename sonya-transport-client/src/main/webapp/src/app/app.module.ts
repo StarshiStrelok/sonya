@@ -8,9 +8,9 @@ import {TransportProfileComponent} from './form/transport-profile/transport-prof
 import {NumberComponent} from './lib/input/number/number.component';
 import {MaxNumberDirective} from './directive/validator/max-number.directive';
 import {MinNumberDirective} from './directive/validator/min-number.directive';
-import {TextComponent} from './lib/input/text/text.component';
 import {TransportProfileFormComponent} from './form/transport-profile-form/transport-profile-form.component';
 import {TextfieldComponent} from './lib/input/textfield/textfield.component';
+import { NumberfieldComponent } from './lib/input/numberfield/numberfield.component';
 
 @NgModule({
     declarations: [
@@ -19,9 +19,9 @@ import {TextfieldComponent} from './lib/input/textfield/textfield.component';
         NumberComponent,
         MaxNumberDirective,
         MinNumberDirective,
-        TextComponent,
         TransportProfileFormComponent,
-        TextfieldComponent
+        TextfieldComponent,
+        NumberfieldComponent
     ],
     imports: [
         BrowserModule,

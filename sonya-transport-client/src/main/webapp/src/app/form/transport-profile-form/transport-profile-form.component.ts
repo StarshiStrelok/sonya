@@ -16,45 +16,13 @@ export class TransportProfileFormComponent {
     }
     createForm() {
         this.transportProfileForm = this.fb.group({
-            //name: ['', [Validators.required, Validators.maxLength(100)]],
-            name: ['22', [Validators.required]]
-//            southWestLat: ['', [Validators.required, minNumberValidator(-90), maxNumberValidator(90)]],
-//            southWestLon: [''],
-//            northEastLat: [''],
-//            northEastLon: ['']
+            name: ['', [Validators.required, Validators.maxLength(100)]],
+            southWestLat: ['', [Validators.required, minNumberValidator(-90), maxNumberValidator(90)]],
+            southWestLon: ['', [Validators.required, minNumberValidator(-180), maxNumberValidator(180)]],
+            northEastLat: ['', [Validators.required, minNumberValidator(-90), maxNumberValidator(90)]],
+            northEastLon: ['', [Validators.required, minNumberValidator(-180), maxNumberValidator(180)]],
+            initialZoom: ['', [Validators.required, minNumberValidator(0), maxNumberValidator(19)]],
+            minZoom: ['', [Validators.required, minNumberValidator(0), maxNumberValidator(19)]]
         });
-//        this.transportProfileForm.valueChanges
-//            .subscribe(data => this.onValueChanged(data));
-//        this.onValueChanged();
     }
-//    onValueChanged(data?: any) {
-//        if (!this.transportProfileForm) {return;}
-//        const form = this.transportProfileForm;
-//        for (const field in this.formErrors) {
-//            // clear previous error message (if any)
-//            this.formErrors[field] = '';
-//            const control = form.get(field);
-//            if (control && control.dirty && !control.valid) {
-//                const messages = this.validationMessages[field];
-//                for (const key in control.errors) {
-//                    this.formErrors[field] += messages[key] + ' ';
-//                }
-//            }
-//        }
-//    }
-//    formErrors: any = {
-//        'name': '',
-//        'southWestLat': ''
-//    };
-//    validationMessages: any = {
-//        'name': {
-//            'required': 'Name is required.',
-//            'maxlength': 'Profile name cannot be more than 100 characters long.'
-//        },
-//        'southWestLat': {
-//            'required': 'Latutude required',
-//            'maxNumber': 'Must be less than 90',
-//            'minNumber': 'Must be more than -90'
-//        }
-//    };
 }

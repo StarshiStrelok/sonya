@@ -31,6 +31,6 @@ export function minNumberValidator(limit: number): ValidatorFn {
             return null;
         }
         const isValid = val >= limit
-        return isValid ? null : {'minNumber': {val}};
+        return isValid ? null : {'minNumber': {limit: limit, current: val}};
     };
 }
