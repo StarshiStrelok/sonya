@@ -16,4 +16,5 @@ export class TextfieldComponent extends ValueAccessorBase<string> {
     id: string = "textfield-" + (Math.random() * (100000 - 1) + 1).toFixed(0);
     @Input() label: string;
     @Input() control: FormControl;
+    @Input() placeholder: string;
 }

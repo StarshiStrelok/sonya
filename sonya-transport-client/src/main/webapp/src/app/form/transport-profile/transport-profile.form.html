@@ -1,7 +1,10 @@
 <div class="container">
     <h1>Transport profile</h1>
     <form [formGroup]="transportProfileForm" novalidate>
-        <textfield formControlName="name"
+        <md-input-container>
+            <input mdInput placeholder="First name" formControlName="name">
+        </md-input-container>
+<!--        <textfield formControlName="name"
                    [label]="'Transport profile name'" 
                    [control]="transportProfileForm.get('name')">
         </textfield>
@@ -12,19 +15,23 @@
                 <div class="row">
                     <div class="col-3">
                         <numberfield label="South-west latitude" formControlName="southWestLat"
-                                        [control]="transportProfileForm.get('southWestLat')"></numberfield>
+                                        [control]="transportProfileForm.get('southWestLat')"
+                                        placeholder="-90&#176; / 90&#176;"></numberfield>
                     </div>
                     <div class="col-3">
                         <numberfield label="South-west longitude" formControlName="southWestLon"
-                                        [control]="transportProfileForm.get('southWestLon')"></numberfield>
+                                        [control]="transportProfileForm.get('southWestLon')"
+                                        placeholder="-180&#176; / 180&#176;"></numberfield>
                     </div>
                     <div class="col-3">
                         <numberfield label="North-east latitude" formControlName="northEastLat"
-                                        [control]="transportProfileForm.get('northEastLat')"></numberfield>
+                                        [control]="transportProfileForm.get('northEastLat')"
+                                        placeholder="-90&#176; / 90&#176;"></numberfield>
                     </div>
                     <div class="col-3">
                         <numberfield label="North-east longitude" formControlName="northEastLon"
-                                        [control]="transportProfileForm.get('northEastLon')"></numberfield>
+                                        [control]="transportProfileForm.get('northEastLon')"
+                                        placeholder="-180&#176; / 180&#176;"></numberfield>
                     </div>
                 </div>
             </fieldset>
@@ -33,15 +40,17 @@
                 <div class="row">
                     <div class="col-6">
                         <numberfield label="Initial zoom" formControlName="initialZoom"
-                                        [control]="transportProfileForm.get('initialZoom')"></numberfield>
+                                        [control]="transportProfileForm.get('initialZoom')"
+                                        placeholder="0-19"></numberfield>
                     </div>
                     <div class="col-6">
                         <numberfield label="Minimal zoom" formControlName="minZoom"
-                                        [control]="transportProfileForm.get('minZoom')"></numberfield>
+                                        [control]="transportProfileForm.get('minZoom')"
+                                        placeholder="0-19"></numberfield>
                     </div>
                 </div>
             </fieldset>
-        </fieldset>
+        </fieldset>-->
     </form>
     <p>Form value: {{ transportProfileForm.value | json }}</p>
     <p>Form status: {{ transportProfileForm.status | json }}</p>

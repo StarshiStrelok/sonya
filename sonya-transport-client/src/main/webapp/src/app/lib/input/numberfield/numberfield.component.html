@@ -1,7 +1,8 @@
 <div class="form-group" [ngClass]="validationClassBlock(control)">
     <label class="form-control-label" for="{{id}}">{{label}}</label>
     <input class="form-control" type="number" [(ngModel)]="value" id="{{id}}"
-           [ngClass]="validationClassControl(control)">
+           [ngClass]="validationClassControl(control)"
+           placeholder="{{placeholder}}">
     <small [hidden]="(control.valid || control.pristine) || !control.errors.required"
         class="form-control-feedback">Required</small>
     <small [hidden]="(control.valid || control.pristine) || !control.errors.maxNumber"

@@ -5,11 +5,10 @@ import {maxNumberValidator} from '../../directive/validator/max-number.directive
 import {TransportProfile} from '../../model/transport-profile';
 
 @Component({
-    selector: 'transport-profile-form-r',
-    templateUrl: './transport-profile-form.component.html',
-    styleUrls: ['./transport-profile-form.component.css']
+    selector: 'transport-profile-form',
+    templateUrl: './transport-profile.form.html',
 })
-export class TransportProfileFormComponent {
+export class TransportProfileForm {
     transportProfileForm: FormGroup;
     constructor(private fb: FormBuilder) {
         this.createForm();

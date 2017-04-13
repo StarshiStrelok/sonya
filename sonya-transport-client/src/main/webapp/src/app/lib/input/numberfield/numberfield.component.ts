@@ -16,4 +16,5 @@ export class NumberfieldComponent extends ValueAccessorBase<number> {
     id: string = "numberfield-" + (Math.random() * (100000 - 1) + 1).toFixed(0);
     @Input() label: string;
     @Input() control: FormControl;
+    @Input() placeholder: string;
 }
