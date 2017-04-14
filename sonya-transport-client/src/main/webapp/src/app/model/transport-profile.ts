@@ -1,6 +1,9 @@
 import {AbsModel} from './abs.model';
 
 export class TransportProfile implements AbsModel {
+    clazz(): string {
+        return "transport-profile";
+    }
     constructor(
         public id: number,
         public southWestLat: number,

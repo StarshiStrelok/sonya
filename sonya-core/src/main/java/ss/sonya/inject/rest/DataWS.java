@@ -23,46 +23,45 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import ss.sonya.inject.DataService;
 
 /**
  * Data web-service.
  * @author ss
+ * @param <T> model class.
  */
-@RestController
-@RequestMapping("/rest/data")
-public class DataWS {
+public abstract class DataWS<T> {
     /** Data service. */
     @Autowired
     private DataService dataService;
+    /** Controller type. */
+    protected Class<T> type;
     @RequestMapping(method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public <T> T create(@RequestBody T entity) throws Exception {
+    public T create(@RequestBody T entity) throws Exception {
         return dataService.create(entity);
     }
     @RequestMapping(method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public <T> T update(
+    public T update(
             @RequestBody T entity) throws Exception {
         return dataService.update(entity);
     }
-    @RequestMapping(value = "/{cl}/{id}", method = RequestMethod.DELETE,
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public <T> void delete(@PathVariable("id") Integer id,
-            @PathVariable("cl") Class<T> cl) throws Exception {
-        dataService.delete(id, cl);
-    }
-    @RequestMapping(value = "/{cl}/{id}", method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public <T> T get(@PathVariable("id") Integer id,
-            @PathVariable("cl") Class<T> cl) throws Exception {
-        return dataService.findById(id, cl);
-    }
-    @RequestMapping(value = "/all/{cl}", method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public <T> List<T> getAll(@PathVariable("cl") Class<T> cl)
+    public void delete(@PathVariable("id") Integer id)
             throws Exception {
-        return dataService.getAll(cl);
+        dataService.delete(id, type);
+    }
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Object get(@PathVariable("id") Integer id) throws Exception {
+        return dataService.findById(id, type);
+    }
+    @RequestMapping(value = "/all", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List getAll()
+            throws Exception {
+        return dataService.getAll(type);
     }
 }

@@ -36,6 +36,6 @@ export class TransportProfileForm {
             return;
         }
         this.profile = this.transportProfileForm.value;
-        this.dataService.create(this.profile);
+        this.dataService.create(this.profile, 'transport-profile');
     }
 }
