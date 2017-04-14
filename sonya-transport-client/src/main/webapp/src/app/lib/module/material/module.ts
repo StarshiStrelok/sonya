@@ -30,6 +30,7 @@ import {
 } from '@angular/material';
 import {LatitudeField} from './component/latitude-field/latitude-field';
 import {LongitudeField} from './component/longitude-field/longitude-field';
+import {ZoomField} from './component/zoom-field/zoom-field';
 
 @NgModule({
     imports: [
@@ -53,10 +54,10 @@ import {LongitudeField} from './component/longitude-field/longitude-field';
         MdCardModule,
         MdIconModule,
         MdGridListModule,
-        LatitudeField, LongitudeField
+        LatitudeField, LongitudeField, ZoomField
     ],
     declarations: [
-        LatitudeField, LongitudeField
+        LatitudeField, LongitudeField, ZoomField
     ]
 })
 export class SSMaterialModule {}

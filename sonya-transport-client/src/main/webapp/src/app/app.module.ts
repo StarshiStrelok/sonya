@@ -10,6 +10,8 @@ import {SSValidatorModule} from './lib/module/validator/module';
 import {AppComponent} from './app.component';
 import {TransportProfileForm} from './form/transport-profile/transport-profile.form';
 
+import {DataService} from './service/data.service';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -24,7 +26,7 @@ import {TransportProfileForm} from './form/transport-profile/transport-profile.f
         SSMaterialModule,
         SSValidatorModule
     ],
-    providers: [],
+    providers: [DataService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

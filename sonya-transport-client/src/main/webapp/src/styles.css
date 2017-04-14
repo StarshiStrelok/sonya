@@ -6,6 +6,9 @@ body {
 .main-card {
     margin: 8px;
 }
-.full-width, longitude-field, latitude-field {
+.full-width, longitude-field, latitude-field, zoom-field {
     width: 100%;
+}
+.divider {
+    border: none;
 }

@@ -1,4 +1,6 @@
-export class TransportProfile {
+import {AbsModel} from './abs.model';
+
+export class TransportProfile implements AbsModel {
     constructor(
         public id: number,
         public southWestLat: number,
