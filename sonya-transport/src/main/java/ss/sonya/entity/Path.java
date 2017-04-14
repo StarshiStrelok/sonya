@@ -14,62 +14,64 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.transport.entity;
+package ss.sonya.entity;
 
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import ss.sonya.transport.constants.RouteType;
-
 
 /**
- * Route.
+ * Route path.
  * @author ss
  */
 @Entity
-@Table(name = "routes")
-public class Route implements Serializable {
+@Table(name = "paths")
+public class Path implements Serializable {
     /** Default UID. */
     private static final long serialVersionUID = 1L;
-// ============================ FIELDS ========================================
+// ====================== FIELDS ==============================================
     /** Primary key. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    /** TRoute type. */
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "route_type")
-    private RouteType type;
-    /** TRoute name prefix. */
-    @NotNull
-    @Size(max = 10)
-    @Column(name = "name_prefix", length = 10)
-    private String namePrefix;
-    /** TRoute name postfix. */
-    @Size(max = 10)
-    @Column(name = "name_postfix", length = 10)
-    private String namePostfix;
+    /** TRoute. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Route route;
     /** TRoute paths. */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "route",
-            cascade = CascadeType.ALL)
-    private List<Path> paths;
-    /** Alternative ID. */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "path_busstops", joinColumns =
+            @JoinColumn(name = "path_fk"), inverseJoinColumns =
+            @JoinColumn(name = "busstop_fk"))
+    @OrderColumn(name = "path_busstop_order")
+    private List<BusStop> busstops;
+    /** Path schedule. */
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Trip> schedule;
+    /** Path name. */
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "description", length = 100)
+    private String description;
+    /** Alternative ID, OSM for example. */
     @Column(name = "external_id")
     private Long externalId;
-// ============================ SET & GET =====================================
+// ====================== SET & GET ===========================================
     /**
      * @return the id
      */
@@ -83,52 +85,52 @@ public class Route implements Serializable {
         this.id = id;
     }
     /**
-     * @return the type
+     * @return the route
      */
-    public RouteType getType() {
-        return type;
+    public Route getRoute() {
+        return route;
     }
     /**
-     * @param type the type to set
+     * @param route the route to set
      */
-    public void setType(RouteType type) {
-        this.type = type;
+    public void setRoute(Route route) {
+        this.route = route;
     }
     /**
-     * @return the namePrefix
+     * @return the busstops
      */
-    public String getNamePrefix() {
-        return namePrefix;
+    public List<BusStop> getBusstops() {
+        return busstops;
     }
     /**
-     * @param namePrefix the namePrefix to set
+     * @param busstops the busstops to set
      */
-    public void setNamePrefix(String namePrefix) {
-        this.namePrefix = namePrefix;
+    public void setBusstops(List<BusStop> busstops) {
+        this.busstops = busstops;
     }
     /**
-     * @return the namePostfix
+     * @return the schedule
      */
-    public String getNamePostfix() {
-        return namePostfix;
+    public List<Trip> getSchedule() {
+        return schedule;
     }
     /**
-     * @param namePostfix the namePostfix to set
+     * @param schedule the schedule to set
      */
-    public void setNamePostfix(String namePostfix) {
-        this.namePostfix = namePostfix;
+    public void setSchedule(List<Trip> schedule) {
+        this.schedule = schedule;
     }
     /**
-     * @return the paths
+     * @return the description
      */
-    public List<Path> getPaths() {
-        return paths;
+    public String getDescription() {
+        return description;
     }
     /**
-     * @param paths the paths to set
+     * @param description the description to set
      */
-    public void setPaths(List<Path> paths) {
-        this.paths = paths;
+    public void setDescription(String description) {
+        this.description = description;
     }
     /**
      * @return the externalId
@@ -142,7 +144,7 @@ public class Route implements Serializable {
     public void setExternalId(Long externalId) {
         this.externalId = externalId;
     }
-// ============================================================================    
+// ============================================================================
     @Override
     public int hashCode() {
         int hash = 0;
@@ -151,15 +153,15 @@ public class Route implements Serializable {
     }
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof Route)) {
+        if (!(object instanceof Path)) {
             return false;
         }
-        Route other = (Route) object;
+        Path other = (Path) object;
         return !((this.id == null && other.id != null)
                 || (this.id != null && !this.id.equals(other.id)));
     }
     @Override
     public String toString() {
-        return "ss.sonya.entity.Route[ id=" + getId() + " ]";
+        return "ss.sonya.entity.Path[ id=" + getId() + " ]";
     }
 }

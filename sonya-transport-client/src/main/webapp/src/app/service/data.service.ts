@@ -23,7 +23,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class DataService {
-    private dataUrl: string = '/admin/rest/data/profile';
+    private dataUrl: string = '/rest/data';
     private headers = new Headers({'Content-Type': 'application/json'});
     constructor(private http: Http) {}
     create(model: AbsModel) {

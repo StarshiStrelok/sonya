@@ -17,8 +17,13 @@
 package ss.sonya.inject.dao;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,5 +61,15 @@ class CommonDAOImpl implements CommonDAO {
             rollbackFor = Exception.class)
     public <T> void delete(final Serializable id, final Class<T> cl) {
         em.remove(findById(id, cl));
+    }
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public <T> List<T> getAll(Class<T> cl) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<T> criteria = builder.createQuery(cl);
+        Root<T> c = criteria.from(cl);
+        criteria.select(c);
+        Query query = em.createQuery(criteria);
+        return query.getResultList();
     }
 }

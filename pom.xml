@@ -19,6 +19,7 @@
         <lib-log4j>1.2.17</lib-log4j>
         <lib-junit>4.12</lib-junit>
         <lib-javax-el>3.0.1-b08</lib-javax-el>
+        <lib-jackson>2.9.0.pr2</lib-jackson>
     </properties>
     <name>Sonya</name>
     <modules>

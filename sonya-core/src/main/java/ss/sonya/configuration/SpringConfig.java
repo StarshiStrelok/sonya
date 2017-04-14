@@ -71,8 +71,7 @@ public class SpringConfig {
                 new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
         em.setPackagesToScan(new String[] {
-            "ss.sonya.entity",
-            "ss.sonya.transport.entity"
+            "ss.sonya.entity"
         });
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);

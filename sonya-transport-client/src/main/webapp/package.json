@@ -31,6 +31,9 @@
     "typescript": "^2.2.2",
     "zone.js": "^0.8.4"
   },
+  "scripts": {
+    "start": "ng serve --proxy-config proxy.conf.json"
+  },
   "devDependencies": {
     "@angular/cli": "1.0.0",
     "@angular/compiler-cli": "^4.0.0",

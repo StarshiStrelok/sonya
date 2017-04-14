@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.transport.entity;
+package ss.sonya.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -234,6 +234,6 @@ public class TransportProfile implements Serializable {
     }
     @Override
     public String toString() {
-        return "ss.sonya.transport.entity.TransportProfile[ id=" + getId() + " ]";
+        return "ss.sonya.entity.TransportProfile[ id=" + getId() + " ]";
     }
 }

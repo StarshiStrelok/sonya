@@ -20,44 +20,50 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Common DAO interface.
+ * Data service.
+ * Define common data methods here.
  * @author ss
  */
-public interface CommonDAO {
+public interface DataService {
     /**
      * Create entity.
-     * @param <T> - entity class.
-     * @param entity - entity.
-     * @return - created entity.
+     * @param <T> entity class.
+     * @param entity entity.
+     * @return created entity.
+     * @throws Exception error.
      */
-    <T> T create(final T entity);
+    <T> T create(T entity) throws Exception;
     /**
      * Update entity.
      * @param <T> - entity class.
      * @param entity - entity.
      * @return - updated entity.
+     * @throws Exception error.
      */
-    <T> T update(final T entity);
+    <T> T update(T entity) throws Exception;
     /**
      * Find entity by ID.
      * @param <T> - entity type.
      * @param id - entity ID.
      * @param cl - entity class.
      * @return - entity.
+     * @throws Exception error.
      */
-    <T> T findById(final Serializable id, Class<T> cl);
+    <T> T findById(Serializable id, Class<T> cl) throws Exception;
     /**
      * Delete entity.
      * @param <T> - entity type.
      * @param id - entity ID.
      * @param cl - entity class.
+     * @throws Exception error.
      */
-    <T> void delete(final Serializable id, Class<T> cl);
+    <T> void delete(Serializable id, Class<T> cl) throws Exception;
     /**
      * Get all entities.
      * @param <T> entity type.
      * @param cl entity class.
      * @return list entities.
+     * @throws Exception error.
      */
-    <T> List<T> getAll(Class<T> cl);
+    <T> List<T> getAll(Class<T> cl) throws Exception;
 }
