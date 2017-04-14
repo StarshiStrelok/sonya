@@ -1,6 +1,6 @@
 import {Component, forwardRef, Input} from '@angular/core';
 import {NG_VALUE_ACCESSOR, FormControl} from '@angular/forms'
-import {ValueAccessorBase} from '../../common/value-accessor-base';
+import {ValueAccessorBase} from '../common/value-accessor-base';
 
 @Component({
     selector: 'textfield',

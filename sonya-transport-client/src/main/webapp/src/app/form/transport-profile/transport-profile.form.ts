@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {minNumberValidator} from '../../directive/validator/min-number.directive';
-import {maxNumberValidator} from '../../directive/validator/max-number.directive';
+import {minNumberValidator} from '../../lib/module/validator/min-number.directive';
+import {maxNumberValidator} from '../../lib/module/validator/max-number.directive';
 import {TransportProfile} from '../../model/transport-profile';
 
 @Component({
