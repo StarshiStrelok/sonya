@@ -21,7 +21,9 @@ export class TransportProfileForm {
             northEastLat: ['', [Validators.required, minNumberValidator(-90), maxNumberValidator(90)]],
             northEastLon: ['', [Validators.required, minNumberValidator(-180), maxNumberValidator(180)]],
             initialZoom: ['', [Validators.required, minNumberValidator(0), maxNumberValidator(19)]],
-            minZoom: ['', [Validators.required, minNumberValidator(0), maxNumberValidator(19)]]
+            minZoom: ['', [Validators.required, minNumberValidator(0), maxNumberValidator(19)]],
+            centerLat: ['', [Validators.required, minNumberValidator(-90), maxNumberValidator(90)]],
+            centerLon: ['', [Validators.required, minNumberValidator(-180), maxNumberValidator(180)]]
         });
     }
 }

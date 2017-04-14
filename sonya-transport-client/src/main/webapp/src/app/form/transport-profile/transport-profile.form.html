@@ -1,57 +1,113 @@
-<div class="container">
-    <h1>Transport profile</h1>
-    <form [formGroup]="transportProfileForm" novalidate>
-        <md-input-container>
-            <input mdInput placeholder="First name" formControlName="name">
-        </md-input-container>
-<!--        <textfield formControlName="name"
-                   [label]="'Transport profile name'" 
-                   [control]="transportProfileForm.get('name')">
-        </textfield>
-        <fieldset class="fieldset-border">
-            <legend class="legend-border">Map settings</legend>
-            <fieldset class="fieldset-border">
-                <legend class="legend-border-inner">Bounds</legend>
-                <div class="row">
-                    <div class="col-3">
-                        <numberfield label="South-west latitude" formControlName="southWestLat"
-                                        [control]="transportProfileForm.get('southWestLat')"
-                                        placeholder="-90&#176; / 90&#176;"></numberfield>
-                    </div>
-                    <div class="col-3">
-                        <numberfield label="South-west longitude" formControlName="southWestLon"
-                                        [control]="transportProfileForm.get('southWestLon')"
-                                        placeholder="-180&#176; / 180&#176;"></numberfield>
-                    </div>
-                    <div class="col-3">
-                        <numberfield label="North-east latitude" formControlName="northEastLat"
-                                        [control]="transportProfileForm.get('northEastLat')"
-                                        placeholder="-90&#176; / 90&#176;"></numberfield>
-                    </div>
-                    <div class="col-3">
-                        <numberfield label="North-east longitude" formControlName="northEastLon"
-                                        [control]="transportProfileForm.get('northEastLon')"
-                                        placeholder="-180&#176; / 180&#176;"></numberfield>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset class="fieldset-border">
-                <legend class="legend-border-inner">Zoom</legend>
-                <div class="row">
-                    <div class="col-6">
-                        <numberfield label="Initial zoom" formControlName="initialZoom"
-                                        [control]="transportProfileForm.get('initialZoom')"
-                                        placeholder="0-19"></numberfield>
-                    </div>
-                    <div class="col-6">
-                        <numberfield label="Minimal zoom" formControlName="minZoom"
-                                        [control]="transportProfileForm.get('minZoom')"
-                                        placeholder="0-19"></numberfield>
-                    </div>
-                </div>
-            </fieldset>
-        </fieldset>-->
-    </form>
-    <p>Form value: {{ transportProfileForm.value | json }}</p>
-    <p>Form status: {{ transportProfileForm.status | json }}</p>
-</div>
+<md-toolbar color="primary">
+    <md-icon>map</md-icon>
+    <span>Transport profiles control</span>
+</md-toolbar>
+<md-card class="main-card">
+    <md-card-header>
+        <md-card-title>Create new transport profile</md-card-title>
+        <md-card-subtitle>Transport profile provided map preferences, 
+            search and route settings</md-card-subtitle>
+    </md-card-header>
+    <md-card-content>
+        <form [formGroup]="transportProfileForm" novalidate>
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Profile name" formControlName="name">
+                <md-error *ngIf="transportProfileForm.get('name').hasError('required')">
+                    Required
+                </md-error>
+                <md-error *ngIf="transportProfileForm.get('name').hasError('maxlength')">
+                    Very long string, 100 characters maximum
+                </md-error>
+            </md-input-container>
+            <md-card>
+                <md-card-header>
+                    <md-card-title>Map settings</md-card-title>
+                </md-card-header>
+                <md-card-content>
+                    <md-grid-list cols="4" rowHeight="50px;">
+                        <md-grid-tile>
+                            <latitude-field label="South-west latitude"
+                                            [(control)]="transportProfileForm.controls.southWestLat">
+                            </latitude-field>
+                        </md-grid-tile>
+                        <md-grid-tile>
+                            <longitude-field label="South-west longitude"
+                                             [(control)]="transportProfileForm.controls.southWestLon">
+                            </longitude-field>
+                        </md-grid-tile>
+                        <md-grid-tile>
+                            <latitude-field label="North-east latitude"
+                                            [(control)]="transportProfileForm.controls.northEastLat">
+                            </latitude-field>
+                        </md-grid-tile>
+                        <md-grid-tile>
+                            <longitude-field label="North-east longitude"
+                                             [(control)]="transportProfileForm.controls.northEastLon">
+                            </longitude-field>
+                        </md-grid-tile>
+                        <md-grid-tile [colspan]="2">
+                            <latitude-field label="Center map latitude"
+                                            [(control)]="transportProfileForm.controls.centerLat">
+                            </latitude-field>
+                        </md-grid-tile>
+                        <md-grid-tile [colspan]="2">
+                            <longitude-field label="Center map longitude"
+                                             [(control)]="transportProfileForm.controls.centerLon">
+                            </longitude-field>
+                        </md-grid-tile>
+                    </md-grid-list>
+                </md-card-content>
+            </md-card>
+            <!--        <textfield formControlName="name"
+                               [label]="'Transport profile name'" 
+                               [control]="transportProfileForm.get('name')">
+                    </textfield>
+                    <fieldset class="fieldset-border">
+                        <legend class="legend-border">Map settings</legend>
+                        <fieldset class="fieldset-border">
+                            <legend class="legend-border-inner">Bounds</legend>
+                            <div class="row">
+                                <div class="col-3">
+                                    <numberfield label="South-west latitude" formControlName="southWestLat"
+                                                    [control]="transportProfileForm.get('southWestLat')"
+                                                    placeholder="-90&#176; / 90&#176;"></numberfield>
+                                </div>
+                                <div class="col-3">
+                                    <numberfield label="South-west longitude" formControlName="southWestLon"
+                                                    [control]="transportProfileForm.get('southWestLon')"
+                                                    placeholder="-180&#176; / 180&#176;"></numberfield>
+                                </div>
+                                <div class="col-3">
+                                    <numberfield label="North-east latitude" formControlName="northEastLat"
+                                                    [control]="transportProfileForm.get('northEastLat')"
+                                                    placeholder="-90&#176; / 90&#176;"></numberfield>
+                                </div>
+                                <div class="col-3">
+                                    <numberfield label="North-east longitude" formControlName="northEastLon"
+                                                    [control]="transportProfileForm.get('northEastLon')"
+                                                    placeholder="-180&#176; / 180&#176;"></numberfield>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset class="fieldset-border">
+                            <legend class="legend-border-inner">Zoom</legend>
+                            <div class="row">
+                                <div class="col-6">
+                                    <numberfield label="Initial zoom" formControlName="initialZoom"
+                                                    [control]="transportProfileForm.get('initialZoom')"
+                                                    placeholder="0-19"></numberfield>
+                                </div>
+                                <div class="col-6">
+                                    <numberfield label="Minimal zoom" formControlName="minZoom"
+                                                    [control]="transportProfileForm.get('minZoom')"
+                                                    placeholder="0-19"></numberfield>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </fieldset>-->
+        </form>
+    </md-card-content>
+</md-card>
+
+<p>Form value: {{ transportProfileForm.value | json }}</p>
+<p>Form status: {{ transportProfileForm.status | json }}</p>
