@@ -36,28 +36,56 @@ public abstract class DataWS<T> {
     private DataService dataService;
     /** Controller type. */
     protected Class<T> type;
+    /**
+     * Create entity.
+     * @param entity entity.
+     * @return created entity.
+     * @throws Exception error.
+     */
     @RequestMapping(method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public T create(@RequestBody T entity) throws Exception {
         return dataService.create(entity);
     }
+    /**
+     * Update entity.
+     * @param entity entity.
+     * @return updated entity.
+     * @throws Exception error.
+     */
     @RequestMapping(method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public T update(
             @RequestBody T entity) throws Exception {
         return dataService.update(entity);
     }
+    /**
+     * Delete entity.
+     * @param id entity ID.
+     * @throws Exception error.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void delete(@PathVariable("id") Integer id)
             throws Exception {
         dataService.delete(id, type);
     }
+    /**
+     * Get entity by ID.
+     * @param id entity ID.
+     * @return entity.
+     * @throws Exception error.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Object get(@PathVariable("id") Integer id) throws Exception {
         return dataService.findById(id, type);
     }
+    /**
+     * Get all entities.
+     * @return all entities.
+     * @throws Exception error.
+     */
     @RequestMapping(value = "/all", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List getAll()

@@ -26,7 +26,9 @@ import {
     MdToolbarModule,
     MdCardModule,
     MdIconModule,
-    MdGridListModule
+    MdGridListModule,
+    MdListModule,
+    MdMenuModule
 } from '@angular/material';
 import {LatitudeField} from './component/latitude-field/latitude-field';
 import {LongitudeField} from './component/longitude-field/longitude-field';
@@ -41,6 +43,8 @@ import {ZoomField} from './component/zoom-field/zoom-field';
         MdCardModule,
         MdIconModule,
         MdGridListModule,
+        MdListModule,
+        MdMenuModule,
         FormsModule,
         ReactiveFormsModule,
         BrowserModule,
@@ -54,6 +58,8 @@ import {ZoomField} from './component/zoom-field/zoom-field';
         MdCardModule,
         MdIconModule,
         MdGridListModule,
+        MdListModule,
+        MdMenuModule,
         LatitudeField, LongitudeField, ZoomField
     ],
     declarations: [

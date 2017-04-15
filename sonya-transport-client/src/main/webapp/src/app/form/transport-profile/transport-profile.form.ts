@@ -1,5 +1,7 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+
 import {minNumberValidator} from '../../lib/module/validator/min-number.directive';
 import {maxNumberValidator} from '../../lib/module/validator/max-number.directive';
 import {TransportProfile} from '../../model/transport-profile';
@@ -13,7 +15,8 @@ export class TransportProfileForm {
     transportProfileForm: FormGroup;
     profile: TransportProfile = new TransportProfile(null, null, null, null,
     null, null, null, null, null, null);
-    constructor(private fb: FormBuilder, private dataService: DataService) {
+    constructor(private fb: FormBuilder, private dataService: DataService,
+        private router: Router) {
         this.createForm();
     }
     createForm() {
@@ -31,11 +34,18 @@ export class TransportProfileForm {
         });
         this.transportProfileForm.setValue(this.profile);
     }
+    goBack() {
+        this.router.navigate(['/ui/admin/profile-list']);
+    }
     onSubmit() {
         if (!this.transportProfileForm.valid) {
             return;
         }
-        this.profile = this.transportProfileForm.value;
-        this.dataService.create(this.profile, 'transport-profile');
+        let values = this.transportProfileForm.value;
+        Object.getOwnPropertyNames(values).map((key: string) => 
+            this.profile[key] = values[key]);
+        this.dataService.create(this.profile).then(profile =>
+            this.router.navigate(['/ui/admin/profile-list'])
+        );
     }
 }

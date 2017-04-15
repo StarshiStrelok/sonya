@@ -23,15 +23,24 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class DataService {
+    /** REST URL. */
     private dataUrl: string = '/rest/data/';
     private headers = new Headers({'Content-Type': 'application/json'});
     constructor(private http: Http) {}
-    create(model: AbsModel, typ: string) {
-        console.log('create model [' + typ + '] start...');
-        this.http.post(
-            this.dataUrl + typ, JSON.stringify(model), {headers: this.headers}
+    create<T extends AbsModel>(model: T): Promise<T> {
+        console.log('create model [' + model.clazz() + '] start...');
+        return this.http.post(
+            this.dataUrl + model.clazz(), JSON.stringify(model), {headers: this.headers}
         ).toPromise()
-            .then(res => res.json().data as AbsModel)
+            .then(res => res.json() as T)
+            .catch(this.handleError);
+    }
+    getAll<T extends AbsModel>(model: T): Promise<T[]> {
+        console.info('get all [' + model.clazz() + '] start...');
+        return this.http.get(
+            this.dataUrl + model.clazz() + '/all', {headers: this.headers}
+        ).toPromise()
+            .then(res => res.json() as T[])
             .catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {

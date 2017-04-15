@@ -4,18 +4,21 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
+import {AppRoutingModule} from './route.module';
 import {SSMaterialModule} from './lib/module/material/module';
 import {SSValidatorModule} from './lib/module/validator/module';
 
 import {AppComponent} from './app.component';
 import {TransportProfileForm} from './form/transport-profile/transport-profile.form';
+import {TransportProfileList} from './component/transport-profile-list/transport-profile.list';
 
 import {DataService} from './service/data.service';
 
 @NgModule({
     declarations: [
         AppComponent,
-        TransportProfileForm
+        TransportProfileForm,
+        TransportProfileList
     ],
     imports: [
         BrowserModule,
@@ -24,7 +27,8 @@ import {DataService} from './service/data.service';
         HttpModule,
         BrowserAnimationsModule,
         SSMaterialModule,
-        SSValidatorModule
+        SSValidatorModule,
+        AppRoutingModule
     ],
     providers: [DataService],
     bootstrap: [AppComponent]

@@ -15,6 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export interface AbsModel {
-    clazz(): string;
-}
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {TransportProfileForm} from './form/transport-profile/transport-profile.form';
+import {TransportProfileList} from './component/transport-profile-list/transport-profile.list';
+
+const routes: Routes = [
+    {path: '', redirectTo: 'ui/admin/profile-list', pathMatch: 'full'},
+    {path: 'ui/admin/profile-list', component: TransportProfileList},
+    {path: 'ui/admin/profile', component: TransportProfileForm}
+];
+@NgModule({
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule]
+})
+export class AppRoutingModule {}
