@@ -11,6 +11,7 @@ import {SSValidatorModule} from './lib/module/validator/module';
 import {AppComponent} from './app.component';
 import {TransportProfileForm} from './form/transport-profile/transport-profile.form';
 import {TransportProfileList} from './component/transport-profile-list/transport-profile.list';
+import {TransportProfileMap} from './component/transport-profile-map/transport-profile.map';
 
 import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
@@ -19,7 +20,8 @@ import {DialogService} from './service/dialog.service';
     declarations: [
         AppComponent,
         TransportProfileForm,
-        TransportProfileList
+        TransportProfileList,
+        TransportProfileMap
     ],
     imports: [
         BrowserModule,

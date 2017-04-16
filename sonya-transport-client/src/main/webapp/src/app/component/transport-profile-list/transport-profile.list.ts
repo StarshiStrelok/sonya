@@ -36,8 +36,11 @@ export class TransportProfileList implements OnInit {
         private router: Router
     ) {};
     ngOnInit() {
+        this.loadProfiles();
+    }
+    loadProfiles() {
         this.dataService.getAll<TransportProfile>(ModelClass.TRANSPORT_PROFILE)
-            .then(profiles => this.profiles = profiles);
+            .then((profiles: TransportProfile[]) => this.profiles = profiles);
     }
     newProfile() {
         this.router.navigate([Links.PROFILE_FORM]);
@@ -47,11 +50,23 @@ export class TransportProfileList implements OnInit {
     }
     deleteProfile(id: number) {
         console.log('delete profile [' + id + ']');
-        this.dialogService.confirm('Delete profile', 'Are you sure that you want delete this profile?')
-            .subscribe((result) => console.log('Confirm result [' + result + ']'));
+        this.dialogService.confirm(
+            'Delete profile',
+            'Are you sure that you want delete this profile?'
+        ).subscribe((result) => {
+            if (result) {
+                this.dataService.deleteById(id, ModelClass.TRANSPORT_PROFILE)
+                .then((result: boolean) => {
+                    if (result) {
+                        this.loadProfiles();
+                    }
+                });
+            }
+        });
     }
     openMap(id: number) {
         console.log('open profile map [' + id + ']');
+        this.router.navigate([Links.PROFILE_MAP, id]);
     }
 }
 

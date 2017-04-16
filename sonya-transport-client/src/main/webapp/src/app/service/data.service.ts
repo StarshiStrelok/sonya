@@ -59,6 +59,14 @@ export class DataService {
             .then(res => res.json() as T)
             .catch(this.handleError);
     }
+    deleteById<T extends AbsModel>(id: number, clazz: string): Promise<boolean> {
+        console.log('delete [' + id + '] [' + clazz + ']');
+        return this.http.delete(
+            this.dataUrl + clazz + '/' + id, {headers: this.headers}
+        ).toPromise()
+            .then(res => true)
+            .catch(this.handleError);
+    }
     private handleError(error: any): Promise<any> {
         console.error('An error occurred', error); // for demo purposes only
         return Promise.reject(error.message || error);

@@ -32,6 +32,9 @@ var TransportProfileList = (function () {
     }
     ;
     TransportProfileList.prototype.ngOnInit = function () {
+        this.loadProfiles();
+    };
+    TransportProfileList.prototype.loadProfiles = function () {
         var _this = this;
         this.dataService.getAll(abs_model_1.ModelClass.TRANSPORT_PROFILE)
             .then(function (profiles) { return _this.profiles = profiles; });
@@ -43,12 +46,22 @@ var TransportProfileList = (function () {
         this.router.navigate([route_module_1.Links.PROFILE_FORM, id]);
     };
     TransportProfileList.prototype.deleteProfile = function (id) {
+        var _this = this;
         console.log('delete profile [' + id + ']');
-        this.dialogService.confirm('Delete profile', 'Are you sure that you want delete this profile?')
-            .subscribe(function (result) { return console.log('Confirm result [' + result + ']'); });
+        this.dialogService.confirm('Delete profile', 'Are you sure that you want delete this profile?').subscribe(function (result) {
+            if (result) {
+                _this.dataService.deleteById(id, abs_model_1.ModelClass.TRANSPORT_PROFILE)
+                    .then(function (result) {
+                    if (result) {
+                        _this.loadProfiles();
+                    }
+                });
+            }
+        });
     };
     TransportProfileList.prototype.openMap = function (id) {
         console.log('open profile map [' + id + ']');
+        this.router.navigate([route_module_1.Links.PROFILE_MAP, id]);
     };
     return TransportProfileList;
 }());

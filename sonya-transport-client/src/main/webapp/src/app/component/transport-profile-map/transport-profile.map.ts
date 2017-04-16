@@ -15,21 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component} from '@angular/core';
-import {MdDialogRef} from '@angular/material';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
-    selector: 'confirm-dialog',
-    templateUrl: './confirm.dialog.html',
-    styles: [
-        '.cd-hr { margin-bottom: 0px; margin-top: 0px;}'
-    ]
+    selector: 'transport-profile-map',
+    templateUrl: './transport-profile.map.html'
 })
-export class ConfirmDialog {
-    public title: string;
-    public message: string;
 
-    constructor(public dialogRef: MdDialogRef<ConfirmDialog>) {
-
-    }
+export class TransportProfileMap implements OnInit {
+    ngOnInit() {}
 }
