@@ -17,7 +17,7 @@
 
 import {Observable} from 'rxjs/Rx';
 import {ConfirmDialog} from './../lib/module/material/component/dialog/confirm.dialog';
-import {MdDialogRef, MdDialog, MdDialogConfig} from '@angular/material';
+import {MdDialogRef, MdDialog} from '@angular/material';
 import {Injectable} from '@angular/core';
 
 @Injectable()
