@@ -15,8 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export interface AbsModel {
-}
-export class ModelClass {
-    static TRANSPORT_PROFILE = 'transport-profile';
+import {Component} from '@angular/core';
+import {MdDialogRef} from '@angular/material';
+
+@Component({
+    selector: 'confirm-dialog',
+    templateUrl: './confirm.dialog.html'
+})
+export class ConfirmDialog {
+    public title: string;
+    public message: string;
+
+    constructor(public dialogRef: MdDialogRef<ConfirmDialog>) {
+
+    }
 }

@@ -13,6 +13,7 @@ import {TransportProfileForm} from './form/transport-profile/transport-profile.f
 import {TransportProfileList} from './component/transport-profile-list/transport-profile.list';
 
 import {DataService} from './service/data.service';
+import {DialogService} from './service/dialog.service';
 
 @NgModule({
     declarations: [
@@ -30,7 +31,7 @@ import {DataService} from './service/data.service';
         SSValidatorModule,
         AppRoutingModule
     ],
-    providers: [DataService],
+    providers: [DataService, DialogService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

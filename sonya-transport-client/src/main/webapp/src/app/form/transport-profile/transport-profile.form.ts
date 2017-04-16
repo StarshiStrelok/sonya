@@ -1,23 +1,41 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Location} from '@angular/common';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute, Params} from '@angular/router';
 
 import {minNumberValidator} from '../../lib/module/validator/min-number.directive';
 import {maxNumberValidator} from '../../lib/module/validator/max-number.directive';
 import {TransportProfile} from '../../model/transport-profile';
 import {DataService} from '../../service/data.service';
+import {ModelClass} from '../../model/abs.model';
+import {Links} from '../../route.module';
 
 @Component({
     selector: 'transport-profile-form',
     templateUrl: './transport-profile.form.html',
 })
-export class TransportProfileForm {
+export class TransportProfileForm implements OnInit {
     transportProfileForm: FormGroup;
     profile: TransportProfile = new TransportProfile(null, null, null, null,
     null, null, null, null, null, null);
-    constructor(private fb: FormBuilder, private dataService: DataService,
-        private router: Router) {
-        this.createForm();
+    constructor(
+        private fb: FormBuilder,
+        private dataService: DataService,
+        private location: Location,
+        private activatedRoute: ActivatedRoute
+    ) {}
+    ngOnInit() {
+        this.activatedRoute.params.subscribe((params: Params) => {
+            let id = params['id'];
+            if (id) {
+                this.dataService.findById<TransportProfile>(
+                    id, ModelClass.TRANSPORT_PROFILE).then(profile => {
+                        this.profile = profile;
+                        this.createForm();
+                    });
+            }
+            this.createForm();
+        });
     }
     createForm() {
         this.transportProfileForm = this.fb.group({
@@ -35,17 +53,22 @@ export class TransportProfileForm {
         this.transportProfileForm.setValue(this.profile);
     }
     goBack() {
-        this.router.navigate(['/ui/admin/profile-list']);
+        this.location.back();
     }
     onSubmit() {
         if (!this.transportProfileForm.valid) {
             return;
         }
         let values = this.transportProfileForm.value;
-        Object.getOwnPropertyNames(values).map((key: string) => 
-            this.profile[key] = values[key]);
-        this.dataService.create(this.profile).then(profile =>
-            this.router.navigate(['/ui/admin/profile-list'])
+        Object.getOwnPropertyNames(values).map(
+            (key: string) => this.profile[key] = values[key]
         );
+        if (this.profile.id) {
+            this.dataService.update<TransportProfile>(this.profile, ModelClass.TRANSPORT_PROFILE)
+                .then(profile => this.goBack());
+        } else {
+            this.dataService.create<TransportProfile>(this.profile, ModelClass.TRANSPORT_PROFILE)
+                .then(profile => this.goBack());
+        }
     }
 }

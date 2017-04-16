@@ -15,8 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export interface AbsModel {
-}
-export class ModelClass {
-    static TRANSPORT_PROFILE = 'transport-profile';
+import {Observable} from 'rxjs/Rx';
+import {ConfirmDialog} from './../lib/module/material/component/dialog/confirm.dialog';
+import {MdDialogRef, MdDialog, MdDialogConfig} from '@angular/material';
+import {Injectable} from '@angular/core';
+
+@Injectable()
+export class DialogService {
+
+    constructor(private dialog: MdDialog) {}
+
+    public confirm(title: string, message: string): Observable<boolean> {
+        let dialogRef: MdDialogRef<ConfirmDialog>;
+
+        dialogRef = this.dialog.open(ConfirmDialog);
+        dialogRef.componentInstance.title = title;
+        dialogRef.componentInstance.message = message;
+
+        return dialogRef.afterClosed();
+    }
 }

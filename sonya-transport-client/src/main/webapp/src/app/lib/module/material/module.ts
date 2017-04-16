@@ -28,11 +28,14 @@ import {
     MdIconModule,
     MdGridListModule,
     MdListModule,
-    MdMenuModule
+    MdMenuModule,
+    MdTooltipModule,
+    MdDialogModule
 } from '@angular/material';
 import {LatitudeField} from './component/latitude-field/latitude-field';
 import {LongitudeField} from './component/longitude-field/longitude-field';
 import {ZoomField} from './component/zoom-field/zoom-field';
+import {ConfirmDialog} from './component/dialog/confirm.dialog';
 
 @NgModule({
     imports: [
@@ -45,6 +48,8 @@ import {ZoomField} from './component/zoom-field/zoom-field';
         MdGridListModule,
         MdListModule,
         MdMenuModule,
+        MdTooltipModule,
+        MdDialogModule,
         FormsModule,
         ReactiveFormsModule,
         BrowserModule,
@@ -60,10 +65,15 @@ import {ZoomField} from './component/zoom-field/zoom-field';
         MdGridListModule,
         MdListModule,
         MdMenuModule,
-        LatitudeField, LongitudeField, ZoomField
+        MdTooltipModule,
+        MdDialogModule,
+        LatitudeField, LongitudeField, ZoomField, ConfirmDialog
     ],
     declarations: [
-        LatitudeField, LongitudeField, ZoomField
+        LatitudeField, LongitudeField, ZoomField, ConfirmDialog
+    ],
+    entryComponents: [
+        ConfirmDialog
     ]
 })
 export class SSMaterialModule {}

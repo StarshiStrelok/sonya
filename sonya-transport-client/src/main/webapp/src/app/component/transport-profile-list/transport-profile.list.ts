@@ -20,6 +20,9 @@ import {Router} from '@angular/router';
 
 import {DataService} from '../../service/data.service';
 import {TransportProfile} from '../../model/transport-profile';
+import {ModelClass} from '../../model/abs.model';
+import {Links} from '../../route.module';
+import {DialogService} from '../../service/dialog.service';
 
 @Component({
     selector: 'transport-profile-list',
@@ -27,14 +30,28 @@ import {TransportProfile} from '../../model/transport-profile';
 })
 export class TransportProfileList implements OnInit {
     private profiles: TransportProfile[];
-    constructor(private dataService: DataService, private router: Router) {
-    };
+    constructor(
+        private dataService: DataService,
+        private dialogService: DialogService,
+        private router: Router
+    ) {};
     ngOnInit() {
-        let stub = new TransportProfile(null, null, null, null, null, null, null, null, null, null);
-        this.dataService.getAll<TransportProfile>(stub).then(profiles => this.profiles = profiles);
+        this.dataService.getAll<TransportProfile>(ModelClass.TRANSPORT_PROFILE)
+            .then(profiles => this.profiles = profiles);
     }
     newProfile() {
-        this.router.navigate(['/ui/admin/profile']);
+        this.router.navigate([Links.PROFILE_FORM]);
+    }
+    editProfile(id: number) {
+        this.router.navigate([Links.PROFILE_FORM, id]);
+    }
+    deleteProfile(id: number) {
+        console.log('delete profile [' + id + ']');
+        this.dialogService.confirm('Delete profile', 'Are you sure that you want delete this profile?')
+            .subscribe((result) => console.log('Confirm result [' + result + ']'));
+    }
+    openMap(id: number) {
+        console.log('open profile map [' + id + ']');
     }
 }
 

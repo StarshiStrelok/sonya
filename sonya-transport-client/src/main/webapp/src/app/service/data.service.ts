@@ -27,20 +27,36 @@ export class DataService {
     private dataUrl: string = '/rest/data/';
     private headers = new Headers({'Content-Type': 'application/json'});
     constructor(private http: Http) {}
-    create<T extends AbsModel>(model: T): Promise<T> {
-        console.log('create model [' + model.clazz() + '] start...');
+    create<T extends AbsModel>(model: T, clazz: string): Promise<T> {
+        console.log('create model [' + clazz + '] start...');
         return this.http.post(
-            this.dataUrl + model.clazz(), JSON.stringify(model), {headers: this.headers}
+            this.dataUrl + clazz, JSON.stringify(model), {headers: this.headers}
         ).toPromise()
             .then(res => res.json() as T)
             .catch(this.handleError);
     }
-    getAll<T extends AbsModel>(model: T): Promise<T[]> {
-        console.info('get all [' + model.clazz() + '] start...');
+    update<T extends AbsModel>(model: T, clazz: string): Promise<T> {
+        console.log('update model [' + model['id'] + '] [' + clazz + '] start...');
+        return this.http.put(
+            this.dataUrl + clazz, JSON.stringify(model), {headers: this.headers}
+        ).toPromise()
+            .then(res => res.json() as T)
+            .catch(this.handleError);
+    }
+    getAll<T extends AbsModel>(clazz: string): Promise<T[]> {
+        console.info('get all [' + clazz + '] start...');
         return this.http.get(
-            this.dataUrl + model.clazz() + '/all', {headers: this.headers}
+            this.dataUrl + clazz + '/all', {headers: this.headers}
         ).toPromise()
             .then(res => res.json() as T[])
+            .catch(this.handleError);
+    }
+    findById<T extends AbsModel>(id: number, clazz: string): Promise<T> {
+        console.log('get by id [' + id + '] [' + clazz + ']');
+        return this.http.get(
+            this.dataUrl + clazz + '/' + id, {headers: this.headers}
+        ).toPromise()
+            .then(res => res.json() as T)
             .catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {

@@ -20,10 +20,17 @@ import {RouterModule, Routes} from '@angular/router';
 import {TransportProfileForm} from './form/transport-profile/transport-profile.form';
 import {TransportProfileList} from './component/transport-profile-list/transport-profile.list';
 
+export class Links {
+    static HOME = '';
+    static PROFILE_LIST = 'ui/admin/profile-list';
+    static PROFILE_FORM = 'ui/admin/profile';
+}
+
 const routes: Routes = [
-    {path: '', redirectTo: 'ui/admin/profile-list', pathMatch: 'full'},
-    {path: 'ui/admin/profile-list', component: TransportProfileList},
-    {path: 'ui/admin/profile', component: TransportProfileForm}
+    {path: Links.HOME, redirectTo: Links.PROFILE_LIST, pathMatch: 'full'},
+    {path: Links.PROFILE_LIST, component: TransportProfileList},
+    {path: Links.PROFILE_FORM, component: TransportProfileForm},
+    {path: Links.PROFILE_FORM + "/:id", component: TransportProfileForm}
 ];
 @NgModule({
     imports: [RouterModule.forRoot(routes)],

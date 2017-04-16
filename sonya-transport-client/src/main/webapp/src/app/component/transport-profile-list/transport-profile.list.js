@@ -22,20 +22,33 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var core_1 = require("@angular/core");
-var transport_profile_1 = require("../../model/transport-profile");
+var abs_model_1 = require("../../model/abs.model");
+var route_module_1 = require("../../route.module");
 var TransportProfileList = (function () {
-    function TransportProfileList(dataService, router) {
+    function TransportProfileList(dataService, dialogService, router) {
         this.dataService = dataService;
+        this.dialogService = dialogService;
         this.router = router;
     }
     ;
     TransportProfileList.prototype.ngOnInit = function () {
         var _this = this;
-        var stub = new transport_profile_1.TransportProfile(null, null, null, null, null, null, null, null, null, null);
-        this.dataService.getAll(stub).then(function (profiles) { return _this.profiles = profiles; });
+        this.dataService.getAll(abs_model_1.ModelClass.TRANSPORT_PROFILE)
+            .then(function (profiles) { return _this.profiles = profiles; });
     };
     TransportProfileList.prototype.newProfile = function () {
-        this.router.navigate(['/ui/admin/profile']);
+        this.router.navigate([route_module_1.Links.PROFILE_FORM]);
+    };
+    TransportProfileList.prototype.editProfile = function (id) {
+        this.router.navigate([route_module_1.Links.PROFILE_FORM, id]);
+    };
+    TransportProfileList.prototype.deleteProfile = function (id) {
+        console.log('delete profile [' + id + ']');
+        this.dialogService.confirm('Delete profile', 'Are you sure that you want delete this profile?')
+            .subscribe(function (result) { return console.log('Confirm result [' + result + ']'); });
+    };
+    TransportProfileList.prototype.openMap = function (id) {
+        console.log('open profile map [' + id + ']');
     };
     return TransportProfileList;
 }());

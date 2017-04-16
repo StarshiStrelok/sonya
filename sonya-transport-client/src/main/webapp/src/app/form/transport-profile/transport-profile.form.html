@@ -68,11 +68,11 @@
             </md-card>
         </md-card-content>
         <md-card-actions align="end">
-            <button md-fab color="primary" (click)="onSubmit()">
+            <button md-fab color="primary" (click)="onSubmit()" mdTooltip="Confirm">
                 <md-icon>done</md-icon></button>
             <div class="vr"></div>
-            <button md-fab color="primary" (click)="goBack()">
-                <md-icon>cancel</md-icon></button>
+            <button md-fab color="primary" (click)="goBack()" mdTooltip="Close">
+                <md-icon>close</md-icon></button>
         </md-card-actions>
     </form>
 </md-card>
