@@ -1,4 +1,5 @@
 import {AbsModel} from './abs.model';
+import {RouteProfile} from './route-profile';
 
 export class TransportProfile implements AbsModel {
     constructor(
@@ -11,6 +12,7 @@ export class TransportProfile implements AbsModel {
         public minZoom: number,
         public centerLat: number,
         public centerLon: number,
-        public name: string
+        public name: string,
+        public routeProfiles: RouteProfile[]
     ) {}
 }

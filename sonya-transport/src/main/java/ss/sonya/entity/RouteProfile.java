@@ -16,6 +16,7 @@
  */
 package ss.sonya.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,6 +54,8 @@ public class RouteProfile implements Serializable {
     @Column(name = "avg_speed")
     private Double avgSpeed;
     /** Transport profile. */
+    @JsonIgnore
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transport_profile_id")
     private TransportProfile transportProfile;

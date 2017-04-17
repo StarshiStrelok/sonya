@@ -33,7 +33,7 @@ import ss.sonya.inject.DataService;
 public abstract class DataWS<T> {
     /** Data service. */
     @Autowired
-    private DataService dataService;
+    protected DataService dataService;
     /** Controller type. */
     protected Class<T> type;
     /**

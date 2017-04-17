@@ -15,14 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {AbsModel} from './abs.model';
 
-@Component({
-    selector: 'zoom-field',
-    templateUrl: './zoom-field.html'
-})
-export class ZoomField {
-    @Input() label: string;
-    @Input() control: FormControl;
+export class RouteProfile implements AbsModel {
+    constructor(
+        public id: number,
+        public name: string,
+        public avgSpeed: number
+    ) {}
 }

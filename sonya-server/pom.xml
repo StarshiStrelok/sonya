@@ -31,17 +31,6 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${lib-spring}</version>
         </dependency>
-        <!-- Jackson -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${lib-jackson}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${lib-jackson}</version>
-        </dependency>
         <!-- =================== PROVIDED ================================== -->
         <dependency>
             <groupId>javax</groupId>

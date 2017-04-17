@@ -17,8 +17,12 @@
 package ss.sonya.transport.rest;
 
 import javax.annotation.PostConstruct;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import ss.sonya.entity.RouteProfile;
 import ss.sonya.entity.TransportProfile;
 import ss.sonya.inject.rest.DataWS;
 
@@ -35,5 +39,37 @@ public class TransportProfileWS extends DataWS<TransportProfile>{
     @PostConstruct
     protected void init() {
         type = TransportProfile.class;
+    }
+    /**
+     * Update transport profile.
+     * @param profile transport profile.
+     * @return updated profile.
+     * @throws Exception error.
+     */
+    @Override
+    @RequestMapping(method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TransportProfile update(
+            @RequestBody TransportProfile profile) throws Exception {
+        for (RouteProfile rp : profile.getRouteProfiles()) {
+            rp.setTransportProfile(profile);
+        }
+        return dataService.update(profile);
+    }
+    /**
+     * Create transport profile.
+     * @param profile transport profile.
+     * @return created profile.
+     * @throws Exception error.
+     */
+    @Override
+    @RequestMapping(method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public TransportProfile create(@RequestBody TransportProfile profile)
+            throws Exception {
+        for (RouteProfile rp : profile.getRouteProfiles()) {
+            rp.setTransportProfile(profile);
+        }
+        return dataService.create(profile);
     }
 }
