@@ -17,11 +17,15 @@
 package ss.sonya.entity;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -95,6 +99,10 @@ public class TransportProfile implements Serializable {
     @Size(max = 100)
     @Column(name = "name", length = 100)
     private String name;
+    /** Route profiles. */
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+            orphanRemoval = true, mappedBy = "transportProfile")
+    private List<RouteProfile> routeProfiles;
 // ================================= SET & GET ================================
     /**
      * @return the id
@@ -215,6 +223,18 @@ public class TransportProfile implements Serializable {
      */
     public void setName(String name) {
         this.name = name;
+    }
+    /**
+     * @return the routeProfiles
+     */
+    public List<RouteProfile> getRouteProfiles() {
+        return routeProfiles;
+    }
+    /**
+     * @param routeProfiles the routeProfiles to set
+     */
+    public void setRouteProfiles(List<RouteProfile> routeProfiles) {
+        this.routeProfiles = routeProfiles;
     }
 // ============================================================================
     @Override

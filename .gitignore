@@ -12,3 +12,5 @@
 /sonya-transport-client/target/
 /sonya-server/target/
 /sonya-server/nb-configuration.xml
+/sonya-transport-client/src/main/webapp/nbproject/private/
+/sonya-transport-html5/nbproject/private/

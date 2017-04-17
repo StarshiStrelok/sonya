@@ -1,0 +1,54 @@
+/* You can add global styles to this file, and also import other style files */
+@import '../node_modules/@angular/material/prebuilt-themes/indigo-pink.css';
+@import '../node_modules/leaflet/dist/leaflet.css';
+
+/** Material design icons. */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url(material-icons.woff2) format('woff2');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/** Material design custom. */
+body {
+    margin: 0px !important;
+}
+.full-width, longitude-field, latitude-field, zoom-field {
+    width: 100%;
+}
+.divider {
+    border: none;
+}
+.main-card {
+    margin: 8px;
+}
+.spacer {
+    flex: 1 1 auto;
+}
+.vr {
+    width: 10px;
+}
+.list-item {
+    border: 1px groove;
+    margin-bottom: 3px;
+}
+md-toolbar {
+    box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+}

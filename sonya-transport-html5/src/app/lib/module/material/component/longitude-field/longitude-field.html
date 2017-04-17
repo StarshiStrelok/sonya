@@ -15,14 +15,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<md-card class="main-card">
-    <md-card-content>
-        <div id="profile-map">
-            
-        </div>
-    </md-card-content>
-    <md-card-actions align="end">
-        <button md-fab color="primary" (click)="goBack()" mdTooltip="Close" mdTooltipPosition="above">
-                <md-icon>close</md-icon></button>
-    </md-card-actions>
-</md-card>
+<md-input-container class="full-width">
+    <input mdInput placeholder="{{label}}"
+           [formControl]="control">
+    <md-error *ngIf="control.hasError('required')">
+        Required
+    </md-error>
+    <md-error *ngIf="control.hasError('maxNumber')">
+        Longitude must be less than 180&#176;
+    </md-error>
+    <md-error *ngIf="control.hasError('minNumber')">
+        Longitude must be greater than -180&#176;
+    </md-error>
+</md-input-container>

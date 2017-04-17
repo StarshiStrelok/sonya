@@ -1,0 +1,14 @@
+<div class="form-group" [ngClass]="validationClassBlock(control)">
+    <label class="form-control-label" for="{{id}}">{{label}}</label>
+    <input class="form-control" type="text" [(ngModel)]="value" id="{{id}}"
+           [ngClass]="validationClassControl(control)"
+           placeholder="{{placeholder}}">
+    <small [hidden]="(control.valid || control.pristine) || !control.errors.required"
+        class="form-control-feedback">Required</small>
+    <small [hidden]="(control.valid || control.pristine) || !control.errors.maxlength"
+        class="form-control-feedback">Very long, maximum 
+        {{control.errors && control.errors.maxlength && control.errors.maxlength.requiredLength}} characters</small>
+    <small [hidden]="(control.valid || control.pristine) || !control.errors.minlength"
+        class="form-control-feedback">Very short, minimum
+        {{control.errors && control.errors.minlength && control.errors.minlength.requiredLength}} characters</small>
+</div>

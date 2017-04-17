@@ -15,14 +15,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<md-card class="main-card">
-    <md-card-content>
-        <div id="profile-map">
-            
-        </div>
-    </md-card-content>
-    <md-card-actions align="end">
-        <button md-fab color="primary" (click)="goBack()" mdTooltip="Close" mdTooltipPosition="above">
-                <md-icon>close</md-icon></button>
-    </md-card-actions>
-</md-card>
+<h2 md-dialog-title>
+    {{title}}
+</h2>
+<hr class="cd-hr"/>
+<md-dialog-content>
+    <p>{{message}}</p>
+</md-dialog-content>
+<md-dialog-actions>
+    <button md-raised-button color="primary" (click)="dialogRef.close(false)">No</button>
+    <span class="spacer"></span>
+    <button md-raised-button color="warn" (click)="dialogRef.close(true)">Yes</button>
+</md-dialog-actions>
+
+
