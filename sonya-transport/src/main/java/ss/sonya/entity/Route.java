@@ -142,7 +142,7 @@ public class Route implements Serializable {
     public void setExternalId(Long externalId) {
         this.externalId = externalId;
     }
-// ============================================================================    
+// ============================================================================
     @Override
     public int hashCode() {
         int hash = 0;

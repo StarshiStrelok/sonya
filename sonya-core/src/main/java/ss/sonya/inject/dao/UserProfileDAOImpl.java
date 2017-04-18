@@ -47,5 +47,5 @@ class UserProfileDAOImpl implements UserProfileDAO {
         criteria.select(c).where(builder.equal(c.get("login"), login));
         Query query = em.createQuery(criteria);
         return (UserProfile) query.getSingleResult();
-    } 
+    }
 }

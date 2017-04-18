@@ -31,7 +31,7 @@ import ss.sonya.constants.SonyaProperty;
  * Read sonya.properties file from /conf folder.
  * @author ss
  */
-public class SonyaConfig {
+public final class SonyaConfig {
     /** Logger. */
     private static final Logger LOG  = Logger.getLogger(SonyaConfig.class);
     /** Application properties. */

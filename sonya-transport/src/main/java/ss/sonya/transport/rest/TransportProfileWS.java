@@ -32,7 +32,7 @@ import ss.sonya.inject.rest.DataWS;
  */
 @RestController
 @RequestMapping("/rest/data/transport-profile")
-public class TransportProfileWS extends DataWS<TransportProfile>{
+public class TransportProfileWS extends DataWS<TransportProfile> {
     /**
      * Initialize controller.
      */

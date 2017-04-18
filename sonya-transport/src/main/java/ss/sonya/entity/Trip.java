@@ -101,7 +101,7 @@ public class Trip implements Serializable {
     public void setDays(String days) {
         this.days = days;
     }
-// ============================================================================    
+// ============================================================================
     @Override
     public int hashCode() {
         int hash = 0;
