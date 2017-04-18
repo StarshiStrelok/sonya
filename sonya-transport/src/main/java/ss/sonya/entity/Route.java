@@ -16,23 +16,22 @@
  */
 package ss.sonya.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import ss.sonya.transport.constants.RouteType;
-
 
 /**
  * Route.
@@ -50,9 +49,9 @@ public class Route implements Serializable {
     private Long id;
     /** TRoute type. */
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "route_type")
-    private RouteType type;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "route_profile_id")
+    private RouteProfile type;
     /** TRoute name prefix. */
     @NotNull
     @Size(max = 10)
@@ -69,6 +68,11 @@ public class Route implements Serializable {
     /** Alternative ID. */
     @Column(name = "external_id")
     private Long externalId;
+    /** Transport profile. */
+    @JsonIgnore
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TransportProfile transportProfile;
 // ============================ SET & GET =====================================
     /**
      * @return the id
@@ -85,13 +89,13 @@ public class Route implements Serializable {
     /**
      * @return the type
      */
-    public RouteType getType() {
+    public RouteProfile getType() {
         return type;
     }
     /**
      * @param type the type to set
      */
-    public void setType(RouteType type) {
+    public void setType(RouteProfile type) {
         this.type = type;
     }
     /**
@@ -141,6 +145,18 @@ public class Route implements Serializable {
      */
     public void setExternalId(Long externalId) {
         this.externalId = externalId;
+    }
+    /**
+     * @return the transportProfile
+     */
+    public TransportProfile getTransportProfile() {
+        return transportProfile;
+    }
+    /**
+     * @param transportProfile the transportProfile to set
+     */
+    public void setTransportProfile(TransportProfile transportProfile) {
+        this.transportProfile = transportProfile;
     }
 // ============================================================================
     @Override

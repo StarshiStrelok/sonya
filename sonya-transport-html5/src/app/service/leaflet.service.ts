@@ -15,17 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Injectable} from '@angular/core';
+import {Injectable, ElementRef} from '@angular/core';
 import {TransportProfile} from '../model/transport-profile';
 
 declare var L: any;
 
 @Injectable()
 export class LeafletService {
-    createMap(id: string, profile: TransportProfile): any {
-        var map = L.map.Sonya(id, {
-            zoomControl: false,
-            attributionControl: false,
+    createMap(profile: TransportProfile, container: ElementRef) {
+        var map = L.map.Sonya(container.nativeElement, {
             southWest: L.latLng(profile.southWestLat, profile.southWestLon),
             northEast: L.latLng(profile.northEastLat, profile.northEastLon),
             bounds: L.latLngBounds(L.latLng(profile.southWestLat, profile.southWestLon),
@@ -34,20 +32,24 @@ export class LeafletService {
                 L.latLng(profile.northEastLat, profile.northEastLon)),
             minZoom: profile.minZoom,
         }, profile.centerLat, profile.centerLon, profile.initialZoom);
-        
         this.createLayer().addTo(map);
-        
-        map.initControls([{}], 'topright');
-        
-        document.getElementById(id).style.height = (window.innerHeight - 200) + 'px';
+        container.nativeElement.style.height = (window.innerHeight - 138) + 'px';
         map.invalidateSize(true);
-        
         return map;
     }
     createLayer(): any {
         return L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             id: 'osm.default'
         });
+    }
+    addControl(map: any, icon: string, onclick: Function, component: any, tooltip: string) {
+        var btn = L.DomUtil.create('button', 'l-control-btn');
+        btn.innerHTML = '<i class="material-icons">' + icon + '</i>';
+        btn.addEventListener('click', function(){
+            onclick(component);
+        });
+        btn.setAttribute('title', tooltip);
+        map.addControl(L.control.Sonya(btn, {position: 'topright'}));
     }
 }
 
@@ -61,14 +63,6 @@ L.Map.Sonya = L.Map.extend({
         L.Util.setOptions(this, options);
         L.Map.prototype.initialize.call(this, id, options);
         this.setView([lat, lon], zoom);
-    },
-    initControls: function (controls: any, position: string) {
-        for (var i = 0; i < controls.length; i++) {
-            controls[i].options = {
-                position: position
-            };
-            this.addControl(L.control.Sonya(controls[i]));
-        }
     }
 });
 L.map.Sonya = function (id: number, options: any, lat: number, lon: number, zoom: number) {
@@ -76,21 +70,21 @@ L.map.Sonya = function (id: number, options: any, lat: number, lon: number, zoom
 };
 
 L.Control.Sonya = L.Control.extend({
-    initialize: function (control: any, position: string) {
-        L.Util.setOptions(this, control.options);
-        this._position = position;
+    initialize: function (element: any, options: any) {
+        L.Util.setOptions(this, options);
+        this._element = element;
     },
     options: {
-        position: this._position
+        position: 'topleft'
     },
     onAdd: function (map: any) {
+        console.log(this._element);
         var container = L.DomUtil.create('div',
-                'leaflet-control-layers leaflet-control');
-        var btn = L.DomUtil.create('button', '');
-        container.appendChild(btn);
+                'leaflet-control-layers leaflet-control l-contol');
+        container.appendChild(this._element);
         return container;
     }
 });
-L.control.Sonya = function (control: any) {
-    return new L.Control.Sonya(control);
+L.control.Sonya = function (element: any, options: any) {
+    return new L.Control.Sonya(element, options);
 };

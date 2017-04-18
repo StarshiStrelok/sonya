@@ -16,6 +16,7 @@
  */
 package ss.sonya.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -71,6 +72,11 @@ public class Path implements Serializable {
     /** Alternative ID, OSM for example. */
     @Column(name = "external_id")
     private Long externalId;
+    /** Transport profile. */
+    @JsonIgnore
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TransportProfile transportProfile;
 // ====================== SET & GET ===========================================
     /**
      * @return the id
@@ -143,6 +149,18 @@ public class Path implements Serializable {
      */
     public void setExternalId(Long externalId) {
         this.externalId = externalId;
+    }
+    /**
+     * @return the transportProfile
+     */
+    public TransportProfile getTransportProfile() {
+        return transportProfile;
+    }
+    /**
+     * @param transportProfile the transportProfile to set
+     */
+    public void setTransportProfile(TransportProfile transportProfile) {
+        this.transportProfile = transportProfile;
     }
 // ============================================================================
     @Override

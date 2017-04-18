@@ -32,6 +32,7 @@ import {
     MdTooltipModule,
     MdDialogModule
 } from '@angular/material';
+
 import {LatitudeField} from './component/latitude-field/latitude-field';
 import {LongitudeField} from './component/longitude-field/longitude-field';
 import {ZoomField} from './component/zoom-field/zoom-field';

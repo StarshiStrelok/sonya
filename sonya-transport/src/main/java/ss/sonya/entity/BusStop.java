@@ -16,6 +16,7 @@
  */
 package ss.sonya.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
@@ -25,6 +26,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -61,6 +63,11 @@ public class BusStop implements Serializable {
     /** External ID. */
     @Column(name = "external_id")
     private Long externalId;
+    /** Transport profile. */
+    @JsonIgnore
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TransportProfile transportProfile;
 // =========================== SET & GET ======================================
     /**
      * @return the id
@@ -133,6 +140,18 @@ public class BusStop implements Serializable {
      */
     public void setExternalId(Long externalId) {
         this.externalId = externalId;
+    }
+    /**
+     * @return the transportProfile
+     */
+    public TransportProfile getTransportProfile() {
+        return transportProfile;
+    }
+    /**
+     * @param transportProfile the transportProfile to set
+     */
+    public void setTransportProfile(TransportProfile transportProfile) {
+        this.transportProfile = transportProfile;
     }
 // ============================================================================
     @Override

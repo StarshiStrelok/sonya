@@ -15,22 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {Location} from '@angular/common';
 
-import {LeafletService} from '../../service/leaflet.service';
 import {DataService} from '../../service/data.service';
+import {LeafletService} from '../../service/leaflet.service';
+
 import {TransportProfile} from '../../model/transport-profile';
 import {ModelClass} from '../../model/abs.model';
+
+declare var L: any;
 
 @Component({
     selector: 'transport-profile-map',
     templateUrl: './transport-profile.map.html',
     styleUrls: ['./transport-profile.map.css']
 })
-
 export class TransportProfileMap implements OnInit {
+    @ViewChild('map') mapElement: ElementRef;
+    private map: any;
     constructor(
         private location: Location,
         private dataService: DataService,
@@ -42,13 +46,14 @@ export class TransportProfileMap implements OnInit {
             let id = params['id'];
             if (id) {
                 this.dataService.findById<TransportProfile>(
-                    id, ModelClass.TRANSPORT_PROFILE).then(profile => {
-                        this.leafletService.createMap('profile-map', profile);
+                    id, ModelClass.TRANSPORT_PROFILE).then((profile: TransportProfile) => {
+                        this.map = this.leafletService.createMap(profile, this.mapElement);
+                        this.leafletService.addControl(this.map, 'close', this.fnBack, this, 'Close map');
                     });
             }
         });
     }
-    goBack() {
-        this.location.back();
+    fnBack = function (component: TransportProfileMap) {
+        component.location.back();
     }
 }

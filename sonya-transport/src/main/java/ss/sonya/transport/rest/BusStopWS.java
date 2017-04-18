@@ -14,21 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.transport.constants;
+package ss.sonya.transport.rest;
+
+import javax.annotation.PostConstruct;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ss.sonya.entity.BusStop;
+import ss.sonya.inject.rest.DataWS;
 
 /**
- * Route type.
+ * Bus stop web-service.
  * @author ss
  */
-public enum RouteType {
-    /** Autobus. */
-    AUTOBUS,
-    /** Trolleybus. */
-    TROLLEYBUS,
-    /** Routing taxi. */
-    TAXI,
-    /** Tram. */
-    TRAM,
-    /** Metro. */
-    METRO;
+@RestController
+@RequestMapping("/rest/data/busstop")
+public class BusStopWS extends DataWS<BusStop> {
+    /**
+     * Initialize controller.
+     */
+    @PostConstruct
+    protected void init() {
+        type = BusStop.class;
+    }
 }
