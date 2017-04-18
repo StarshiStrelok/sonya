@@ -3,12 +3,12 @@ import {Location} from '@angular/common';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 
-import {minNumberValidator} from '../../lib/module/validator/min-number.directive';
-import {maxNumberValidator} from '../../lib/module/validator/max-number.directive';
-import {TransportProfile} from '../../model/transport-profile';
-import {DataService} from '../../service/data.service';
-import {ModelClass} from '../../model/abs.model';
-import {Links} from '../../route.module';
+import {minNumberValidator} from '../lib/validator/min-number.directive';
+import {maxNumberValidator} from '../lib/validator/max-number.directive';
+import {TransportProfile} from '../model/transport-profile';
+import {DataService} from '../service/data.service';
+import {ModelClass} from '../model/abs.model';
+import {Links} from '../route.module';
 
 @Component({
     selector: 'transport-profile-form',

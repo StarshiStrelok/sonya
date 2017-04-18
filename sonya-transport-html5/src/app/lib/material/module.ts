@@ -33,10 +33,10 @@ import {
     MdDialogModule
 } from '@angular/material';
 
-import {LatitudeField} from './component/latitude-field/latitude-field';
-import {LongitudeField} from './component/longitude-field/longitude-field';
-import {ZoomField} from './component/zoom-field/zoom-field';
-import {ConfirmDialog} from './component/dialog/confirm.dialog';
+import {LatitudeField} from './latitude-field';
+import {LongitudeField} from './longitude-field';
+import {ZoomField} from './zoom-field';
+import {ConfirmDialog} from './confirm.dialog';
 
 @NgModule({
     imports: [

@@ -16,14 +16,14 @@
  */
 
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
-import {Router, ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute, Params} from '@angular/router';
 import {Location} from '@angular/common';
 
-import {DataService} from '../../service/data.service';
-import {LeafletService} from '../../service/leaflet.service';
+import {DataService} from '../service/data.service';
+import {LeafletService} from '../service/leaflet.service';
 
-import {TransportProfile} from '../../model/transport-profile';
-import {ModelClass} from '../../model/abs.model';
+import {TransportProfile} from '../model/transport-profile';
+import {ModelClass} from '../model/abs.model';
 
 declare var L: any;
 

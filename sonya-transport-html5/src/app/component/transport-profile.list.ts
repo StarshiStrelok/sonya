@@ -18,11 +18,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {DataService} from '../../service/data.service';
-import {TransportProfile} from '../../model/transport-profile';
-import {ModelClass} from '../../model/abs.model';
-import {Links} from '../../route.module';
-import {DialogService} from '../../service/dialog.service';
+import {DataService} from '../service/data.service';
+import {TransportProfile} from '../model/transport-profile';
+import {ModelClass} from '../model/abs.model';
+import {Links} from '../route.module';
+import {DialogService} from '../service/dialog.service';
 
 @Component({
     selector: 'transport-profile-list',

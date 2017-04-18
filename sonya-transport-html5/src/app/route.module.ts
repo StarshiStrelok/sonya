@@ -17,9 +17,9 @@
 
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {TransportProfileForm} from './form/transport-profile/transport-profile.form';
-import {TransportProfileList} from './component/transport-profile-list/transport-profile.list';
-import {TransportProfileMap} from './component/transport-profile-map/transport-profile.map';
+import {TransportProfileForm} from './form/transport-profile.form';
+import {TransportProfileList} from './component/transport-profile.list';
+import {TransportProfileMap} from './component/transport-profile.map';
 
 export class Links {
     static HOME = '';
