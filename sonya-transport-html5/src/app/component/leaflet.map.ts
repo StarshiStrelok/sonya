@@ -22,7 +22,8 @@ declare var L: any;
 
 export abstract class LeafletMap {
     map: any;
-    
+    ctxMenu: any;
+    coords: any;
     createMap(profile: TransportProfile, container: ElementRef) {
         var map = L.map.Sonya(container.nativeElement, {
             southWest: L.latLng(profile.southWestLat, profile.southWestLon),
@@ -36,7 +37,23 @@ export abstract class LeafletMap {
         this.createLayer().addTo(map);
         container.nativeElement.style.height = (window.innerHeight - 138) + 'px';
         map.invalidateSize(true);
+
         this.map = map;
+        
+        // map listeners
+        var comp = this;
+        var _map = this.map;
+        map.on('click', function (e: any) {
+            if (comp.ctxMenu) {
+                if (comp.ctxMenu.isOpen()) {
+                    _map.closePopup();
+                } else {
+                    comp.ctxMenu.setLatLng(e.latlng);
+                    comp.ctxMenu.openOn(_map);
+                    comp.setCurrentCoordinates(e.latlng);
+                }
+            }
+        });
     }
     createLayer(): any {
         return L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -46,12 +63,56 @@ export abstract class LeafletMap {
     addControl(icon: string, onclick: Function, component: any, tooltip: string, pos: string) {
         var btn = L.DomUtil.create('button', 'l-control-btn');
         btn.innerHTML = '<i class="material-icons">' + icon + '</i>';
-        btn.addEventListener('click', function(){
+        btn.addEventListener('click', function () {
             onclick(component);
         });
         btn.setAttribute('title', tooltip);
         this.map.addControl(L.control.Sonya(btn, {position: pos}));
     }
+    createContextMenu(width: number, items: CtxMenuItem[]) {
+        if (this.ctxMenu) {
+            return;
+        }
+        let _ctxMenu = L.popup({
+            minWidth: width,
+            maxWidth: width,
+            className: 'l-ctx-menu',
+            closeButton: false,
+            closeOnClick: false
+        })
+        var container = L.DomUtil.create('div');
+        var _map = this.map;
+        items.forEach((item: CtxMenuItem) => {
+            let btn = this.createContextMenuBtn(container, item);
+            L.DomEvent.on(btn, 'click', function () {
+                _map.closePopup();
+                item.onclick(item.component);
+            });
+        });
+        _ctxMenu.setContent(container);
+        this.ctxMenu = _ctxMenu;
+        console.log('context menu init complete');
+    }
+    private createContextMenuBtn(container: any, item: CtxMenuItem): any {
+        var btn = L.DomUtil.create('button', '', container);
+        btn.setAttribute('type', 'button');
+        btn.className = "l-context-menu-button";
+        btn.innerHTML = '<i class="material-icons">'
+            + item.icon + '</i> <span>' + item.label + '</span>';
+        return btn;
+    }
+    private setCurrentCoordinates(coords: any): void {
+        this.coords = coords;
+    }
+}
+
+export class CtxMenuItem {
+    constructor(
+        public icon: string,
+        public label: string,
+        public onclick: Function,
+        public component: any
+    ) {}
 }
 
 L.Map.Sonya = L.Map.extend({
@@ -80,7 +141,7 @@ L.Control.Sonya = L.Control.extend({
     },
     onAdd: function (map: any) {
         var container = L.DomUtil.create('div',
-                'leaflet-control-layers leaflet-control l-contol');
+            'leaflet-control-layers leaflet-control l-contol');
         container.appendChild(this._element);
         return container;
     }

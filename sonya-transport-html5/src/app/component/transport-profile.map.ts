@@ -20,10 +20,13 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {Location} from '@angular/common';
 
 import {DataService} from '../service/data.service';
-import {LeafletMap} from './leaflet.map';
+import {DialogService} from '../service/dialog.service';
+import {LeafletMap, CtxMenuItem} from './leaflet.map';
 
 import {TransportProfile} from '../model/transport-profile';
 import {ModelClass} from '../model/abs.model';
+import {BusStop} from '../model/busstop';
+import {BusStopForm} from './../form/bus-stop.form';
 
 @Component({
     selector: 'transport-profile-map',
@@ -32,24 +35,39 @@ import {ModelClass} from '../model/abs.model';
 })
 export class TransportProfileMap extends LeafletMap implements OnInit {
     @ViewChild('map') mapElement: ElementRef;
+    private profileId: number;
     constructor(
         private location: Location,
         private dataService: DataService,
+        private dialogService: DialogService,
         private activatedRoute: ActivatedRoute
     ) {super()}
     ngOnInit() {
         this.activatedRoute.params.subscribe((params: Params) => {
             let id = params['id'];
             if (id) {
+                this.profileId = id;
                 this.dataService.findById<TransportProfile>(
                     id, ModelClass.TRANSPORT_PROFILE).then((profile: TransportProfile) => {
                         this.createMap(profile, this.mapElement);
                         this.addControl('close', this.fnBack, this, 'Close map', 'bottomright');
+                        this.createContextMenu(200, [
+                            new CtxMenuItem('add_location', 'Add bus stop', this.fnAddBusStop, this)
+                        ]);
                     });
             }
         });
     }
     fnBack = function (component: TransportProfileMap) {
         component.location.back();
+    }
+    
+    fnAddBusStop = function (component: TransportProfileMap) {
+        component.dialogService.openWindow('New bus stop', '', '50%', BusStopForm, {
+            profileId: component.profileId,
+            model: new BusStop(null, null, component.coords.lat, component.coords.lng, null)
+        }).subscribe((res: boolean) => {
+                console.log('window res [' + res + ']');
+            });
     }
 }

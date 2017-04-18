@@ -35,3 +35,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     color: grey;
     background-color: rgba(0, 0, 0, 0.1);
 }
+.l-context-menu-button {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background-color: white;
+}
+.l-context-menu-button:hover {
+    cursor: pointer;
+}
+.l-context-menu-button span {
+    font-size: 16px;
+    line-height: 30px;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+.l-context-menu-button i {
+    min-width: 20px;
+    height: 30px;
+    vertical-align: middle;
+}
+.l-ctx-menu {
+}
+.l-ctx-menu > .leaflet-popup-content-wrapper > .leaflet-popup-content {
+    margin: 0px;
+}
+.l-ctx-menu > .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+    padding: 0;
+}

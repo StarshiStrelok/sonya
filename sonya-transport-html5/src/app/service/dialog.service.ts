@@ -17,9 +17,10 @@
 
 import {Observable} from 'rxjs/Rx';
 import {MdDialogRef, MdDialog} from '@angular/material';
-import {Injectable} from '@angular/core';
+import {Injectable, Type} from '@angular/core';
 
 import {ConfirmDialog} from './../lib/material/confirm.dialog';
+import {Window} from './../component/window';
 
 @Injectable()
 export class DialogService {
@@ -32,6 +33,20 @@ export class DialogService {
         dialogRef = this.dialog.open(ConfirmDialog);
         dialogRef.componentInstance.title = title;
         dialogRef.componentInstance.message = message;
+
+        return dialogRef.afterClosed();
+    }
+    public openWindow(title: string, height: string, width: string,
+            cType: Type<any>, data: any): Observable<boolean> {
+        let dialogRef: MdDialogRef<Window>;
+
+        dialogRef = this.dialog.open(Window, {
+            height: height,
+            width: width,
+        });
+        dialogRef.componentInstance.title = title;
+        dialogRef.componentInstance.compType = cType;
+        dialogRef.componentInstance.data = data;
 
         return dialogRef.afterClosed();
     }

@@ -15,9 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export interface AbsModel {
-}
-export class ModelClass {
-    static TRANSPORT_PROFILE = 'transport-profile';
-    static BUS_STOP = 'busstop';
+import {AbsModel} from './abs.model';
+
+export class BusStop implements AbsModel {
+    constructor(
+        public id: number,
+        public name: string,
+        public latitude: number,
+        public longitude: number,
+        public externalId: number
+    ) {}
 }

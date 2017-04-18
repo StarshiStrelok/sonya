@@ -12,6 +12,8 @@ import {AppComponent} from './app.component';
 import {TransportProfileForm} from './form/transport-profile.form';
 import {TransportProfileList} from './component/transport-profile.list';
 import {TransportProfileMap} from './component/transport-profile.map';
+import {BusStopForm} from './form/bus-stop.form';
+import {Window, WindowDirective} from './component/window';
 
 import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
@@ -21,7 +23,10 @@ import {DialogService} from './service/dialog.service';
         AppComponent,
         TransportProfileForm,
         TransportProfileList,
-        TransportProfileMap
+        TransportProfileMap,
+        BusStopForm,
+        Window,
+        WindowDirective
     ],
     imports: [
         BrowserModule,
@@ -32,6 +37,9 @@ import {DialogService} from './service/dialog.service';
         SSMaterialModule,
         SSValidatorModule,
         AppRoutingModule
+    ],
+    entryComponents: [
+        Window, BusStopForm
     ],
     providers: [DataService, DialogService],
     bootstrap: [AppComponent]
