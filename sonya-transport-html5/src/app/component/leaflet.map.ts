@@ -14,14 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import {ElementRef} from '@angular/core'
 
-import {Injectable, ElementRef} from '@angular/core';
 import {TransportProfile} from '../model/transport-profile';
 
 declare var L: any;
 
-@Injectable()
-export class LeafletService {
+export abstract class LeafletMap {
+    map: any;
+    
     createMap(profile: TransportProfile, container: ElementRef) {
         var map = L.map.Sonya(container.nativeElement, {
             southWest: L.latLng(profile.southWestLat, profile.southWestLon),
@@ -35,21 +36,21 @@ export class LeafletService {
         this.createLayer().addTo(map);
         container.nativeElement.style.height = (window.innerHeight - 138) + 'px';
         map.invalidateSize(true);
-        return map;
+        this.map = map;
     }
     createLayer(): any {
         return L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             id: 'osm.default'
         });
     }
-    addControl(map: any, icon: string, onclick: Function, component: any, tooltip: string) {
+    addControl(icon: string, onclick: Function, component: any, tooltip: string, pos: string) {
         var btn = L.DomUtil.create('button', 'l-control-btn');
         btn.innerHTML = '<i class="material-icons">' + icon + '</i>';
         btn.addEventListener('click', function(){
             onclick(component);
         });
         btn.setAttribute('title', tooltip);
-        map.addControl(L.control.Sonya(btn, {position: 'topright'}));
+        this.map.addControl(L.control.Sonya(btn, {position: pos}));
     }
 }
 
@@ -78,7 +79,6 @@ L.Control.Sonya = L.Control.extend({
         position: 'topleft'
     },
     onAdd: function (map: any) {
-        console.log(this._element);
         var container = L.DomUtil.create('div',
                 'leaflet-control-layers leaflet-control l-contol');
         container.appendChild(this._element);

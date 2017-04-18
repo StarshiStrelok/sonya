@@ -15,7 +15,6 @@ import {TransportProfileMap} from './component/transport-profile.map';
 
 import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
-import {LeafletService} from './service/leaflet.service';
 
 @NgModule({
     declarations: [
@@ -34,7 +33,7 @@ import {LeafletService} from './service/leaflet.service';
         SSValidatorModule,
         AppRoutingModule
     ],
-    providers: [DataService, DialogService, LeafletService],
+    providers: [DataService, DialogService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

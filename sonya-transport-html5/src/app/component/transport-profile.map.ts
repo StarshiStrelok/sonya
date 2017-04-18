@@ -20,35 +20,31 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {Location} from '@angular/common';
 
 import {DataService} from '../service/data.service';
-import {LeafletService} from '../service/leaflet.service';
+import {LeafletMap} from './leaflet.map';
 
 import {TransportProfile} from '../model/transport-profile';
 import {ModelClass} from '../model/abs.model';
-
-declare var L: any;
 
 @Component({
     selector: 'transport-profile-map',
     templateUrl: './transport-profile.map.html',
     styleUrls: ['./transport-profile.map.css']
 })
-export class TransportProfileMap implements OnInit {
+export class TransportProfileMap extends LeafletMap implements OnInit {
     @ViewChild('map') mapElement: ElementRef;
-    private map: any;
     constructor(
         private location: Location,
         private dataService: DataService,
-        private leafletService: LeafletService,
         private activatedRoute: ActivatedRoute
-    ) {}
+    ) {super()}
     ngOnInit() {
         this.activatedRoute.params.subscribe((params: Params) => {
             let id = params['id'];
             if (id) {
                 this.dataService.findById<TransportProfile>(
                     id, ModelClass.TRANSPORT_PROFILE).then((profile: TransportProfile) => {
-                        this.map = this.leafletService.createMap(profile, this.mapElement);
-                        this.leafletService.addControl(this.map, 'close', this.fnBack, this, 'Close map');
+                        this.createMap(profile, this.mapElement);
+                        this.addControl('close', this.fnBack, this, 'Close map', 'bottomright');
                     });
             }
         });

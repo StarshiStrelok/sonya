@@ -25,9 +25,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .l-control-btn {
     height: 40px;
     width: 40px;
-    border-radius: 20px;
+    border-radius: 5px;
     border: 2px solid rgba(0, 0, 0, 0.31);
-    background-color: rgba(0, 0, 0, 0.39);
+    background-color: rgba(0, 0, 0, 0.28);
     color: white;
 }
 .l-control-btn:hover {
