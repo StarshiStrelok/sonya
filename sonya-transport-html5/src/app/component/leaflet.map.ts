@@ -110,11 +110,6 @@ export abstract class LeafletMap {
         console.log('context menu init complete');
         return _ctxMenu;
     }
-    createLatLng(bs: BusStop): any {
-        var latLng = new L.LatLng(bs.latitude, bs.longitude);
-        latLng.info = bs;
-        return latLng;
-    }
     createIcon(icName: string) {
         return L.icon({
             iconUrl: '/assets/image/' + icName + '.png',

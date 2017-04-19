@@ -73,6 +73,22 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
                 this.updateBusStopLayer(all);
             });
     }
+    moveBusStop(model: BusStop, lat: number, lon: number) {
+        this.dialogService.confirm('Move bus stop', 'Are you sure that you want replace this bus stop?')
+            .subscribe((res: boolean) => {
+                if (res) {
+                    model.latitude = lat;
+                    model.longitude = lon;
+                    model['transportProfile'] = {id: this.profileId}
+                    this.dataService.update<BusStop>(model, ModelClass.BUS_STOP)
+                        .then(() => {
+                            this.loadBusStops();
+                        });
+                } else {
+                    this.loadBusStops();
+                }
+            });
+    }
     fnBack = function (component: TransportProfileMap) {
         component.location.back();
     }
@@ -88,7 +104,7 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         });
     }
     fnOpenEditBusStopDialog = function (component: TransportProfileMap) {
-        let model: BusStop = component.ctxMenuMarker.curMarker.getLatLng().info;
+        let model: BusStop = component.ctxMenuMarker.curMarker.info;
         component.dialogService.openWindow('New bus stop', '', '50%', BusStopForm, {
             profileId: component.profileId,
             model: model
@@ -99,7 +115,7 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         });
     }
     fnDeleteBusStop = function (component: TransportProfileMap) {
-        let model: BusStop = component.ctxMenuMarker.curMarker.getLatLng().info;
+        let model: BusStop = component.ctxMenuMarker.curMarker.info;
         component.dataService.deleteById<BusStop>(model.id, ModelClass.BUS_STOP)
             .then((result: boolean) => {
                 component.loadBusStops();
@@ -107,19 +123,25 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
     }
     // ================================ LEAFLET ===============================
     createMarker(bs: BusStop): any {
-        var marker = L.marker(this.createLatLng(bs), {
+        var marker = L.marker(new L.LatLng(bs.latitude, bs.longitude), {
             icon: bs.name === this.MOCK_BS
                 ? this.createIcon('busstop_mock') : this.createIcon('busstop'),
             clickable: true,
-            draggable: false,
+            draggable: true,
             title: bs.name
         });
+        marker.info = bs;
         var _comp = this;
         marker.on('contextmenu', function (e: any) {
             _comp.coords = e.latlng;
             _comp.ctxMenuMarker.setLatLng(e.latlng);
             _comp.ctxMenuMarker.openOn(_comp.map);
             _comp.ctxMenuMarker.curMarker = e.target;
+        });
+        marker.on('dragend', function (e: any) {
+            var selMarker = e.target;
+            var model = selMarker.info
+            _comp.moveBusStop(model, selMarker.getLatLng().lat, selMarker.getLatLng().lng);
         });
         return marker;
     }
