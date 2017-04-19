@@ -20,16 +20,10 @@ import {RouterModule, Routes} from '@angular/router';
 import {TransportProfileForm} from './form/transport-profile.form';
 import {TransportProfileList} from './component/transport-profile.list';
 import {TransportProfileMap} from './component/transport-profile.map';
-
-export class Links {
-    static HOME = '';
-    static PROFILE_LIST = 'ui/admin/profile-list';
-    static PROFILE_FORM = 'ui/admin/profile';
-    static PROFILE_MAP = 'ui/admin/profile-map';
-}
+import {Links} from './links';
 
 const routes: Routes = [
-    {path: Links.HOME, redirectTo: Links.PROFILE_LIST, pathMatch: 'full'},
+    {path: '', redirectTo: Links.PROFILE_LIST, pathMatch: 'full'},
     {path: Links.PROFILE_LIST, component: TransportProfileList},
     {path: Links.PROFILE_FORM, component: TransportProfileForm},
     {path: Links.PROFILE_FORM + "/:id", component: TransportProfileForm},

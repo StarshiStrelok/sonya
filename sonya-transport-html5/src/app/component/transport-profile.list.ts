@@ -21,7 +21,7 @@ import {Router} from '@angular/router';
 import {DataService} from '../service/data.service';
 import {TransportProfile} from '../model/transport-profile';
 import {ModelClass} from '../model/abs.model';
-import {Links} from '../route.module';
+import {Links} from '../links';
 import {DialogService} from '../service/dialog.service';
 
 @Component({
@@ -29,7 +29,7 @@ import {DialogService} from '../service/dialog.service';
     templateUrl: './transport-profile.list.html'
 })
 export class TransportProfileList implements OnInit {
-    private profiles: TransportProfile[];
+    profiles: TransportProfile[];
     constructor(
         private dataService: DataService,
         private dialogService: DialogService,

@@ -39,15 +39,7 @@ export class BusStopForm extends DialogContent implements OnInit {
         private dataService: DataService,
     ) {super()}
     ngOnInit() {
-        if (this.busStop.id) {
-            this.dataService.findById<BusStop>(
-                this.busStop.id, ModelClass.BUS_STOP).then((busStop: BusStop) => {
-                    this.busStop = busStop;
-                    this.createForm();
-                });
-        } else {
-            this.createForm();
-        }
+        this.createForm();
     }
     createForm() {
         this.busStopForm = this.fb.group({

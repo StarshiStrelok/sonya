@@ -17,6 +17,7 @@
 package ss.sonya.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
@@ -64,6 +65,7 @@ public class BusStop implements Serializable {
     @Column(name = "external_id")
     private Long externalId;
     /** Transport profile. */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     private TransportProfile transportProfile;

@@ -17,13 +17,18 @@
 import {ElementRef} from '@angular/core'
 
 import {TransportProfile} from '../model/transport-profile';
+import {BusStop} from '../model/busstop';
 
 declare var L: any;
 
 export abstract class LeafletMap {
+    MOCK_BS: string = 'mock';
+    
     map: any;
     ctxMenu: any;
     coords: any;
+    layerBusStop: any = L.layerGroup([]);
+    abstract createMarker(bs: BusStop): any;
     createMap(profile: TransportProfile, container: ElementRef) {
         var map = L.map.Sonya(container.nativeElement, {
             southWest: L.latLng(profile.southWestLat, profile.southWestLon),
@@ -39,7 +44,7 @@ export abstract class LeafletMap {
         map.invalidateSize(true);
 
         this.map = map;
-        
+
         // map listeners
         var comp = this;
         var _map = this.map;
@@ -60,6 +65,21 @@ export abstract class LeafletMap {
             id: 'osm.default'
         });
     }
+    updateBusStopLayer(busstops: BusStop[]): void {
+        var start = (new Date()).getTime();
+        this.layerBusStop.clearLayers();
+        console.log('total bus stops [' + busstops.length + ']');
+        if (busstops.length === 0) {
+            return;
+        }
+        var arrayElements = [];
+        for (var i = 0; i < busstops.length; i++) {
+            var m = this.createMarker(busstops[i]);
+            arrayElements.push(m);
+        }
+        this.layerBusStop = L.layerGroup(arrayElements).addTo(this.map);
+        console.log('draw bus stop layer elapsed time [' + ((new Date()).getTime() - start) + '] ms');
+    }
     addControl(icon: string, onclick: Function, component: any, tooltip: string, pos: string) {
         var btn = L.DomUtil.create('button', 'l-control-btn');
         btn.innerHTML = '<i class="material-icons">' + icon + '</i>';
@@ -69,10 +89,7 @@ export abstract class LeafletMap {
         btn.setAttribute('title', tooltip);
         this.map.addControl(L.control.Sonya(btn, {position: pos}));
     }
-    createContextMenu(width: number, items: CtxMenuItem[]) {
-        if (this.ctxMenu) {
-            return;
-        }
+    createContextMenu(width: number, items: CtxMenuItem[]): any {
         let _ctxMenu = L.popup({
             minWidth: width,
             maxWidth: width,
@@ -90,8 +107,24 @@ export abstract class LeafletMap {
             });
         });
         _ctxMenu.setContent(container);
-        this.ctxMenu = _ctxMenu;
         console.log('context menu init complete');
+        return _ctxMenu;
+    }
+    createLatLng(bs: BusStop): any {
+        var latLng = new L.LatLng(bs.latitude, bs.longitude);
+        latLng.info = bs;
+        return latLng;
+    }
+    createIcon(icName: string) {
+        return L.icon({
+            iconUrl: '/assets/image/' + icName + '.png',
+            shadowUrl: null,
+            iconSize: [24, 27],
+            shadowSize: [0, 0], // size of the shadow
+            iconAnchor: [12, 27], // point of the icon which will correspond to marker's location
+            shadowAnchor: [0, 0], // the same for the shadow
+            popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
+        });
     }
     private createContextMenuBtn(container: any, item: CtxMenuItem): any {
         var btn = L.DomUtil.create('button', '', container);

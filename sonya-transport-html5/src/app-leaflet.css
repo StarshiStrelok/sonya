@@ -40,9 +40,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     text-align: left;
     border: none;
     background-color: white;
+    color: #585858;
 }
 .l-context-menu-button:hover {
     cursor: pointer;
+    background-color: #e8ecec;
+    color: black;
 }
 .l-context-menu-button span {
     font-size: 16px;
@@ -51,7 +54,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 .l-context-menu-button i {
     min-width: 20px;
-    height: 30px;
+    height: 26px;
     vertical-align: middle;
 }
 .l-ctx-menu {
