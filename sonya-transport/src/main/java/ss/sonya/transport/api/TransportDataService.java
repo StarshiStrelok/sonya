@@ -14,25 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.transport.rest;
+package ss.sonya.transport.api;
 
-import javax.annotation.PostConstruct;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ss.sonya.entity.BusStop;
+import java.util.List;
 
 /**
- * Bus stop web-service.
+ * Transport data service API.
  * @author ss
  */
-@RestController
-@RequestMapping("/rest/data/busstop")
-public class BusStopWS extends TransportWS<BusStop> {
+public interface TransportDataService {
     /**
-     * Initialize controller.
+     * Get all entities from transport profile.
+     * @param <T> entity with transport profile field.
+     * @param id transport profile ID.
+     * @param cl entity class.
+     * @return list entities.
+     * @throws Exception error.
      */
-    @PostConstruct
-    protected void init() {
-        type = BusStop.class;
-    }
+    <T> List<T> getFromProfile(Integer id, Class<T> cl) throws Exception;
 }

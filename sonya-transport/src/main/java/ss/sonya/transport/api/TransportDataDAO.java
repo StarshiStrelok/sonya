@@ -17,18 +17,18 @@
 package ss.sonya.transport.api;
 
 import java.util.List;
-import ss.sonya.entity.BusStop;
 
 /**
- * Bus stop service API.
+ * Transport data DAO API.
  * @author ss
  */
-public interface BusStopService {
+public interface TransportDataDAO {
     /**
-     * Get transport profile bus stops.
-     * @param pid profile ID.
-     * @return all profile bus stops.
-     * @throws Exception error.
+     * Get all entities from transport profile.
+     * @param <T> entity.
+     * @param id transport profile ID.
+     * @param cl entity class.
+     * @return list entities.
      */
-    List<BusStop> getProfileBusStops(Integer pid) throws Exception;
+    <T> List<T> getFromProfile(Integer id, Class<T> cl);
 }

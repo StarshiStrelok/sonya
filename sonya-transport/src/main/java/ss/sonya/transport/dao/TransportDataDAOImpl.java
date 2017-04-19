@@ -26,24 +26,23 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ss.sonya.entity.BusStop;
-import ss.sonya.transport.api.BusStopDAO;
+import ss.sonya.transport.api.TransportDataDAO;
 
 /**
- * Bus stop DAO implementation.
+ * Transport data DAO implementation.
  * @author ss
  */
 @Repository
-class BusStopDAOImpl implements BusStopDAO {
+class TransportDataDAOImpl implements TransportDataDAO {
     /** Persistence context. */
     @PersistenceContext
     private EntityManager em;
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<BusStop> getProfileBusStops(Integer id) {
+    public <T> List<T> getFromProfile(Integer id, Class<T> cl) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<BusStop> criteria = builder.createQuery(BusStop.class);
-        Root<BusStop> c = criteria.from(BusStop.class);
+        CriteriaQuery<T> criteria = builder.createQuery(cl);
+        Root<T> c = criteria.from(cl);
         criteria.select(c).where(
                 builder.equal(c.get("transportProfile").get("id"), id)
         );

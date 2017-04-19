@@ -14,20 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.transport.api;
+package ss.sonya.transport.rest;
 
-import java.util.List;
-import ss.sonya.entity.BusStop;
+import javax.annotation.PostConstruct;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ss.sonya.entity.Route;
 
 /**
- * Bus stop DAO API.
+ * Route web-service.
  * @author ss
  */
-public interface BusStopDAO {
+@RestController
+@RequestMapping("/rest/data/route")
+public class RouteWS extends TransportWS<Route> {
     /**
-     * Get transport profile bus stops.
-     * @param id profile ID.
-     * @return profile bus stops.
+     * Initialize controller.
      */
-    List<BusStop> getProfileBusStops(Integer id);
+    @PostConstruct
+    protected void init() {
+        type = Route.class;
+    }
 }

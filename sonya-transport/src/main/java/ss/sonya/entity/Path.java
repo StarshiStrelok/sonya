@@ -17,6 +17,7 @@
 package ss.sonya.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -51,10 +52,10 @@ public class Path implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     /** TRoute. */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Route route;
     /** TRoute paths. */
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "path_busstops", joinColumns =
             @JoinColumn(name = "path_fk"), inverseJoinColumns =
             @JoinColumn(name = "busstop_fk"))
@@ -73,7 +74,7 @@ public class Path implements Serializable {
     @Column(name = "external_id")
     private Long externalId;
     /** Transport profile. */
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     private TransportProfile transportProfile;
@@ -153,6 +154,7 @@ public class Path implements Serializable {
     /**
      * @return the transportProfile
      */
+    @JsonIgnore
     public TransportProfile getTransportProfile() {
         return transportProfile;
     }

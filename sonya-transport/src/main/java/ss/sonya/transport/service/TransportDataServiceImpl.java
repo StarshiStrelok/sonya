@@ -21,23 +21,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import ss.sonya.entity.BusStop;
-import ss.sonya.transport.api.BusStopDAO;
-import ss.sonya.transport.api.BusStopService;
+import ss.sonya.transport.api.TransportDataDAO;
+import ss.sonya.transport.api.TransportDataService;
 
 /**
- * Bus stop service implementation.
+ * Transport data service implementation.
  * @author ss
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-class BusStopServiceImpl implements BusStopService {
+class TransportDataServiceImpl implements TransportDataService {
     /** Bus stop DAO. */
     @Autowired
-    private BusStopDAO busStopDAO;
+    private TransportDataDAO transportDAO;
     @Override
-    public List<BusStop> getProfileBusStops(final Integer pid)
+    public <T> List<T> getFromProfile(Integer id, Class<T> cl)
             throws Exception {
-        return busStopDAO.getProfileBusStops(pid);
+        return transportDAO.getFromProfile(id, cl);
     }
 }
