@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import ss.sonya.entity.Route;
 import ss.sonya.transport.api.TransportDataDAO;
 import ss.sonya.transport.api.TransportDataService;
 
@@ -38,5 +39,9 @@ class TransportDataServiceImpl implements TransportDataService {
     public <T> List<T> getFromProfile(Integer id, Class<T> cl)
             throws Exception {
         return transportDAO.getFromProfile(id, cl);
+    }
+    @Override
+    public List<Route> getRoutesFromSameType(Integer id) throws Exception {
+        return transportDAO.getRoutesFromSameType(id);
     }
 }

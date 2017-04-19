@@ -15,17 +15,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<md-sidenav-container>
-    <md-sidenav #sidenav opened="false" class="ss-sidenav">
-        <ng-template sidenav-content></ng-template>
-    </md-sidenav>
-
-    <md-card class="main-card ss-map-card">
-        <md-card-content>
-            <div #map class="ss-map">
-
-            </div>
-        </md-card-content>
-    </md-card>
-</md-sidenav-container>
+<div>
+    <md-select placeholder="Route type" class="full-width" [(ngModel)]="selectedType"
+               (change)="typeChanged()">
+        <md-option *ngFor="let rp of routeProfiles" [value]="rp">{{ rp.name }}</md-option>
+    </md-select>
+    <md-grid-list cols="5" rowHeight="56px;">
+        <md-grid-tile *ngFor="let route of routes">
+            <button md-button>{{route.namePrefix}}{{route.namePostfix}}</button>
+        </md-grid-tile>
+    </md-grid-list>
+</div>
 

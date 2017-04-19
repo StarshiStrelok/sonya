@@ -11,9 +11,10 @@ import {SSValidatorModule} from './lib/validator/module';
 import {AppComponent} from './app.component';
 import {TransportProfileForm} from './form/transport-profile.form';
 import {TransportProfileList} from './component/transport-profile.list';
-import {TransportProfileMap} from './component/transport-profile.map';
+import {TransportProfileMap, SideNavContentDirective} from './component/transport-profile.map';
 import {BusStopForm} from './form/bus-stop.form';
 import {RouteForm} from './form/route.form';
+import {RoutesGrid} from './component/routes.grid';
 import {Window, WindowDirective} from './component/window';
 
 import {DataService} from './service/data.service';
@@ -27,8 +28,10 @@ import {DialogService} from './service/dialog.service';
         TransportProfileMap,
         BusStopForm,
         RouteForm,
+        RoutesGrid,
         Window,
-        WindowDirective
+        WindowDirective,
+        SideNavContentDirective
     ],
     imports: [
         BrowserModule,
@@ -41,7 +44,7 @@ import {DialogService} from './service/dialog.service';
         AppRoutingModule
     ],
     entryComponents: [
-        Window, BusStopForm, RouteForm
+        Window, BusStopForm, RouteForm, RoutesGrid
     ],
     providers: [DataService, DialogService],
     bootstrap: [AppComponent]

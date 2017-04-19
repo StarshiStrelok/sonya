@@ -8,4 +8,5 @@
   <suppress checks="MagicNumber" files="ss[\\/]sonya[\\/]entity"/>
   <suppress checks="HiddenField" files="ss[\\/]sonya[\\/]entity"/>
   <suppress checks="VisibilityModifier" files="DataWS"/>
+  <suppress checks="VisibilityModifier" files="TransportWS"/>
 </suppressions>

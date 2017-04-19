@@ -26,6 +26,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -68,6 +69,7 @@ public class BusStop implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transport_profile_id")
     private TransportProfile transportProfile;
 // =========================== SET & GET ======================================
     /**

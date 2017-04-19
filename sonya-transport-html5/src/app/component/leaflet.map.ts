@@ -39,7 +39,7 @@ export abstract class LeafletMap {
             minZoom: profile.minZoom,
         }, profile.centerLat, profile.centerLon, profile.initialZoom);
         this.createLayer().addTo(map);
-        container.nativeElement.style.height = (window.innerHeight - 138) + 'px';
+        container.nativeElement.style.height = (window.innerHeight - 88) + 'px';
         map.invalidateSize(true);
 
         this.map = map;

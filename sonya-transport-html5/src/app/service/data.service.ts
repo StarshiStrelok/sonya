@@ -16,7 +16,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {AbsModel} from '../model/abs.model';
+import {AbsModel, Route, ModelClass} from '../model/abs.model';
 import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
@@ -39,41 +39,36 @@ export class DataService {
         console.log('update model [' + model['id'] + '] [' + clazz + '] start...');
         return this.http.put(
             this.dataUrl + clazz, JSON.stringify(model), {headers: this.headers}
-        ).toPromise()
-            .then(res => res.json() as T)
-            .catch(this.handleError);
+        ).toPromise().then(res => res.json() as T).catch(this.handleError);
     }
     getAll<T extends AbsModel>(clazz: string): Promise<T[]> {
         console.info('get all [' + clazz + '] start...');
         return this.http.get(
             this.dataUrl + clazz + '/all', {headers: this.headers}
-        ).toPromise()
-            .then(res => res.json() as T[])
-            .catch(this.handleError);
+        ).toPromise().then(res => res.json() as T[]).catch(this.handleError);
     }
     findById<T extends AbsModel>(id: number, clazz: string): Promise<T> {
         console.log('get by id [' + id + '] [' + clazz + ']');
         return this.http.get(
             this.dataUrl + clazz + '/' + id, {headers: this.headers}
-        ).toPromise()
-            .then(res => res.json() as T)
-            .catch(this.handleError);
+        ).toPromise().then(res => res.json() as T).catch(this.handleError);
     }
     deleteById<T extends AbsModel>(id: number, clazz: string): Promise<boolean> {
         console.log('delete [' + id + '] [' + clazz + ']');
         return this.http.delete(
             this.dataUrl + clazz + '/' + id, {headers: this.headers}
-        ).toPromise()
-            .then(res => true)
-            .catch(this.handleError);
+        ).toPromise().then(res => true).catch(this.handleError);
     }
     getFromProfile<T extends AbsModel>(id: number, clazz: string): Promise<T[]> {
         console.log('get from profile [' + id + '] [' + clazz + ']');
         return this.http.get(
             this.dataUrl + clazz + '/from-profile/' + id, {headers: this.headers}
-        ).toPromise()
-            .then(res => res.json() as T[])
-            .catch(this.handleError);
+        ).toPromise().then(res => res.json() as T[]).catch(this.handleError);
+    }
+    getRoutesFromSameType(id: number): Promise<Route[]> {
+        return this.http.get(
+            this.dataUrl + ModelClass.ROUTE + '/from-type/' + id, {headers: this.headers}
+        ).toPromise().then(res => res.json() as Route[]).catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {
         console.error('An error occurred', error); // for demo purposes only

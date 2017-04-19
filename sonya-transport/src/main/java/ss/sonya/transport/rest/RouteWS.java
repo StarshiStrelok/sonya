@@ -16,8 +16,12 @@
  */
 package ss.sonya.transport.rest;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ss.sonya.entity.Route;
 
@@ -34,5 +38,18 @@ public class RouteWS extends TransportWS<Route> {
     @PostConstruct
     protected void init() {
         type = Route.class;
+    }
+    /**
+     * Get routes from same route profile.
+     * @param id route profile ID.
+     * @return list routes.
+     * @throws Exception error.
+     */
+    @RequestMapping(value = "/from-type/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<Route> getFromRouteType(
+            @PathVariable("id") Integer id) throws Exception {
+        return transportService.getRoutesFromSameType(id);
     }
 }

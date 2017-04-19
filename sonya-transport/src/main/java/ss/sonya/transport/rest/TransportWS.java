@@ -33,7 +33,7 @@ import ss.sonya.transport.api.TransportDataService;
 public abstract class TransportWS<T> extends DataWS<T> {
     /** Transport data service. */
     @Autowired
-    private TransportDataService transportService;
+    protected TransportDataService transportService;
     /**
      * Get all entities from same transport profile.
      * @param id transport profile ID.

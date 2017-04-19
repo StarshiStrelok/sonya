@@ -26,6 +26,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ss.sonya.entity.Route;
 import ss.sonya.transport.api.TransportDataDAO;
 
 /**
@@ -45,6 +46,18 @@ class TransportDataDAOImpl implements TransportDataDAO {
         Root<T> c = criteria.from(cl);
         criteria.select(c).where(
                 builder.equal(c.get("transportProfile").get("id"), id)
+        );
+        Query query = em.createQuery(criteria);
+        return query.getResultList();
+    }
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Route> getRoutesFromSameType(Integer id) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Route> criteria = builder.createQuery(Route.class);
+        Root<Route> c = criteria.from(Route.class);
+        criteria.select(c).where(
+                builder.equal(c.get("type").get("id"), id)
         );
         Query query = em.createQuery(criteria);
         return query.getResultList();

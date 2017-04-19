@@ -74,6 +74,7 @@ public class Route implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transport_profile_id")
     private TransportProfile transportProfile;
 // ============================ SET & GET =====================================
     /**

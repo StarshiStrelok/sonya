@@ -77,6 +77,7 @@ public class Path implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transport_profile_id")
     private TransportProfile transportProfile;
 // ====================== SET & GET ===========================================
     /**

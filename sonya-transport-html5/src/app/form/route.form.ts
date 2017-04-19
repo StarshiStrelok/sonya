@@ -63,7 +63,11 @@ export class RouteForm extends DialogContent implements OnInit {
         let values = this.routeForm.value;
         Object.getOwnPropertyNames(values).map(
             (key: string) => {
-                this.route[key] = values[key];
+                if ('type' === key) {
+                    this.route.type = new RouteProfile(values[key], null, null);
+                } else {
+                    this.route[key] = values[key];
+                }
             }
         );
         this.route['transportProfile'] = {id: this.profileId};
