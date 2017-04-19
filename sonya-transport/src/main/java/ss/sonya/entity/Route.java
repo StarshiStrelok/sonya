@@ -17,6 +17,7 @@
 package ss.sonya.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -62,6 +63,7 @@ public class Route implements Serializable {
     @Column(name = "name_postfix", length = 10)
     private String namePostfix;
     /** TRoute paths. */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "route",
             cascade = CascadeType.ALL)
     private List<Path> paths;
@@ -69,7 +71,7 @@ public class Route implements Serializable {
     @Column(name = "external_id")
     private Long externalId;
     /** Transport profile. */
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     private TransportProfile transportProfile;
@@ -125,6 +127,7 @@ public class Route implements Serializable {
     /**
      * @return the paths
      */
+    @JsonIgnore
     public List<Path> getPaths() {
         return paths;
     }
@@ -149,6 +152,7 @@ public class Route implements Serializable {
     /**
      * @return the transportProfile
      */
+    @JsonIgnore
     public TransportProfile getTransportProfile() {
         return transportProfile;
     }

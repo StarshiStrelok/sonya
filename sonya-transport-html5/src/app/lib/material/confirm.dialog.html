@@ -15,12 +15,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<h2 md-dialog-title>
+<h2 md-dialog-title class="cd-title">
     {{title}}
 </h2>
 <hr class="cd-hr"/>
 <md-dialog-content>
-    <p>{{message}}</p>
+    <p class="cd-msg">{{message}}</p>
 </md-dialog-content>
 <md-dialog-actions>
     <button md-raised-button color="warn" (click)="dialogRef.close(true)">Yes</button>

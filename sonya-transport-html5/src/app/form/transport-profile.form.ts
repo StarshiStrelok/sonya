@@ -5,7 +5,7 @@ import {ActivatedRoute, Params} from '@angular/router';
 
 import {minNumberValidator} from '../lib/validator/min-number.directive';
 import {maxNumberValidator} from '../lib/validator/max-number.directive';
-import {TransportProfile} from '../model/transport-profile';
+import {TransportProfile} from '../model/abs.model';
 import {DataService} from '../service/data.service';
 import {ModelClass} from '../model/abs.model';
 

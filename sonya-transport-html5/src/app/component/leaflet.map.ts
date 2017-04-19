@@ -16,14 +16,13 @@
  */
 import {ElementRef} from '@angular/core'
 
-import {TransportProfile} from '../model/transport-profile';
-import {BusStop} from '../model/busstop';
+import {TransportProfile, BusStop} from '../model/abs.model';
 
 declare var L: any;
 
 export abstract class LeafletMap {
     MOCK_BS: string = 'mock';
-    
+
     map: any;
     ctxMenu: any;
     coords: any;
@@ -49,6 +48,17 @@ export abstract class LeafletMap {
         var comp = this;
         var _map = this.map;
         map.on('click', function (e: any) {
+            // prevent control clicks
+            if (e.originalEvent && e.originalEvent.currentTarget
+                && e.originalEvent.currentTarget
+                && e.originalEvent.path) {
+                // prev target
+                var idx = e.originalEvent.path.indexOf(e.originalEvent.currentTarget) - 1;
+                if (idx > 0 && e.originalEvent.path[idx]
+                    && e.originalEvent.path[idx].className === 'leaflet-control-container') {
+                    return;
+                }
+            }
             if (comp.ctxMenu) {
                 if (comp.ctxMenu.isOpen()) {
                     _map.closePopup();

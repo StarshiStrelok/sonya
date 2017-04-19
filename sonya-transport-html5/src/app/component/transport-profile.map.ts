@@ -23,10 +23,9 @@ import {DataService} from '../service/data.service';
 import {DialogService} from '../service/dialog.service';
 import {LeafletMap, CtxMenuItem} from './leaflet.map';
 
-import {TransportProfile} from '../model/transport-profile';
-import {ModelClass} from '../model/abs.model';
-import {BusStop} from '../model/busstop';
+import {TransportProfile, BusStop, ModelClass, Route} from '../model/abs.model';
 import {BusStopForm} from './../form/bus-stop.form';
+import {RouteForm} from './../form/route.form';
 
 declare var L: any;
 
@@ -53,7 +52,10 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
                 this.dataService.findById<TransportProfile>(
                     id, ModelClass.TRANSPORT_PROFILE).then((profile: TransportProfile) => {
                         this.createMap(profile, this.mapElement);
+                        
                         this.addControl('close', this.fnBack, this, 'Close map', 'bottomright');
+                        this.addControl('add_circle_outline', this.fnOpenCreateRouteDialog, this, 'New route', 'topright');
+                        
                         this.ctxMenu = this.createContextMenu(180, [
                             new CtxMenuItem('add_circle_outline', 'Add bus stop', this.fnOpenCreateBusStopDialog, this)
                         ]);
@@ -117,9 +119,19 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
     fnDeleteBusStop = function (component: TransportProfileMap) {
         let model: BusStop = component.ctxMenuMarker.curMarker.info;
         component.dataService.deleteById<BusStop>(model.id, ModelClass.BUS_STOP)
-            .then((result: boolean) => {
+            .then(() => {
                 component.loadBusStops();
             });
+    }
+    fnOpenCreateRouteDialog = function (component: TransportProfileMap) {
+        component.dialogService.openWindow('New route', '', '50%', RouteForm, {
+            profileId: component.profileId,
+            model: new Route(null, null, null, null, null)
+        }).subscribe((res: boolean) => {
+            if (res) {
+                console.log('route created');
+            }
+        });
     }
     // ================================ LEAFLET ===============================
     createMarker(bs: BusStop): any {

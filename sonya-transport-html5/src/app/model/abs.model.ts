@@ -20,4 +20,49 @@ export interface AbsModel {
 export class ModelClass {
     static TRANSPORT_PROFILE = 'transport-profile';
     static BUS_STOP = 'busstop';
+    static ROUTE = 'route';
+}
+
+export class BusStop implements AbsModel {
+    constructor(
+        public id: number,
+        public name: string,
+        public latitude: number,
+        public longitude: number,
+        public externalId: number
+    ) {}
+}
+
+export class RouteProfile implements AbsModel {
+    constructor(
+        public id: number,
+        public name: string,
+        public avgSpeed: number
+    ) {}
+}
+
+export class TransportProfile implements AbsModel {
+    constructor(
+        public id: number,
+        public southWestLat: number,
+        public southWestLon: number,
+        public northEastLat: number,
+        public northEastLon: number,
+        public initialZoom: number,
+        public minZoom: number,
+        public centerLat: number,
+        public centerLon: number,
+        public name: string,
+        public routeProfiles: RouteProfile[]
+    ) {}
+}
+
+export class Route implements AbsModel {
+    constructor(
+        public id: number,
+        public type: RouteProfile,
+        public namePrefix: string,
+        public namePostfix: string,
+        public externalId: number
+    ) {}
 }

@@ -31,7 +31,11 @@ export class WindowDirective {
 @Component({
     selector: 'window-dialog',
     templateUrl: './window.html',
-    styles: ['.window-title {text-align: center}']
+    styles: [`.window-title {
+                text-align: center;
+                font-weight: 500;
+                font-family: Roboto,"Helvetica Neue",sans-serif;
+            }`]
 })
 export class Window implements AfterViewInit {
     @ViewChild(WindowDirective) directive: WindowDirective;

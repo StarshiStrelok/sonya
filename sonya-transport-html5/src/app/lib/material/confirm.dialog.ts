@@ -23,6 +23,8 @@ import {MdDialogRef} from '@angular/material';
     templateUrl: './confirm.dialog.html',
     styles: [
         '.cd-hr { margin-bottom: 0px; margin-top: 0px;}'
+        + '.cd-title{font-weight: 500;font-family: Roboto,"Helvetica Neue",sans-serif;}'
+        + '.cd-msg{font-family: Roboto,"Helvetica Neue",sans-serif;}'
     ]
 })
 export class ConfirmDialog {

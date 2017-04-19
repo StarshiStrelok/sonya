@@ -19,7 +19,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {DataService} from '../service/data.service';
-import {TransportProfile} from '../model/transport-profile';
+import {TransportProfile} from '../model/abs.model';
 import {ModelClass} from '../model/abs.model';
 import {Links} from '../links';
 import {DialogService} from '../service/dialog.service';

@@ -19,58 +19,63 @@ import {Component, OnInit, Input} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MdDialogRef} from '@angular/material';
 
-import {BusStop} from '../model/abs.model';
-import {ModelClass} from '../model/abs.model';
+import {ModelClass, Route, RouteProfile, TransportProfile} from '../model/abs.model';
 import {DataService} from '../service/data.service';
-import {minNumberValidator} from '../lib/validator/min-number.directive';
-import {maxNumberValidator} from '../lib/validator/max-number.directive';
 import {Window, DialogContent} from '../component/window';
 
 @Component({
-    selector: 'bus-stop-form',
-    templateUrl: './bus-stop.form.html',
+    selector: 'route-form',
+    templateUrl: './route.form.html',
 })
-export class BusStopForm extends DialogContent implements OnInit {
+export class RouteForm extends DialogContent implements OnInit {
     private profileId: number;
-    busStopForm: FormGroup;
-    busStop: BusStop = new BusStop(null, null, null, null, null);
+    routeProfiles: RouteProfile[] = [];
+    routeForm: FormGroup;
+    route: Route = new Route(null, null, null, null, null);
     constructor(
         private fb: FormBuilder,
         private dataService: DataService,
     ) {super()}
     ngOnInit() {
+        this.loadRouteProfiles();
         this.createForm();
     }
+    loadRouteProfiles() {
+        this.dataService.findById<TransportProfile>(this.profileId, ModelClass.TRANSPORT_PROFILE)
+            .then((t: TransportProfile) => {
+                this.routeProfiles = t.routeProfiles;
+            });
+    }
     createForm() {
-        this.busStopForm = this.fb.group({
+        this.routeForm = this.fb.group({
             id: [''],
-            name: ['', [Validators.required, Validators.maxLength(100)]],
-            latitude: ['', [Validators.required, minNumberValidator(-90), maxNumberValidator(90)]],
-            longitude: ['', [Validators.required, minNumberValidator(-180), maxNumberValidator(180)]],
+            type: ['', [Validators.required]],
+            namePrefix: ['', [Validators.required, Validators.maxLength(10)]],
+            namePostfix: ['', [Validators.maxLength(10)]],
             externalId: ['']
         });
-        this.busStopForm.setValue(this.busStop);
+        this.routeForm.setValue(this.route);
     }
     onSubmit() {
-        if (!this.busStopForm.valid) {
+        if (!this.routeForm.valid) {
             return;
         }
-        let values = this.busStopForm.value;
+        let values = this.routeForm.value;
         Object.getOwnPropertyNames(values).map(
             (key: string) => {
-                this.busStop[key] = values[key];
+                this.route[key] = values[key];
             }
         );
-        this.busStop['transportProfile'] = {id: this.profileId};
-        console.log(JSON.stringify(this.busStop));
-        if (this.busStop.id) {
-            this.dataService.update<BusStop>(this.busStop, ModelClass.BUS_STOP)
-                .then((bs: BusStop) => {
+        this.route['transportProfile'] = {id: this.profileId};
+        console.log(JSON.stringify(this.route));
+        if (this.route.id) {
+            this.dataService.update<Route>(this.route, ModelClass.ROUTE)
+                .then(() => {
                     this.dialogRef.close(true);
                 });
         } else {
-            this.dataService.create<BusStop>(this.busStop, ModelClass.BUS_STOP)
-                .then((bs: BusStop) => {
+            this.dataService.create<Route>(this.route, ModelClass.ROUTE)
+                .then(() => {
                     this.dialogRef.close(true);
                 });
         }
@@ -81,7 +86,7 @@ export class BusStopForm extends DialogContent implements OnInit {
     }
     setData(data: any): void {
         this.profileId = data.profileId;
-        console.log('#bus stop form# profile id [' + this.profileId + ']');
-        this.busStop = data.model;
+        console.log('#route form# profile id [' + this.profileId + ']');
+        this.route = data.model;
     }
 }
