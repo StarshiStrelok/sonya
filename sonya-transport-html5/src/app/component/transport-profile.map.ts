@@ -54,9 +54,16 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
                         this.createContextMenu(200, [
                             new CtxMenuItem('add_location', 'Add bus stop', this.fnAddBusStop, this)
                         ]);
+                        this.loadBusStops();
                     });
             }
         });
+    }
+    loadBusStops(): void {
+        this.dataService.getFromProfile<BusStop>(this.profileId, ModelClass.BUS_STOP)
+            .then((all: BusStop[]) => {
+                console.log('profile bus stops loaded [' + all.length + ']');
+            });
     }
     fnBack = function (component: TransportProfileMap) {
         component.location.back();

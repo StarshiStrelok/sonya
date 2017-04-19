@@ -64,7 +64,6 @@ public class BusStop implements Serializable {
     @Column(name = "external_id")
     private Long externalId;
     /** Transport profile. */
-    @JsonIgnore
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     private TransportProfile transportProfile;
@@ -120,6 +119,7 @@ public class BusStop implements Serializable {
     /**
      * @return the paths
      */
+    @JsonIgnore
     public List<Path> getPaths() {
         return paths;
     }
@@ -144,6 +144,7 @@ public class BusStop implements Serializable {
     /**
      * @return the transportProfile
      */
+    @JsonIgnore
     public TransportProfile getTransportProfile() {
         return transportProfile;
     }

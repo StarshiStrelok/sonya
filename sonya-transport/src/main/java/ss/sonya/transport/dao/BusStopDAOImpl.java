@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.inject.dao;
+package ss.sonya.transport.dao;
 
-import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,48 +26,27 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ss.sonya.inject.CommonDAO;
+import ss.sonya.entity.BusStop;
+import ss.sonya.transport.api.BusStopDAO;
 
 /**
- * Common DAO implementation.
+ * Bus stop DAO implementation.
  * @author ss
  */
 @Repository
-class CommonDAOImpl implements CommonDAO {
+class BusStopDAOImpl implements BusStopDAO {
     /** Persistence context. */
     @PersistenceContext
     private EntityManager em;
     @Override
-    @Transactional(propagation = Propagation.REQUIRED,
-            rollbackFor = Exception.class)
-    public <T> T create(final T entity) {
-        em.persist(entity);
-        return entity;
-    }
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED,
-            rollbackFor = Exception.class)
-    public <T> T update(final T entity) {
-        return em.merge(entity);
-    }
-    @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public <T> T findById(final Serializable id, final Class<T> cl) {
-        return em.find(cl, id);
-    }
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED,
-            rollbackFor = Exception.class)
-    public <T> void delete(final Serializable id, final Class<T> cl) {
-        em.remove(findById(id, cl));
-    }
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public <T> List<T> getAll(Class<T> cl) {
+    public List<BusStop> getProfileBusStops(Integer id) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<T> criteria = builder.createQuery(cl);
-        Root<T> c = criteria.from(cl);
-        criteria.select(c);
+        CriteriaQuery<BusStop> criteria = builder.createQuery(BusStop.class);
+        Root<BusStop> c = criteria.from(BusStop.class);
+        criteria.select(c).where(
+                builder.equal(c.get("transportProfile").get("id"), id)
+        );
         Query query = em.createQuery(criteria);
         return query.getResultList();
     }

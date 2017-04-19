@@ -24,21 +24,20 @@ import {ModelClass} from '../model/abs.model';
 import {DataService} from '../service/data.service';
 import {minNumberValidator} from '../lib/validator/min-number.directive';
 import {maxNumberValidator} from '../lib/validator/max-number.directive';
-import {Window} from '../component/window';
+import {Window, DialogContent} from '../component/window';
 
 @Component({
     selector: 'bus-stop-form',
     templateUrl: './bus-stop.form.html',
 })
-export class BusStopForm implements OnInit {
-    private dialogRef: MdDialogRef<Window>;
+export class BusStopForm extends DialogContent implements OnInit {
     private profileId: number;
     busStopForm: FormGroup;
     busStop: BusStop = new BusStop(null, null, null, null, null);
     constructor(
         private fb: FormBuilder,
         private dataService: DataService,
-    ) {}
+    ) {super()}
     ngOnInit() {
         if (this.busStop.id) {
             this.dataService.findById<BusStop>(
@@ -74,10 +73,14 @@ export class BusStopForm implements OnInit {
         console.log(JSON.stringify(this.busStop));
         if (this.busStop.id) {
             this.dataService.update<BusStop>(this.busStop, ModelClass.BUS_STOP)
-                .then((bs: BusStop) => {});
+                .then((bs: BusStop) => {
+                    this.dialogRef.close(true);
+                });
         } else {
             this.dataService.create<BusStop>(this.busStop, ModelClass.BUS_STOP)
-                .then((bs: BusStop) => {});
+                .then((bs: BusStop) => {
+                    this.dialogRef.close(true);
+                });
         }
     }
     // ========================================================================

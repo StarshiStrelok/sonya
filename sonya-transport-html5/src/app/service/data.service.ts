@@ -67,6 +67,14 @@ export class DataService {
             .then(res => true)
             .catch(this.handleError);
     }
+    getFromProfile<T extends AbsModel>(id: number, clazz: string): Promise<T[]> {
+        console.log('get from profile [' + id + '] [' + clazz + ']');
+        return this.http.get(
+            this.dataUrl + clazz + '/from-profile/' + id, {headers: this.headers}
+        ).toPromise()
+            .then(res => res.json() as T[])
+            .catch(this.handleError);
+    }
     private handleError(error: any): Promise<any> {
         console.error('An error occurred', error); // for demo purposes only
         return Promise.reject(error.message || error);

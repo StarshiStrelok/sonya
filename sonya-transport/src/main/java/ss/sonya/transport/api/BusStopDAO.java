@@ -14,24 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.transport.config;
+package ss.sonya.transport.api;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import ss.sonya.configuration.SpringConfig;
+import java.util.List;
+import ss.sonya.entity.BusStop;
 
 /**
- * Spring configuration.
+ * Bus stop DAO API.
  * @author ss
  */
-@Configuration
-@Import(SpringConfig.class)
-@ComponentScan({
-    "ss.sonya.transport.api",
-    "ss.sonya.transport.service",
-    "ss.sonya.transport.dao",
-    "ss.sonya.transport.rest"
-})
-public class TransportSpringConfig {
+public interface BusStopDAO {
+    /**
+     * Get transport profile bus stops.
+     * @param id profile ID.
+     * @return profile bus stops.
+     */
+    List<BusStop> getProfileBusStops(Integer id);
 }

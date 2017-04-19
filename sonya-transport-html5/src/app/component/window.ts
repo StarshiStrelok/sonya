@@ -36,7 +36,7 @@ export class WindowDirective {
 export class Window implements AfterViewInit {
     @ViewChild(WindowDirective) directive: WindowDirective;
     public title: string;
-    public compType: Type<any>;
+    public compType: Type<DialogContent>;
     public data: any;
 
     constructor(
@@ -55,5 +55,13 @@ export class Window implements AfterViewInit {
             (componentRef.instance).setData(_comp.data);
         });
     }
+}
+
+export abstract class DialogContent {
+    dialogRef: MdDialogRef<Window>;
+    setDialogRef(dialogRef: MdDialogRef<Window>): void {
+        this.dialogRef = dialogRef;
+    }
+    abstract setData(data: any): void;
 }
 
