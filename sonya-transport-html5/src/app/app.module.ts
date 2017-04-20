@@ -15,6 +15,8 @@ import {TransportProfileMap, SideNavContentDirective} from './component/transpor
 import {BusStopForm} from './form/bus-stop.form';
 import {RouteForm} from './form/route.form';
 import {RoutesGrid} from './component/routes.grid';
+import {PathsGrid} from './component/paths.grid';
+import {PathForm} from './form/path.form';
 import {Window, WindowDirective} from './component/window';
 
 import {DataService} from './service/data.service';
@@ -29,6 +31,8 @@ import {DialogService} from './service/dialog.service';
         BusStopForm,
         RouteForm,
         RoutesGrid,
+        PathsGrid,
+        PathForm,
         Window,
         WindowDirective,
         SideNavContentDirective
@@ -44,7 +48,7 @@ import {DialogService} from './service/dialog.service';
         AppRoutingModule
     ],
     entryComponents: [
-        Window, BusStopForm, RouteForm, RoutesGrid
+        Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm
     ],
     providers: [DataService, DialogService],
     bootstrap: [AppComponent]

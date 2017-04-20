@@ -17,6 +17,7 @@
 package ss.sonya.transport.api;
 
 import java.util.List;
+import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
 
 /**
@@ -38,4 +39,10 @@ public interface TransportDataDAO {
      * @return list routes.
      */
     List<Route> getRoutesFromSameType(Integer id);
+    /**
+     * Get paths from same route.
+     * @param id route ID.
+     * @return all route paths.
+     */
+    List<Path> getPathsFromRoute(Integer id);
 }

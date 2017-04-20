@@ -21,6 +21,7 @@ export class ModelClass {
     static TRANSPORT_PROFILE = 'transport-profile';
     static BUS_STOP = 'busstop';
     static ROUTE = 'route';
+    static PATH = 'path';
 }
 
 export class BusStop implements AbsModel {
@@ -63,6 +64,14 @@ export class Route implements AbsModel {
         public type: RouteProfile,
         public namePrefix: string,
         public namePostfix: string,
+        public externalId: number
+    ) {}
+}
+
+export class Path implements AbsModel {
+    constructor(
+        public id: number,
+        public description: string,
         public externalId: number
     ) {}
 }

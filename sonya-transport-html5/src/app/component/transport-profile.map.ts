@@ -15,8 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, ViewChild, ElementRef, Directive,
-    ViewContainerRef, ComponentFactoryResolver} from '@angular/core';
+import {
+    Component, OnInit, ViewChild, ElementRef, Directive,
+    ViewContainerRef, ComponentFactoryResolver, Type
+} from '@angular/core';
 import {ActivatedRoute, Params} from '@angular/router';
 import {Location} from '@angular/common';
 import {MdSidenav} from '@angular/material';
@@ -38,6 +40,10 @@ export class SideNavContentDirective {
     constructor(public viewContainerRef: ViewContainerRef) {}
 }
 
+export interface SwitchedContent {
+    setData(data: any): void;
+}
+
 @Component({
     selector: 'transport-profile-map',
     templateUrl: './transport-profile.map.html',
@@ -47,7 +53,7 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
     @ViewChild('map') mapElement: ElementRef;
     @ViewChild('sidenav') sideNav: MdSidenav;
     @ViewChild(SideNavContentDirective) sideNavTmpl: SideNavContentDirective;
-    private profileId: number;
+    profileId: number;
     private ctxMenuMarker: any;
     constructor(
         private location: Location,
@@ -134,16 +140,23 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
             });
     }
     fnOpenRoutesControl = function (component: TransportProfileMap) {
-        setTimeout(function() {
-            let componentFactory = component.resolver.resolveComponentFactory(RoutesGrid);
-            let viewContainerRef = component.sideNavTmpl.viewContainerRef;
-            if (viewContainerRef.length === 0) {
-                let componentRef = viewContainerRef.createComponent<RoutesGrid>(componentFactory);
-                (componentRef.instance).profileId = component.profileId;
-                (componentRef.instance).mapComponent = component;
-            }
+        setTimeout(function () {
+            component.switchSideNavContent<RoutesGrid>(RoutesGrid, {
+                mapComponent: component
+            });
         });
         component.sideNav.toggle();
+    }
+    switchSideNavContent<T extends SwitchedContent>(t: Type<T>, data: any) {
+        var component = this;
+        setTimeout(function () {
+            let componentFactory = component.resolver.resolveComponentFactory(t);
+            let viewContainerRef = component.sideNavTmpl.viewContainerRef;
+            if (viewContainerRef.length == 0) {
+                let componentRef = viewContainerRef.createComponent<T>(componentFactory);
+                (componentRef.instance).setData(data);
+            }
+        });
     }
     // ================================ LEAFLET ===============================
     createMarker(bs: BusStop): any {

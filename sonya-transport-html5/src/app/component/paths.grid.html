@@ -17,27 +17,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div>
     <md-chip-list class="full-width" selectable="false">
-        <md-chip color="accent" selected="true" class="full-width">ROUTES CONTROL</md-chip>
+        <md-chip color="accent" selected="true" class="full-width">PATHS CONTROL</md-chip>
     </md-chip-list>
     
     <md-grid-list cols="4">
         <md-grid-tile colspan="3">
-            <md-select placeholder="Route type" class="full-width" [(ngModel)]="selectedType"
-                       (change)="typeChanged()">
-                <md-option *ngFor="let rp of routeProfiles" [value]="rp">{{ rp.name }}</md-option>
-            </md-select>
         </md-grid-tile>
         <md-grid-tile>
-            <button md-mini-fab color="accent" mdTooltip="New route" class="rg-new-route"
-                    mdTooltipPosition="above" (click)="openCreateRouteDialog()">
+            <button md-mini-fab color="accent" mdTooltip="New paths" class="rg-new-route"
+                    mdTooltipPosition="above" (click)="openCreatePathDialog()">
                 <md-icon>add</md-icon></button>
         </md-grid-tile>
     </md-grid-list>
-    <md-grid-list cols="5" rowHeight="56px;">
-        <md-grid-tile *ngFor="let route of routes">
-            <button md-button (click)="openPathsGrid(route)">
-                {{route.namePrefix}}{{route.namePostfix}}</button>
+    <md-grid-list cols="1" rowHeight="56px;">
+        <md-grid-tile *ngFor="let path of paths">
+            <button md-button (click)="openBusStopGrid(path)">
+                {{path.description}}</button>
         </md-grid-tile>
     </md-grid-list>
 </div>
-

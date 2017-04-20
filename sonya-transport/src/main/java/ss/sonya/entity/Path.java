@@ -62,6 +62,7 @@ public class Path implements Serializable {
     @OrderColumn(name = "path_busstop_order")
     private List<BusStop> busstops;
     /** Path schedule. */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<Trip> schedule;
@@ -119,6 +120,7 @@ public class Path implements Serializable {
     /**
      * @return the schedule
      */
+    @JsonIgnore
     public List<Trip> getSchedule() {
         return schedule;
     }

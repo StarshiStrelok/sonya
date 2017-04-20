@@ -16,11 +16,13 @@
  */
 
 import {Component, OnInit, AfterViewInit} from '@angular/core';
+import {} from '@angular/material';
 
-import {TransportProfileMap} from './transport-profile.map';
+import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
 import {DialogService} from './../service/dialog.service';
 import {RouteForm} from './../form/route.form';
+import {PathsGrid} from './../component/paths.grid';
 import {ModelClass, TransportProfile, RouteProfile, Route} from './../model/abs.model';
 
 @Component({
@@ -28,7 +30,7 @@ import {ModelClass, TransportProfile, RouteProfile, Route} from './../model/abs.
     templateUrl: './routes.grid.html',
     styles: [`.rg-new-route {margin-left: 20px;}`]
 })
-export class RoutesGrid implements OnInit, AfterViewInit {
+export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
     public profileId: number;
     public mapComponent: TransportProfileMap;
     private routeProfiles: RouteProfile[] = [];
@@ -38,6 +40,10 @@ export class RoutesGrid implements OnInit, AfterViewInit {
         private dataService: DataService,
         private dialogService: DialogService
     ) {}
+    setData(data: any) {
+        this.mapComponent = data.mapComponent;
+        this.profileId = this.mapComponent.profileId;
+    }
     ngOnInit() {
         
     }
@@ -68,5 +74,12 @@ export class RoutesGrid implements OnInit, AfterViewInit {
                 this.typeChanged();
             }
         });
+    }
+    openPathsGrid(route: Route) {
+        this.mapComponent.sideNavTmpl.viewContainerRef.clear();
+        this.mapComponent.switchSideNavContent(PathsGrid, {
+            component: this.mapComponent,
+            route: route
+        })
     }
 }

@@ -17,6 +17,7 @@
 package ss.sonya.transport.api;
 
 import java.util.List;
+import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
 
 /**
@@ -40,4 +41,11 @@ public interface TransportDataService {
      * @throws Exception error.
      */
     List<Route> getRoutesFromSameType(Integer id) throws Exception;
+    /**
+     * Get all paths from same route.
+     * @param id route ID.
+     * @return all route paths.
+     * @throws Exception error.
+     */
+    List<Path> getPathsFromRoute(Integer id) throws Exception;
 }

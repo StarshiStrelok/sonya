@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2017 ss
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<form [formGroup]="pathForm" novalidate>
+    <input type="number" hidden="true" formControlName="id"/>
+    <md-grid-list cols="2" rowHeight="56px;">
+        
+        <md-grid-tile colspan="2">
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Path name" formControlName="description">
+                <md-error *ngIf="pathForm.get('description').hasError('required')">
+                    Required
+                </md-error>
+                <md-error *ngIf="pathForm.get('description').hasError('maxlength')">
+                    Very long string, 100 characters maximum
+                </md-error>
+            </md-input-container>
+        </md-grid-tile>
+        
+        <md-grid-tile colspan="2">
+            <md-input-container class="full-width">
+                <input mdInput placeholder="External ID (optional)"
+                       formControlName="externalId">
+            </md-input-container>
+        </md-grid-tile>
+        
+        <md-grid-tile>
+            <button md-fab color="primary" (click)="onSubmit()" mdTooltip="Confirm" mdTooltipPosition="above">
+                <md-icon>done</md-icon></button>
+        </md-grid-tile>
+        <md-grid-tile>
+            <button md-fab color="primary" (click)="dialogRef.close(false)"
+                    mdTooltip="Close" mdTooltipPosition="above">
+                <md-icon>close</md-icon></button>
+        </md-grid-tile>
+    </md-grid-list>
+</form>

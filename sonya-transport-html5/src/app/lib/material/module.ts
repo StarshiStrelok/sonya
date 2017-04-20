@@ -32,7 +32,8 @@ import {
     MdTooltipModule,
     MdDialogModule,
     MdSelectModule,
-    MdSidenavModule
+    MdSidenavModule,
+    MdChipsModule
 } from '@angular/material';
 
 import {LatitudeField} from './latitude-field';
@@ -55,6 +56,7 @@ import {ConfirmDialog} from './confirm.dialog';
         MdDialogModule,
         MdSelectModule,
         MdSidenavModule,
+        MdChipsModule,
         FormsModule,
         ReactiveFormsModule,
         BrowserModule,
@@ -74,6 +76,7 @@ import {ConfirmDialog} from './confirm.dialog';
         MdDialogModule,
         MdSelectModule,
         MdSidenavModule,
+        MdChipsModule,
         LatitudeField, LongitudeField, ZoomField, ConfirmDialog
     ],
     declarations: [
