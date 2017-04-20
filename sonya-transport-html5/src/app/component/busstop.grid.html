@@ -39,24 +39,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </md-grid-tile>
 
     </md-grid-list>
-    <md-grid-list cols="1" rowHeight="56px">
+    <md-grid-list cols="1" rowHeight="40px">
         <md-grid-tile *ngFor="let bs of busstops">
-            <md-grid-list cols="8">
+            <md-grid-list cols="8" class="full-width">
                 
                 <md-grid-tile colspan="5">
-                    <p>{{bs.name}}</p>
+                    <button md-button class="full-width bsg-btn">{{bs.name}}</button>
                 </md-grid-tile>
                 
                 <md-grid-tile>
-                    
+                    <button md-button class="full-width" mdTooltip="Move up" mdTooltipPosition="above">
+                        <md-icon>arrow_drop_down</md-icon></button>
                 </md-grid-tile>
                 
                 <md-grid-tile>
-                    
+                    <button md-button class="full-width" mdTooltip="Move down" mdTooltipPosition="above">
+                        <md-icon>arrow_drop_up</md-icon></button>
                 </md-grid-tile>
                 
                 <md-grid-tile>
-                    
+                    <button md-button class="full-width" mdTooltip="Delete from" mdTooltipPosition="above">
+                        <md-icon>close</md-icon></button>
                 </md-grid-tile>
                 
             </md-grid-list>

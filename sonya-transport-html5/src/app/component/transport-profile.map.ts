@@ -30,6 +30,7 @@ import {LeafletMap, CtxMenuItem} from './leaflet.map';
 import {TransportProfile, BusStop, ModelClass} from '../model/abs.model';
 import {BusStopForm} from './../form/bus-stop.form';
 import {RoutesGrid} from './routes.grid';
+import {BusStopGrid} from './busstop.grid';
 
 declare var L: any;
 
@@ -53,6 +54,7 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
     @ViewChild('map') mapElement: ElementRef;
     @ViewChild('sidenav') sideNav: MdSidenav;
     @ViewChild(SideNavContentDirective) sideNavTmpl: SideNavContentDirective;
+    private viewInstance: SwitchedContent;
     profileId: number;
     private ctxMenuMarker: any;
     constructor(
@@ -157,16 +159,12 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         let viewContainerRef = component.sideNavTmpl.viewContainerRef;
         if (viewContainerRef.length == 0) {
             let componentRef = viewContainerRef.createComponent<T>(componentFactory);
-            (componentRef.instance).setData(data);
+            componentRef.instance.setData(data);
+            component.viewInstance = componentRef.instance;
         }
     }
     private isBusStopGrid() {
-        let view = this.sideNavTmpl.viewContainerRef.element;
-        let viewName;
-        if (view.nativeElement.nextSibling) {
-            viewName = view.nativeElement.nextSibling.nodeName;
-        }
-        return 'BUSSTOP-GRID' === viewName;
+        return this.viewInstance && this.viewInstance instanceof BusStopGrid;
     }
     // ================================ LEAFLET ===============================
     createMarker(bs: BusStop): any {
@@ -194,9 +192,41 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         });
         marker.on('click', function (e: any) {
             if (_comp.isBusStopGrid()) {
-
+                _comp.appendMarkerToRoute(bs);
             }
         });
         return marker;
+    }
+    appendMarkerToRoute(markerBs: BusStop) {
+        let bsGrid: BusStopGrid = <BusStopGrid>this.viewInstance;
+        let exist: BusStop[] = bsGrid.busstops.filter((bs: BusStop) => bs.id === markerBs.id);
+        if (exist.length === 0) {
+            console.log('add bs to list');
+            if (bsGrid.busstops.length < 2) {
+                bsGrid.busstops.push(markerBs);
+            } else {
+                let closestDist = Number.MAX_VALUE;
+                let copyArr: BusStop[] = [];
+                let idx = 0;
+                let counter = 0;
+                bsGrid.busstops.forEach((bs) => {
+                    copyArr.push(bs);
+                    let dist = this.calcDistance(markerBs, bs);
+                    if (dist < closestDist) {
+                        closestDist = dist;
+                        idx = counter;
+                    }
+                    counter++;
+                });
+                copyArr.splice((idx + 1), 0, markerBs);
+                bsGrid.busstops.splice((idx), 0, markerBs);
+                if (this.calcWayDistance(copyArr) < this.calcWayDistance(bsGrid.busstops)) {
+                    bsGrid.busstops = copyArr;
+                }
+            }
+        } else {
+            console.log('remove bs from list');
+            bsGrid.busstops = bsGrid.busstops.filter(bs => bs.id != markerBs.id);
+        }
     }
 }

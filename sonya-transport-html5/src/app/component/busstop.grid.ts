@@ -25,7 +25,8 @@ import {ModelClass, Route, Path, BusStop} from './../model/abs.model';
 
 @Component({
     selector: 'busstop-grid',
-    templateUrl: './busstop.grid.html'
+    templateUrl: './busstop.grid.html',
+    styles: [`.bsg-btn {text-align: left}`]
 })
 export class BusStopGrid implements OnInit, AfterViewInit, SwitchedContent {
     public profileId: number;

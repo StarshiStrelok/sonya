@@ -22,6 +22,7 @@ declare var L: any;
 
 export abstract class LeafletMap {
     MOCK_BS: string = 'mock';
+    EARTH_RAD: number = 6371; // km
 
     map: any;
     ctxMenu: any;
@@ -130,6 +131,33 @@ export abstract class LeafletMap {
             shadowAnchor: [0, 0], // the same for the shadow
             popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
         });
+    }
+    calcDistance(bs1: BusStop, bs2: BusStop) {
+        let dLat: number = (bs2.latitude - bs1.latitude) * Math.PI / 180;
+        let dLon: number = (bs2.longitude - bs1.longitude) * Math.PI / 180;
+        let rLat1: number = (bs1.latitude) * Math.PI / 180;
+        let rLat2: number = (bs2.latitude) * Math.PI / 180;
+        let a: number = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+            + Math.sin(dLon / 2) * Math.sin(dLon / 2)
+            * Math.cos(rLat1) * Math.cos(rLat2);
+        let c: number = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return this.EARTH_RAD * c;
+    }
+    calcWayDistance(way: BusStop[]) {
+        let sum = 0;
+        let prev: BusStop = null;
+        way.forEach(bs => {
+            if (prev == null) {
+                prev = bs;
+            } else {
+                if (this.MOCK_BS != bs.name) {
+                    let dist = this.calcDistance(bs, prev);
+                    sum += dist;
+                    prev = bs;
+                }
+            }
+        });
+        return sum;
     }
     private createContextMenuBtn(container: any, item: CtxMenuItem): any {
         var btn = L.DomUtil.create('button', '', container);
