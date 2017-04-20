@@ -16,6 +16,7 @@ import {BusStopForm} from './form/bus-stop.form';
 import {RouteForm} from './form/route.form';
 import {RoutesGrid} from './component/routes.grid';
 import {PathsGrid} from './component/paths.grid';
+import {BusStopGrid} from './component/busstop.grid';
 import {PathForm} from './form/path.form';
 import {Window, WindowDirective} from './component/window';
 
@@ -32,6 +33,7 @@ import {DialogService} from './service/dialog.service';
         RouteForm,
         RoutesGrid,
         PathsGrid,
+        BusStopGrid,
         PathForm,
         Window,
         WindowDirective,
@@ -48,7 +50,7 @@ import {DialogService} from './service/dialog.service';
         AppRoutingModule
     ],
     entryComponents: [
-        Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm
+        Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm, BusStopGrid
     ],
     providers: [DataService, DialogService],
     bootstrap: [AppComponent]

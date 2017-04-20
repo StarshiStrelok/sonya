@@ -60,6 +60,7 @@ public class BusStop implements Serializable {
     @Column(length = 100)
     private String name;
     /** Paths. */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToMany(mappedBy = "busstops", fetch = FetchType.LAZY)
     private List<Path> paths;
     /** External ID. */

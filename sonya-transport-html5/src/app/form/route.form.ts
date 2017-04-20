@@ -29,6 +29,7 @@ import {Window, DialogContent} from '../component/window';
 })
 export class RouteForm extends DialogContent implements OnInit {
     private profileId: number;
+    private selectedRouteType: number;
     routeProfiles: RouteProfile[] = [];
     routeForm: FormGroup;
     route: Route = new Route(null, null, null, null, null);
@@ -38,12 +39,14 @@ export class RouteForm extends DialogContent implements OnInit {
     ) {super()}
     ngOnInit() {
         this.loadRouteProfiles();
-        this.createForm();
     }
     loadRouteProfiles() {
+        this.createForm();
         this.dataService.findById<TransportProfile>(this.profileId, ModelClass.TRANSPORT_PROFILE)
             .then((t: TransportProfile) => {
                 this.routeProfiles = t.routeProfiles;
+                this.selectedRouteType = this.routeProfiles.filter(
+                    profile => this.route.type.id === profile.id)[0].id;
             });
     }
     createForm() {

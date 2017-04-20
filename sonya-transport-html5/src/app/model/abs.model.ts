@@ -72,6 +72,9 @@ export class Path implements AbsModel {
     constructor(
         public id: number,
         public description: string,
-        public externalId: number
+        public externalId: number,
+        public busstops: BusStop[],
+        public transportProfile: TransportProfile,
+        public route: Route
     ) {}
 }

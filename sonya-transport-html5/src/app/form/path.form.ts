@@ -31,7 +31,7 @@ export class PathForm extends DialogContent implements OnInit {
     private profileId: number;
     private routeId: number;
     pathForm: FormGroup;
-    path: Path = new Path(null, null, null);
+    path: Path = new Path(null, null, null, null, null, null);
     constructor(
         private fb: FormBuilder,
         private dataService: DataService,
@@ -45,7 +45,7 @@ export class PathForm extends DialogContent implements OnInit {
             description: ['', [Validators.required, Validators.maxLength(100)]],
             externalId: ['']
         });
-        this.pathForm.setValue(this.path);
+        this.pathForm.patchValue(this.path);
     }
     onSubmit() {
         if (!this.pathForm.valid) {
@@ -57,8 +57,8 @@ export class PathForm extends DialogContent implements OnInit {
                 this.path[key] = values[key];
             }
         );
-        this.path['transportProfile'] = {id: this.profileId};
-        this.path['route'] = {id: this.routeId};
+        this.path.transportProfile = new TransportProfile(this.profileId, null, null, null, null, null, null, null, null, null, null);
+        this.path.route = new Route(this.routeId, null, null, null, null);
         console.log(JSON.stringify(this.path));
         if (this.path.id) {
             this.dataService.update<Path>(this.path, ModelClass.PATH)

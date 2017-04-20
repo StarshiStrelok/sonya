@@ -22,6 +22,7 @@ import {DataService} from './../service/data.service';
 import {DialogService} from './../service/dialog.service';
 import {PathForm} from './../form/path.form';
 import {RoutesGrid} from './../component/routes.grid';
+import {BusStopGrid} from './../component/busstop.grid';
 import {ModelClass, Route, Path} from './../model/abs.model';
 
 @Component({
@@ -55,7 +56,7 @@ export class PathsGrid implements OnInit, AfterViewInit, SwitchedContent {
         this.dialogService.openWindow('New path', '', '50%', PathForm, {
             profileId: this.profileId,
             routeId: this.route.id,
-            model: new Path(null, null, null)
+            model: new Path(null, null, null, null, null, null)
         }).subscribe((res: boolean) => {
             if (res) {
                 this.loadPaths();
@@ -69,8 +70,6 @@ export class PathsGrid implements OnInit, AfterViewInit, SwitchedContent {
         })
     }
     editPath(path: Path) {
-        delete path['route'];
-        delete path['busstops'];
         this.dialogService.openWindow('Edit path', '', '50%', PathForm, {
             profileId: this.profileId,
             routeId: this.route.id,
@@ -95,5 +94,12 @@ export class PathsGrid implements OnInit, AfterViewInit, SwitchedContent {
                 });
             }
         });
+    }
+    openBusStopGrid(path: Path) {
+        this.mapComponent.sideNavTmpl.viewContainerRef.clear();
+        this.mapComponent.switchSideNavContent(BusStopGrid, {
+            component: this.mapComponent,
+            path: path
+        })
     }
 }
