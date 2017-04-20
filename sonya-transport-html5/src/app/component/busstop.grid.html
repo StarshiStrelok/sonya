@@ -15,4 +15,51 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div>TODO write content</div>
+<div>
+    <md-chip-list class="full-width" selectable="false">
+        <md-chip color="accent" selected="true" class="full-width base-font base-font-weight">
+            {{path.route.namePrefix}}{{path.route.namePostfix}} | {{path.description}}</md-chip>
+    </md-chip-list>
+
+    <md-grid-list cols="4">
+
+        <md-grid-tile colspan="2">
+        </md-grid-tile>
+
+        <md-grid-tile>
+            <button md-mini-fab color="accent" mdTooltip="New paths"
+                    mdTooltipPosition="above" (click)="openCreatePathDialog()">
+                <md-icon>add</md-icon></button>
+        </md-grid-tile>
+
+        <md-grid-tile>
+            <button md-mini-fab color="accent" mdTooltip="Go back"
+                    mdTooltipPosition="above" (click)="goBack()">
+                <md-icon>reply</md-icon></button>
+        </md-grid-tile>
+
+    </md-grid-list>
+    <md-grid-list cols="1" rowHeight="56px">
+        <md-grid-tile *ngFor="let bs of busstops">
+            <md-grid-list cols="8">
+                
+                <md-grid-tile colspan="5">
+                    <p>{{bs.name}}</p>
+                </md-grid-tile>
+                
+                <md-grid-tile>
+                    
+                </md-grid-tile>
+                
+                <md-grid-tile>
+                    
+                </md-grid-tile>
+                
+                <md-grid-tile>
+                    
+                </md-grid-tile>
+                
+            </md-grid-list>
+        </md-grid-tile>
+    </md-grid-list>
+</div>

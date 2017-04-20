@@ -140,23 +140,33 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
             });
     }
     fnOpenRoutesControl = function (component: TransportProfileMap) {
-        setTimeout(function () {
-            component.switchSideNavContent<RoutesGrid>(RoutesGrid, {
-                mapComponent: component
-            });
+        component.switchSideNavContent<RoutesGrid>(RoutesGrid, {
+            mapComponent: component
         });
         component.sideNav.toggle();
     }
     switchSideNavContent<T extends SwitchedContent>(t: Type<T>, data: any) {
         var component = this;
         setTimeout(function () {
-            let componentFactory = component.resolver.resolveComponentFactory(t);
-            let viewContainerRef = component.sideNavTmpl.viewContainerRef;
-            if (viewContainerRef.length == 0) {
-                let componentRef = viewContainerRef.createComponent<T>(componentFactory);
-                (componentRef.instance).setData(data);
-            }
+            component.changeTemplate(t, data);
         });
+    }
+    private changeTemplate<T extends SwitchedContent>(t: Type<T>, data: any) {
+        var component = this;
+        let componentFactory = component.resolver.resolveComponentFactory(t);
+        let viewContainerRef = component.sideNavTmpl.viewContainerRef;
+        if (viewContainerRef.length == 0) {
+            let componentRef = viewContainerRef.createComponent<T>(componentFactory);
+            (componentRef.instance).setData(data);
+        }
+    }
+    private isBusStopGrid() {
+        let view = this.sideNavTmpl.viewContainerRef.element;
+        let viewName;
+        if (view.nativeElement.nextSibling) {
+            viewName = view.nativeElement.nextSibling.nodeName;
+        }
+        return 'BUSSTOP-GRID' === viewName;
     }
     // ================================ LEAFLET ===============================
     createMarker(bs: BusStop): any {
@@ -170,15 +180,22 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         marker.info = bs;
         var _comp = this;
         marker.on('contextmenu', function (e: any) {
-            _comp.coords = e.latlng;
-            _comp.ctxMenuMarker.setLatLng(e.latlng);
-            _comp.ctxMenuMarker.openOn(_comp.map);
-            _comp.ctxMenuMarker.curMarker = e.target;
+            if (!_comp.isBusStopGrid()) {
+                _comp.coords = e.latlng;
+                _comp.ctxMenuMarker.setLatLng(e.latlng);
+                _comp.ctxMenuMarker.openOn(_comp.map);
+                _comp.ctxMenuMarker.curMarker = e.target;
+            }
         });
         marker.on('dragend', function (e: any) {
             var selMarker = e.target;
             var model = selMarker.info
             _comp.moveBusStop(model, selMarker.getLatLng().lat, selMarker.getLatLng().lng);
+        });
+        marker.on('click', function (e: any) {
+            if (_comp.isBusStopGrid()) {
+
+            }
         });
         return marker;
     }

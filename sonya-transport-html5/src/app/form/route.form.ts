@@ -45,8 +45,10 @@ export class RouteForm extends DialogContent implements OnInit {
         this.dataService.findById<TransportProfile>(this.profileId, ModelClass.TRANSPORT_PROFILE)
             .then((t: TransportProfile) => {
                 this.routeProfiles = t.routeProfiles;
-                this.selectedRouteType = this.routeProfiles.filter(
-                    profile => this.route.type.id === profile.id)[0].id;
+                if (this.route.type) {
+                    this.selectedRouteType = this.routeProfiles.filter(
+                        profile => this.route.type.id === profile.id)[0].id;
+                }
             });
     }
     createForm() {

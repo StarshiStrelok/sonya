@@ -20,6 +20,7 @@ import {Component, OnInit, AfterViewInit} from '@angular/core';
 import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
 import {DialogService} from './../service/dialog.service';
+import {PathsGrid} from './../component/paths.grid';
 import {ModelClass, Route, Path, BusStop} from './../model/abs.model';
 
 @Component({
@@ -50,5 +51,12 @@ export class BusStopGrid implements OnInit, AfterViewInit, SwitchedContent {
                 this.busstops = path.busstops;
                 this.path = path;
             });
+    }
+    goBack() {
+        this.mapComponent.sideNavTmpl.viewContainerRef.clear();
+        this.mapComponent.switchSideNavContent(PathsGrid, {
+            component: this.mapComponent,
+            route: this.path.route
+        })
     }
 }
