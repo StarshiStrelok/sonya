@@ -38,7 +38,9 @@ export class RouteProfile implements AbsModel {
     constructor(
         public id: number,
         public name: string,
-        public avgSpeed: number
+        public avgSpeed: number,
+        public routingURL: string,
+        public lineColor: string
     ) {}
 }
 

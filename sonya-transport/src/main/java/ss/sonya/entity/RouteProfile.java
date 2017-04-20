@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -53,6 +54,16 @@ public class RouteProfile implements Serializable {
     @NotNull
     @Column(name = "avg_speed")
     private Double avgSpeed;
+    /** Routing service URL. */
+    @Pattern(regexp = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*"
+            + "[-a-zA-Z0-9+&@#/%=~_|]")
+    @Size(max = 100)
+    @Column(name = "routing_url", length = 100)
+    private String routingURL;
+    /** Line color. */
+    @Size(max = 10)
+    @Column(name = "line_color", length = 10)
+    private String lineColor;
     /** Transport profile. */
     @JsonIgnore
     @NotNull
@@ -107,6 +118,30 @@ public class RouteProfile implements Serializable {
      */
     public void setTransportProfile(TransportProfile transportProfile) {
         this.transportProfile = transportProfile;
+    }
+    /**
+     * @return the routingURL
+     */
+    public String getRoutingURL() {
+        return routingURL;
+    }
+    /**
+     * @param routingURL the routingURL to set
+     */
+    public void setRoutingURL(String routingURL) {
+        this.routingURL = routingURL;
+    }
+    /**
+     * @return the lineColor
+     */
+    public String getLineColor() {
+        return lineColor;
+    }
+    /**
+     * @param lineColor the lineColor to set
+     */
+    public void setLineColor(String lineColor) {
+        this.lineColor = lineColor;
     }
 // ============================================================================
     @Override

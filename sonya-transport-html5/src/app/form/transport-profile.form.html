@@ -71,7 +71,7 @@
                     <md-card-title>Define route types here</md-card-title>
                 </md-card-header>
                 <md-card-content>
-                    <md-grid-list cols="3" rowHeight="56px;" *ngFor="let rp of routeProfiles"
+                    <md-grid-list cols="5" rowHeight="56px;" *ngFor="let rp of routeProfiles"
                                   [formGroup]="rp">
                                   <input type="number" hidden="true" formControlName="id"/>
                         <md-grid-tile>
@@ -97,6 +97,27 @@
                                 </md-error>
                                 <md-error *ngIf="rp.get('avgSpeed').hasError('minNumber')">
                                     Very low speed, 1 min
+                                </md-error>
+                            </md-input-container>
+                        </md-grid-tile>
+                        <md-grid-tile>
+                            <md-input-container>
+                                <input mdInput placeholder="Routing service URL"
+                                       formControlName="routingURL" type="url">
+                                <md-error *ngIf="rp.get('routingURL').hasError('maxlength')">
+                                    Very long string, 100 characters maximum
+                                </md-error>
+                                <md-error *ngIf="rp.get('routingURL').hasError('pattern')">
+                                    Not valid URL
+                                </md-error>
+                            </md-input-container>
+                        </md-grid-tile>
+                        <md-grid-tile>
+                            <md-input-container>
+                                <input mdInput placeholder="Line color (HEX)"
+                                       formControlName="lineColor">
+                                <md-error *ngIf="rp.get('lineColor').hasError('maxlength')">
+                                    Very long string, 10 characters maximum
                                 </md-error>
                             </md-input-container>
                         </md-grid-tile>

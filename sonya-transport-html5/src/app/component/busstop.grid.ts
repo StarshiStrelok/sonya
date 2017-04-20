@@ -42,6 +42,7 @@ export class BusStopGrid implements OnInit, AfterViewInit, SwitchedContent {
         this.mapComponent = data.component;
         this.profileId = this.mapComponent.profileId;
         this.path = data.path;
+        console.log(this.path);
     }
     ngAfterViewInit() {
         this.loadBusStops();

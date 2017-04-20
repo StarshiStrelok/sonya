@@ -147,6 +147,15 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         });
         component.sideNav.toggle();
     }
+    createRoutingMarker(index: number, bs: any, total: number) {
+        var marker = L.marker(new L.LatLng(bs.latitude, bs.longitude, {
+            icon: this.createIcon('busstop'),
+            clickable: true,
+            draggable: false,
+            title: bs.name
+        }));
+        return marker;
+    }
     switchSideNavContent<T extends SwitchedContent>(t: Type<T>, data: any) {
         var component = this;
         setTimeout(function () {
@@ -198,7 +207,7 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         return marker;
     }
     appendMarkerToRoute(markerBs: BusStop) {
-        let bsGrid: BusStopGrid = <BusStopGrid>this.viewInstance;
+        let bsGrid: BusStopGrid = <BusStopGrid> this.viewInstance;
         let exist: BusStop[] = bsGrid.busstops.filter((bs: BusStop) => bs.id === markerBs.id);
         if (exist.length === 0) {
             console.log('add bs to list');
@@ -228,5 +237,20 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
             console.log('remove bs from list');
             bsGrid.busstops = bsGrid.busstops.filter(bs => bs.id != markerBs.id);
         }
+        this.drawRoute(bsGrid.busstops);
+    }
+    drawRoute(way: BusStop[]) {
+        if (way.length < 2) {
+            return;
+        }
+        var waypoints: any = [];
+        way.forEach(bs => {
+            let ll = new L.LatLng(bs.latitude, bs.longitude);
+            ll.bs = bs;
+            waypoints.push(ll);
+        })
+        let bsGrid: BusStopGrid = <BusStopGrid> this.viewInstance;
+        this.routing.getRouter().options.serviceUrl = bsGrid.path.route.type.routingURL;
+        this.routing.setWaypoints(waypoints);
     }
 }
