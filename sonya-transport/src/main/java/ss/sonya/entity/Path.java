@@ -50,7 +50,7 @@ public class Path implements Serializable {
     /** Primary key. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
     /** TRoute. */
     @ManyToOne(fetch = FetchType.EAGER)
     private Route route;
@@ -63,8 +63,7 @@ public class Path implements Serializable {
     private List<BusStop> busstops;
     /** Path schedule. */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Trip> schedule;
     /** Path name. */
     @NotNull
@@ -84,13 +83,13 @@ public class Path implements Serializable {
     /**
      * @return the id
      */
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
     /**
      * @param id the id to set
      */
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     /**

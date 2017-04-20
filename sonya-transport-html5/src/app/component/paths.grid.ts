@@ -21,11 +21,13 @@ import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
 import {DialogService} from './../service/dialog.service';
 import {PathForm} from './../form/path.form';
+import {RoutesGrid} from './../component/routes.grid';
 import {ModelClass, Route, Path} from './../model/abs.model';
 
 @Component({
     selector: 'paths-grid',
-    templateUrl: './paths.grid.html'
+    templateUrl: './paths.grid.html',
+    styles: [`.pg-button {width: 100%; text-align: left;}`]
 })
 export class PathsGrid implements OnInit, AfterViewInit, SwitchedContent {
     public profileId: number;
@@ -57,6 +59,40 @@ export class PathsGrid implements OnInit, AfterViewInit, SwitchedContent {
         }).subscribe((res: boolean) => {
             if (res) {
                 this.loadPaths();
+            }
+        });
+    }
+    goBack() {
+        this.mapComponent.sideNavTmpl.viewContainerRef.clear();
+        this.mapComponent.switchSideNavContent(RoutesGrid, {
+            mapComponent: this.mapComponent
+        })
+    }
+    editPath(path: Path) {
+        delete path['route'];
+        delete path['busstops'];
+        this.dialogService.openWindow('Edit path', '', '50%', PathForm, {
+            profileId: this.profileId,
+            routeId: this.route.id,
+            model: path
+        }).subscribe((res: boolean) => {
+            if (res) {
+                this.loadPaths();
+            }
+        });
+    }
+    deletePath(path: Path) {
+        this.dialogService.confirm(
+            'Delete path',
+            'Are you sure that you want delete this path?'
+        ).subscribe((result) => {
+            if (result) {
+                this.dataService.deleteById(path.id, ModelClass.PATH)
+                .then((result: boolean) => {
+                    if (result) {
+                        this.loadPaths();
+                    }
+                });
             }
         });
     }

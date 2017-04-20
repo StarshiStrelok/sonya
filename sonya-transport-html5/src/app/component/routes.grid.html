@@ -35,9 +35,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </md-grid-list>
     <md-grid-list cols="5" rowHeight="56px;">
         <md-grid-tile *ngFor="let route of routes">
-            <button md-button (click)="openPathsGrid(route)">
+            <button md-button (click)="openPathsGrid(route)" (contextmenu)="openCtxMenu(route, $event)">
                 {{route.namePrefix}}{{route.namePostfix}}</button>
         </md-grid-tile>
     </md-grid-list>
 </div>
+<md-menu #appMenu="mdMenu">
+  <button md-menu-item (click)="editRoute()"><md-icon>mode_edit</md-icon> Edit</button>
+  <button md-menu-item (click)="deleteRoute()"><md-icon>delete_forever</md-icon> Delete</button>
+</md-menu>
+<button [mdMenuTriggerFor]="appMenu" hidden="true"></button>
 

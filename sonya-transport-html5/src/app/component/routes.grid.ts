@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, AfterViewInit} from '@angular/core';
-import {} from '@angular/material';
+import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
+import {MdMenuTrigger} from '@angular/material';
 
 import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
@@ -31,11 +31,13 @@ import {ModelClass, TransportProfile, RouteProfile, Route} from './../model/abs.
     styles: [`.rg-new-route {margin-left: 20px;}`]
 })
 export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
+    @ViewChild(MdMenuTrigger) ctxMenuTrigger: MdMenuTrigger;
     public profileId: number;
     public mapComponent: TransportProfileMap;
     private routeProfiles: RouteProfile[] = [];
     selectedType: RouteProfile;
     routes: Route[] = [];
+    selectedRoute: Route;
     constructor(
         private dataService: DataService,
         private dialogService: DialogService
@@ -45,7 +47,7 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
         this.profileId = this.mapComponent.profileId;
     }
     ngOnInit() {
-        
+
     }
     ngAfterViewInit() {
         this.dataService.findById<TransportProfile>(this.profileId, ModelClass.TRANSPORT_PROFILE)
@@ -81,5 +83,37 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
             component: this.mapComponent,
             route: route
         })
+    }
+    openCtxMenu(route: Route, event: any) {
+        this.selectedRoute = route;
+        event.stopPropagation();
+        this.ctxMenuTrigger.toggleMenu();
+        let menu: any = document.getElementsByClassName('cdk-overlay-pane')[0];
+        menu.style.left = event.x + 'px';
+        menu.style.top = event.y + 'px';
+        return false;
+    }
+    editRoute() {
+        this.dialogService.openWindow('Edit route', '', '50%', RouteForm, {
+            profileId: this.profileId,
+            model: this.selectedRoute
+        }).subscribe((res: boolean) => {
+            if (res) {
+                this.typeChanged();
+            }
+        });
+    }
+    deleteRoute() {
+        this.dialogService.confirm(
+            'Delete route',
+            'Are you sure that you want delete this route?'
+        ).subscribe((result) => {
+            if (result) {
+                this.dataService.deleteById<Route>(this.selectedRoute.id, ModelClass.ROUTE)
+                    .then((res: boolean) => {
+                        this.typeChanged();
+                    });
+            }
+        });
     }
 }

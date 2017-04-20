@@ -47,7 +47,7 @@ public class Route implements Serializable {
     /** Primary key. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
     /** TRoute type. */
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -80,13 +80,13 @@ public class Route implements Serializable {
     /**
      * @return the id
      */
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
     /**
      * @param id the id to set
      */
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     /**
