@@ -25,9 +25,8 @@ import {DataService} from '../service/data.service';
 import {DialogService} from '../service/dialog.service';
 import {LeafletMap, CtxMenuItem} from './leaflet.map';
 
-import {TransportProfile, BusStop, ModelClass, Route} from '../model/abs.model';
+import {TransportProfile, BusStop, ModelClass} from '../model/abs.model';
 import {BusStopForm} from './../form/bus-stop.form';
-import {RouteForm} from './../form/route.form';
 import {RoutesGrid} from './routes.grid';
 
 declare var L: any;
@@ -66,7 +65,6 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
                     this.createMap(profile, this.mapElement);
 
                     this.addControl('close', this.fnBack, this, 'Close map', 'bottomright');
-                    this.addControl('add_circle_outline', this.fnOpenCreateRouteDialog, this, 'New route', 'topright');
                     this.addControl('grid_on', this.fnOpenRoutesControl, this, 'Open routes control', 'topright');
 
                     this.ctxMenu = this.createContextMenu(180, [
@@ -134,16 +132,6 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
             .then(() => {
                 component.loadBusStops();
             });
-    }
-    fnOpenCreateRouteDialog = function (component: TransportProfileMap) {
-        component.dialogService.openWindow('New route', '', '50%', RouteForm, {
-            profileId: component.profileId,
-            model: new Route(null, null, null, null, null)
-        }).subscribe((res: boolean) => {
-            if (res) {
-                console.log('route created');
-            }
-        });
     }
     fnOpenRoutesControl = function (component: TransportProfileMap) {
         setTimeout(function() {

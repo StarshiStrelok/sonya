@@ -19,11 +19,14 @@ import {Component, OnInit, AfterViewInit} from '@angular/core';
 
 import {TransportProfileMap} from './transport-profile.map';
 import {DataService} from './../service/data.service';
+import {DialogService} from './../service/dialog.service';
+import {RouteForm} from './../form/route.form';
 import {ModelClass, TransportProfile, RouteProfile, Route} from './../model/abs.model';
 
 @Component({
     selector: 'routes-grid',
-    templateUrl: './routes.grid.html'
+    templateUrl: './routes.grid.html',
+    styles: [`.rg-new-route {margin-left: 20px;}`]
 })
 export class RoutesGrid implements OnInit, AfterViewInit {
     public profileId: number;
@@ -32,7 +35,8 @@ export class RoutesGrid implements OnInit, AfterViewInit {
     selectedType: RouteProfile;
     routes: Route[] = [];
     constructor(
-        private dataService: DataService
+        private dataService: DataService,
+        private dialogService: DialogService
     ) {}
     ngOnInit() {
         
@@ -41,6 +45,10 @@ export class RoutesGrid implements OnInit, AfterViewInit {
         this.dataService.findById<TransportProfile>(this.profileId, ModelClass.TRANSPORT_PROFILE)
             .then((profile: TransportProfile) => {
                 this.routeProfiles = profile.routeProfiles;
+                if (this.routeProfiles.length > 0) {
+                    this.selectedType = this.routeProfiles[0];
+                    this.typeChanged();
+                }
             });
     }
     typeChanged() {
@@ -50,5 +58,15 @@ export class RoutesGrid implements OnInit, AfterViewInit {
                     this.routes = routes;
                 });
         }
+    }
+    openCreateRouteDialog() {
+        this.dialogService.openWindow('New route', '', '50%', RouteForm, {
+            profileId: this.profileId,
+            model: new Route(null, null, null, null, null)
+        }).subscribe((res: boolean) => {
+            if (res) {
+                this.typeChanged();
+            }
+        });
     }
 }
