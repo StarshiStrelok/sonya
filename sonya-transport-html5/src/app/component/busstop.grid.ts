@@ -60,5 +60,27 @@ export class BusStopGrid implements OnInit, AfterViewInit, SwitchedContent {
             component: this.mapComponent,
             route: this.path.route
         })
+        this.mapComponent.layerRouting.clearLayers();
+    }
+    deleteBusStop(targetBs: BusStop) {
+        this.busstops = this.busstops.filter(bs => bs.id != targetBs.id);
+        this.mapComponent.drawRoute(this.busstops, this.path.route.type);
+    }
+    moveBusStopUp(bs: BusStop) {
+        var index = this.busstops.indexOf(bs);
+        var nextIndex = (index === 0 ? 0 : (index - 1));
+        this.moveBusStop(index, nextIndex);
+        this.mapComponent.drawRoute(this.busstops, this.path.route.type);
+    }
+    moveBusStopDown(bs: BusStop) {
+        var index = this.busstops.indexOf(bs);
+        var nextIndex = (index === (this.busstops.length - 1) ? index : (index + 1));
+        this.moveBusStop(index, nextIndex);
+        this.mapComponent.drawRoute(this.busstops, this.path.route.type);
+    }
+    private moveBusStop(fromIndex: number, toIndex: number) {
+        var element = this.busstops[fromIndex];
+        this.busstops.splice(fromIndex, 1);
+        this.busstops.splice(toIndex, 0, element);
     }
 }

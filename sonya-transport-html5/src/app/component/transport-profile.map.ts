@@ -27,10 +27,12 @@ import {DataService} from '../service/data.service';
 import {DialogService} from '../service/dialog.service';
 import {LeafletMap, CtxMenuItem} from './leaflet.map';
 
-import {TransportProfile, BusStop, ModelClass} from '../model/abs.model';
+import {TransportProfile, BusStop, ModelClass, RouteProfile} from '../model/abs.model';
 import {BusStopForm} from './../form/bus-stop.form';
 import {RoutesGrid} from './routes.grid';
 import {BusStopGrid} from './busstop.grid';
+import {OSRMService} from '../service/osrm.service';
+import {OSRMResponse} from '../model/osrm.response';
 
 declare var L: any;
 
@@ -62,7 +64,8 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         private dataService: DataService,
         private dialogService: DialogService,
         private activatedRoute: ActivatedRoute,
-        private resolver: ComponentFactoryResolver
+        private resolver: ComponentFactoryResolver,
+        private osrmService: OSRMService
     ) {super()}
     ngOnInit() {
         this.activatedRoute.params.subscribe((params: Params) => {
@@ -228,11 +231,44 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
             console.log('remove bs from list');
             bsGrid.busstops = bsGrid.busstops.filter(bs => bs.id != markerBs.id);
         }
-        this.drawRoute(bsGrid.busstops);
+        let routeSettings: RouteProfile = bsGrid.path.route.type;
+        this.drawRoute(bsGrid.busstops, routeSettings);
     }
-    drawRoute(way: BusStop[]) {
+    drawRoute(way: BusStop[], routeSettings: RouteProfile) {
+        this.layerRouting.clearLayers();
         if (way.length < 2) {
             return;
         }
+        this.osrmService.requestPath(way, routeSettings.routingURL).then(resp => {
+            let lineColor = routeSettings.lineColor;
+            var legs = resp.routes[0].legs;
+            let reverseCoords: number[][] = [];
+            legs.forEach(leg => {
+                leg.steps.forEach(step => {
+                    step.geometry.coordinates.forEach(ll => {
+                        reverseCoords.push([ll[1], ll[0]]);
+                    });
+                });
+            });
+            var polyline1 = L.polyline(reverseCoords, {
+                color: 'black',
+                opacity: 0.15,
+                weight: 9
+            });
+            var polyline2 = L.polyline(reverseCoords, {
+                color: 'white',
+                opacity: 0.8,
+                weight: 6
+            });
+            var polyline3 = L.polyline(reverseCoords, {
+                color: lineColor ? lineColor : 'red',
+                opacity: 1,
+                weight: 2,
+                snaking: true
+            });
+            this.layerRouting.addLayer(polyline1);
+            this.layerRouting.addLayer(polyline2);
+            this.layerRouting.addLayer(polyline3);
+        });
     }
 }

@@ -28,7 +28,9 @@ export abstract class LeafletMap {
     ctxMenu: any;
     coords: any;
     layerBusStop: any = L.layerGroup([]);
+    layerRouting: any = L.layerGroup([]);
     abstract createMarker(bs: BusStop): any;
+
     createMap(profile: TransportProfile, container: ElementRef) {
         var map = L.map.Sonya(container.nativeElement, {
             southWest: L.latLng(profile.southWestLat, profile.southWestLon),
@@ -70,9 +72,8 @@ export abstract class LeafletMap {
                 }
             }
         });
-//        
-//        // routing
-//        this.routing = this.createRoutingControl();
+
+        this.layerRouting.addTo(this.map);
     }
     createLayer(): any {
         return L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -127,12 +128,12 @@ export abstract class LeafletMap {
     createIcon(icName: string) {
         return L.icon({
             iconUrl: '/assets/image/' + icName + '.png',
-            shadowUrl: null,
+            shadowUrl: '/assets/image/shadow.png',
             iconSize: [24, 27],
-            shadowSize: [0, 0], // size of the shadow
-            iconAnchor: [12, 27], // point of the icon which will correspond to marker's location
-            shadowAnchor: [0, 0], // the same for the shadow
-            popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
+            shadowSize: [39, 27],
+            iconAnchor: [12, 27],
+            shadowAnchor: [12, 27],
+            popupAnchor: [0, 0]
         });
     }
     calcDistance(bs1: BusStop, bs2: BusStop) {

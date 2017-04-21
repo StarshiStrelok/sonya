@@ -22,6 +22,7 @@ import {Window, WindowDirective} from './component/window';
 
 import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
+import {OSRMService} from './service/osrm.service'
 
 @NgModule({
     declarations: [
@@ -52,7 +53,7 @@ import {DialogService} from './service/dialog.service';
     entryComponents: [
         Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm, BusStopGrid
     ],
-    providers: [DataService, DialogService],
+    providers: [DataService, DialogService, OSRMService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

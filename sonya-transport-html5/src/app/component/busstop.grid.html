@@ -27,9 +27,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </md-grid-tile>
 
         <md-grid-tile>
-            <button md-mini-fab color="accent" mdTooltip="New paths"
-                    mdTooltipPosition="above" (click)="openCreatePathDialog()">
-                <md-icon>add</md-icon></button>
+            <button md-mini-fab color="accent" mdTooltip="Save path"
+                    mdTooltipPosition="above" (click)="saveBusStops()">
+                <md-icon>save</md-icon></button>
         </md-grid-tile>
 
         <md-grid-tile>
@@ -48,17 +48,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </md-grid-tile>
                 
                 <md-grid-tile>
-                    <button md-button class="full-width" mdTooltip="Move up" mdTooltipPosition="above">
-                        <md-icon>arrow_drop_down</md-icon></button>
-                </md-grid-tile>
-                
-                <md-grid-tile>
-                    <button md-button class="full-width" mdTooltip="Move down" mdTooltipPosition="above">
+                    <button md-button class="full-width" mdTooltip="Move up" mdTooltipPosition="above"
+                            (click)="moveBusStopUp(bs)">
                         <md-icon>arrow_drop_up</md-icon></button>
                 </md-grid-tile>
                 
                 <md-grid-tile>
-                    <button md-button class="full-width" mdTooltip="Delete from" mdTooltipPosition="above">
+                    <button md-button class="full-width" mdTooltip="Move down" mdTooltipPosition="above"
+                            (click)="moveBusStopDown(bs)">
+                        <md-icon>arrow_drop_down</md-icon></button>
+                </md-grid-tile>
+                
+                <md-grid-tile>
+                    <button md-button class="full-width" mdTooltip="Delete from" mdTooltipPosition="above"
+                            (click)="deleteBusStop(bs)">
                         <md-icon>close</md-icon></button>
                 </md-grid-tile>
                 
