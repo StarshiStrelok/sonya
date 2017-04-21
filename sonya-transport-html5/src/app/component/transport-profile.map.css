@@ -31,3 +31,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .ss-map-card {
     padding: 0px;
 }
+.ss-map-control {
+    position: absolute;
+    z-index: 1000;
+}
+.ss-map-control-1 {
+    right: 20px;
+    bottom: 20px;
+}
+.ss-map-control-2 {
+    right: 20px;
+    top: 20px;
+}

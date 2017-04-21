@@ -75,9 +75,6 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
                 id, ModelClass.TRANSPORT_PROFILE).then((profile: TransportProfile) => {
                     this.createMap(profile, this.mapElement);
 
-                    this.addControl('close', this.fnBack, this, 'Close map', 'bottomright');
-                    this.addControl('grid_on', this.fnOpenRoutesControl, this, 'Open routes control', 'topright');
-
                     this.ctxMenu = this.createContextMenu(180, [
                         new CtxMenuItem('add_circle_outline', 'Add bus stop', this.fnOpenCreateBusStopDialog, this)
                     ]);
@@ -121,10 +118,15 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
                 }
             });
     }
-    fnBack = function (component: TransportProfileMap) {
-        component.location.back();
+    goBack() {
+        this.location.back();
     }
-
+    openControl() {
+        this.switchSideNavContent<RoutesGrid>(RoutesGrid, {
+            mapComponent: this
+        });
+        this.sideNav.toggle();
+    }
     fnOpenCreateBusStopDialog = function (component: TransportProfileMap) {
         component.dialogService.openWindow('New bus stop', '', '50%', BusStopForm, {
             profileId: component.profileId,
@@ -152,12 +154,6 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
             .then(() => {
                 component.loadBusStops();
             });
-    }
-    fnOpenRoutesControl = function (component: TransportProfileMap) {
-        component.switchSideNavContent<RoutesGrid>(RoutesGrid, {
-            mapComponent: component
-        });
-        component.sideNav.toggle();
     }
     switchSideNavContent<T extends SwitchedContent>(t: Type<T>, data: any) {
         var component = this;
