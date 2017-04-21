@@ -25,12 +25,10 @@ export abstract class LeafletMap {
     EARTH_RAD: number = 6371; // km
 
     map: any;
-    routing: any = this.createRoutingControl();
     ctxMenu: any;
     coords: any;
     layerBusStop: any = L.layerGroup([]);
     abstract createMarker(bs: BusStop): any;
-    abstract createRoutingMarker(index: number, bs: any, total: number): any;
     createMap(profile: TransportProfile, container: ElementRef) {
         var map = L.map.Sonya(container.nativeElement, {
             southWest: L.latLng(profile.southWestLat, profile.southWestLon),
@@ -72,6 +70,9 @@ export abstract class LeafletMap {
                 }
             }
         });
+//        
+//        // routing
+//        this.routing = this.createRoutingControl();
     }
     createLayer(): any {
         return L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -171,22 +172,6 @@ export abstract class LeafletMap {
     }
     private setCurrentCoordinates(coords: any): void {
         this.coords = coords;
-    }
-    private createRoutingControl() {
-        let _routing = L.Routing.control({
-            routeWhileDragging: false,
-            draggableWaypoints: false,
-            collapsible: true,
-            show: false,
-            fitSelectedRoutes: false,
-            containerClassName: 'lrc',
-            waypoints: [],
-            createMarker: this.createRoutingMarker,
-            lineOptions: {
-                addWaypoints: false
-            }
-        });
-        return _routing;
     }
 }
 
