@@ -103,6 +103,15 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
                     model.latitude = lat;
                     model.longitude = lon;
                     model['transportProfile'] = {id: this.profileId}
+                    if (this.isBusStopGrid()) {
+                        let bsGrid: BusStopGrid = <BusStopGrid> this.viewInstance;
+                        let clone: BusStop[] = bsGrid.busstops.filter(bs => bs.id === model.id);
+                        if (clone.length > 0) {
+                            clone[0].latitude = lat;
+                            clone[0].longitude = lon;
+                            this.drawRoute(bsGrid.busstops, bsGrid.path.route.type);
+                        }
+                    }
                     this.dataService.update<BusStop>(model, ModelClass.BUS_STOP)
                         .then(() => {
                             this.loadBusStops();
@@ -250,25 +259,30 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
                     });
                 });
             });
-            var polyline1 = L.polyline(reverseCoords, {
+            var opts = [{
                 color: 'black',
                 opacity: 0.15,
                 weight: 9
-            });
-            var polyline2 = L.polyline(reverseCoords, {
+            }, {
                 color: 'white',
                 opacity: 0.8,
                 weight: 6
-            });
-            var polyline3 = L.polyline(reverseCoords, {
+            }, {
                 color: lineColor ? lineColor : 'red',
                 opacity: 1,
                 weight: 2,
                 snaking: true
+            }];
+            opts.forEach(options => {
+                this.layerRouting.addLayer(L.polyline(reverseCoords, options));
             });
-            this.layerRouting.addLayer(polyline1);
-            this.layerRouting.addLayer(polyline2);
-            this.layerRouting.addLayer(polyline3);
+            way.forEach(bs => {
+                opts.forEach(options => {
+                    this.layerRouting.addLayer(
+                        L.circleMarker(new L.LatLng(bs.latitude, bs.longitude), options)
+                    );
+                });
+            });
         });
     }
 }

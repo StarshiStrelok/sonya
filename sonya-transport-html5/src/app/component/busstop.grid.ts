@@ -21,7 +21,7 @@ import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
 import {DialogService} from './../service/dialog.service';
 import {PathsGrid} from './../component/paths.grid';
-import {ModelClass, Route, Path, BusStop} from './../model/abs.model';
+import {ModelClass, Path, BusStop, TransportProfile} from './../model/abs.model';
 
 @Component({
     selector: 'busstop-grid',
@@ -45,13 +45,14 @@ export class BusStopGrid implements OnInit, AfterViewInit, SwitchedContent {
         console.log(this.path);
     }
     ngAfterViewInit() {
-        this.loadBusStops();
+        this.load();
     }
-    loadBusStops() {
+    load() {
         this.dataService.findById<Path>(this.path.id, ModelClass.PATH)
             .then((path: Path) => {
                 this.busstops = path.busstops;
                 this.path = path;
+                this.mapComponent.drawRoute(this.busstops, this.path.route.type);
             });
     }
     goBack() {
@@ -77,6 +78,15 @@ export class BusStopGrid implements OnInit, AfterViewInit, SwitchedContent {
         var nextIndex = (index === (this.busstops.length - 1) ? index : (index + 1));
         this.moveBusStop(index, nextIndex);
         this.mapComponent.drawRoute(this.busstops, this.path.route.type);
+    }
+    saveBusStops() {
+        this.path.busstops = this.busstops;
+        this.path.transportProfile = <TransportProfile>{id: this.mapComponent.profileId};
+        this.dataService.update<Path>(this.path, ModelClass.PATH)
+            .then(path => {
+                this.busstops = path.busstops;
+                this.path = path;
+            });
     }
     private moveBusStop(fromIndex: number, toIndex: number) {
         var element = this.busstops[fromIndex];
