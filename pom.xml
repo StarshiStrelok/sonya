@@ -20,6 +20,7 @@
         <lib-junit>4.12</lib-junit>
         <lib-javax-el>3.0.1-b08</lib-javax-el>
         <lib-jackson>2.9.0.pr2</lib-jackson>
+        <lib-org-json>20160810</lib-org-json>
     </properties>
     <name>Sonya</name>
     <modules>

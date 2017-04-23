@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2017 ss
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,10 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package ss.sonya.transport.api;
 
-export class Links {
-    static PROFILE_LIST = 'ui/admin/profile-list';
-    static PROFILE_FORM = 'ui/admin/profile';
-    static PROFILE_MAP = 'ui/admin/profile-map';
-    static PROFILE_IMPORT = 'ui/admin/profile-import';
+/**
+ * Import data service.
+ * @author ss
+ */
+public interface ImportDataService {
+    
 }

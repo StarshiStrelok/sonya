@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <span class="spacer"></span>
                 <md-menu #profileMenu="mdMenu">
                     <button md-menu-item (click)="openMap(profile.id)"><md-icon>map</md-icon> Map</button>
+                    <button md-menu-item (click)="openImportPanel(profile.id)"><md-icon>import_export</md-icon> Import</button>
                     <button md-menu-item (click)="editProfile(profile.id)"><md-icon>mode_edit</md-icon> Edit</button>
                     <button md-menu-item (click)="deleteProfile(profile.id)"><md-icon>delete_forever</md-icon> Delete</button>
                 </md-menu>

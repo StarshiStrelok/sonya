@@ -20,6 +20,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {TransportProfileForm} from './form/transport-profile.form';
 import {TransportProfileList} from './component/transport-profile.list';
 import {TransportProfileMap} from './component/transport-profile.map';
+import {ImportDataPanel} from './component/import.data.panel';
 import {Links} from './links';
 
 const routes: Routes = [
@@ -27,7 +28,8 @@ const routes: Routes = [
     {path: Links.PROFILE_LIST, component: TransportProfileList},
     {path: Links.PROFILE_FORM, component: TransportProfileForm},
     {path: Links.PROFILE_FORM + "/:id", component: TransportProfileForm},
-    {path: Links.PROFILE_MAP + "/:id", component: TransportProfileMap}
+    {path: Links.PROFILE_MAP + "/:id", component: TransportProfileMap},
+    {path: Links.PROFILE_IMPORT + '/:id', component: ImportDataPanel}
 ];
 @NgModule({
     imports: [RouterModule.forRoot(routes)],

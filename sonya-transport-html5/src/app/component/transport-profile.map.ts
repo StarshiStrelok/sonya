@@ -149,6 +149,48 @@ export class TransportProfileMap extends AnimatedSlide implements OnInit {
         });
         this.sideNav.toggle();
     }
+    drawRoute(way: BusStop[], routeSettings: RouteProfile) {
+        this.layerRouting.clearLayers();
+        if (way.length < 2) {
+            return;
+        }
+        this.osrmService.requestPath(way, routeSettings.routingURL).then(resp => {
+            let lineColor = routeSettings.lineColor;
+            var legs = resp.routes[0].legs;
+            let reverseCoords: number[][] = [];
+            legs.forEach(leg => {
+                leg.steps.forEach(step => {
+                    step.geometry.coordinates.forEach(ll => {
+                        reverseCoords.push([ll[1], ll[0]]);
+                    });
+                });
+            });
+            var opts = [{
+                color: 'black',
+                opacity: 0.15,
+                weight: 9
+            }, {
+                color: 'white',
+                opacity: 0.8,
+                weight: 6
+            }, {
+                color: lineColor ? lineColor : 'red',
+                opacity: 1,
+                weight: 2,
+                snaking: true
+            }];
+            opts.forEach(options => {
+                this.layerRouting.addLayer(L.polyline(reverseCoords, options));
+            });
+            way.forEach(bs => {
+                opts.forEach(options => {
+                    this.layerRouting.addLayer(
+                        L.circleMarker(new L.LatLng(bs.latitude, bs.longitude), options)
+                    );
+                });
+            });
+        });
+    }
     // ========================================================================
     fnOpenCreateBusStopDialog = function (component: TransportProfileMap) {
         component.dialogService.openWindow('New bus stop', '', '50%', BusStopForm, {
@@ -396,48 +438,6 @@ export class TransportProfileMap extends AnimatedSlide implements OnInit {
         }
         let routeSettings: RouteProfile = bsGrid.path.route.type;
         this.drawRoute(bsGrid.busstops, routeSettings);
-    }
-    private drawRoute(way: BusStop[], routeSettings: RouteProfile) {
-        this.layerRouting.clearLayers();
-        if (way.length < 2) {
-            return;
-        }
-        this.osrmService.requestPath(way, routeSettings.routingURL).then(resp => {
-            let lineColor = routeSettings.lineColor;
-            var legs = resp.routes[0].legs;
-            let reverseCoords: number[][] = [];
-            legs.forEach(leg => {
-                leg.steps.forEach(step => {
-                    step.geometry.coordinates.forEach(ll => {
-                        reverseCoords.push([ll[1], ll[0]]);
-                    });
-                });
-            });
-            var opts = [{
-                color: 'black',
-                opacity: 0.15,
-                weight: 9
-            }, {
-                color: 'white',
-                opacity: 0.8,
-                weight: 6
-            }, {
-                color: lineColor ? lineColor : 'red',
-                opacity: 1,
-                weight: 2,
-                snaking: true
-            }];
-            opts.forEach(options => {
-                this.layerRouting.addLayer(L.polyline(reverseCoords, options));
-            });
-            way.forEach(bs => {
-                opts.forEach(options => {
-                    this.layerRouting.addLayer(
-                        L.circleMarker(new L.LatLng(bs.latitude, bs.longitude), options)
-                    );
-                });
-            });
-        });
     }
 }
 

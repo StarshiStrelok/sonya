@@ -51,7 +51,6 @@ export class TransportProfileList extends AnimatedSlide implements OnInit {
         this.router.navigate([Links.PROFILE_FORM, id]);
     }
     deleteProfile(id: number) {
-        console.log('delete profile [' + id + ']');
         this.dialogService.confirm(
             'Delete profile',
             'Are you sure that you want delete this profile?'
@@ -67,8 +66,10 @@ export class TransportProfileList extends AnimatedSlide implements OnInit {
         });
     }
     openMap(id: number) {
-        console.log('open profile map [' + id + ']');
         this.router.navigate([Links.PROFILE_MAP, id]);
+    }
+    openImportPanel(id: number) {
+        this.router.navigate([Links.PROFILE_IMPORT, id]);
     }
 }
 
