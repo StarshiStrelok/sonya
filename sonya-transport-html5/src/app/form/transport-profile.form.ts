@@ -8,12 +8,14 @@ import {maxNumberValidator} from '../lib/validator/max-number.directive';
 import {TransportProfile} from '../model/abs.model';
 import {DataService} from '../service/data.service';
 import {ModelClass} from '../model/abs.model';
+import {slideAnimation, AnimatedSlide} from './../app.component';
 
 @Component({
     selector: 'transport-profile-form',
     templateUrl: './transport-profile.form.html',
+    animations: [slideAnimation]
 })
-export class TransportProfileForm implements OnInit {
+export class TransportProfileForm extends AnimatedSlide implements OnInit {
     transportProfileForm: FormGroup;
     profile: TransportProfile = new TransportProfile(null, null, null, null,
         null, null, null, null, null, null, []);
@@ -24,7 +26,7 @@ export class TransportProfileForm implements OnInit {
         private dataService: DataService,
         private location: Location,
         private activatedRoute: ActivatedRoute
-    ) {}
+    ) {super()}
     ngOnInit() {
         this.activatedRoute.params.subscribe((params: Params) => {
             let id = params['id'];

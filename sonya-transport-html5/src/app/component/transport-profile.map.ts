@@ -25,14 +25,13 @@ import {MdSidenav} from '@angular/material';
 
 import {DataService} from '../service/data.service';
 import {DialogService} from '../service/dialog.service';
-import {LeafletMap, CtxMenuItem} from './leaflet.map';
 
 import {TransportProfile, BusStop, ModelClass, RouteProfile} from '../model/abs.model';
 import {BusStopForm} from './../form/bus-stop.form';
 import {RoutesGrid} from './routes.grid';
 import {BusStopGrid} from './busstop.grid';
 import {OSRMService} from '../service/osrm.service';
-import {OSRMResponse} from '../model/osrm.response';
+import {slideAnimation, AnimatedSlide} from './../app.component';
 
 declare var L: any;
 
@@ -47,18 +46,40 @@ export interface SwitchedContent {
     setData(data: any): void;
 }
 
+export class CtxMenuItem {
+    constructor(
+        public icon: string,
+        public label: string,
+        public onclick: Function,
+        public component: any
+    ) {}
+}
+
 @Component({
     selector: 'transport-profile-map',
     templateUrl: './transport-profile.map.html',
-    styleUrls: ['./transport-profile.map.css']
+    styleUrls: ['./transport-profile.map.css'],
+    animations: [slideAnimation]
 })
-export class TransportProfileMap extends LeafletMap implements OnInit {
+export class TransportProfileMap extends AnimatedSlide implements OnInit {
+    // references
     @ViewChild('map') mapElement: ElementRef;
     @ViewChild('sidenav') sideNav: MdSidenav;
     @ViewChild(SideNavContentDirective) sideNavTmpl: SideNavContentDirective;
-    private viewInstance: SwitchedContent;
+    viewInstance: SwitchedContent;
+    // constants
+    MOCK_BS: string = 'mock';
+    EARTH_RAD: number = 6371; // km
+    // laflet variables
+    map: any;
+    ctxMenu: any;           // map context menu
+    ctxMenuMarker: any;     // marker context menu
+    coords: any;
+    layerBusStop: any = L.layerGroup([]);
+    layerRouting: any = L.layerGroup([]);
+    // transport profile ID
     profileId: number;
-    private ctxMenuMarker: any;
+
     constructor(
         private location: Location,
         private dataService: DataService,
@@ -118,6 +139,7 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
                 }
             });
     }
+    // =========================== controls actions ===========================
     goBack() {
         this.location.back();
     }
@@ -127,6 +149,7 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         });
         this.sideNav.toggle();
     }
+    // ========================================================================
     fnOpenCreateBusStopDialog = function (component: TransportProfileMap) {
         component.dialogService.openWindow('New bus stop', '', '50%', BusStopForm, {
             profileId: component.profileId,
@@ -155,11 +178,136 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
                 component.loadBusStops();
             });
     }
+    // ========================= navigation ===================================
     switchSideNavContent<T extends SwitchedContent>(t: Type<T>, data: any) {
         var component = this;
         setTimeout(function () {
             component.changeTemplate(t, data);
         });
+    }
+    // ========================= leaflet private ==============================
+    private createContextMenu(width: number, items: CtxMenuItem[]): any {
+        let _ctxMenu = L.popup({
+            minWidth: width,
+            maxWidth: width,
+            className: 'l-ctx-menu',
+            closeButton: false,
+            closeOnClick: false
+        })
+        var container = L.DomUtil.create('div');
+        var _map = this.map;
+        items.forEach((item: CtxMenuItem) => {
+            let btn = this.createContextMenuBtn(container, item);
+            L.DomEvent.on(btn, 'click', function () {
+                _map.closePopup();
+                item.onclick(item.component);
+            });
+        });
+        _ctxMenu.setContent(container);
+        console.log('context menu init complete');
+        return _ctxMenu;
+    }
+    private createIcon(icName: string) {
+        return L.icon({
+            iconUrl: '/assets/image/' + icName + '.png',
+            shadowUrl: '/assets/image/shadow.png',
+            iconSize: [24, 27],
+            shadowSize: [39, 27],
+            iconAnchor: [12, 27],
+            shadowAnchor: [12, 27],
+            popupAnchor: [0, 0]
+        });
+    }
+    private calcDistance(bs1: BusStop, bs2: BusStop) {
+        let dLat: number = (bs2.latitude - bs1.latitude) * Math.PI / 180;
+        let dLon: number = (bs2.longitude - bs1.longitude) * Math.PI / 180;
+        let rLat1: number = (bs1.latitude) * Math.PI / 180;
+        let rLat2: number = (bs2.latitude) * Math.PI / 180;
+        let a: number = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+            + Math.sin(dLon / 2) * Math.sin(dLon / 2)
+            * Math.cos(rLat1) * Math.cos(rLat2);
+        let c: number = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return this.EARTH_RAD * c;
+    }
+    private calcWayDistance(way: BusStop[]) {
+        let sum = 0;
+        let prev: BusStop = null;
+        way.forEach(bs => {
+            if (prev == null) {
+                prev = bs;
+            } else {
+                if (this.MOCK_BS != bs.name) {
+                    let dist = this.calcDistance(bs, prev);
+                    sum += dist;
+                    prev = bs;
+                }
+            }
+        });
+        return sum;
+    }
+    private createMap(profile: TransportProfile, container: ElementRef) {
+        var map = L.map.Sonya(container.nativeElement, {
+            southWest: L.latLng(profile.southWestLat, profile.southWestLon),
+            northEast: L.latLng(profile.northEastLat, profile.northEastLon),
+            bounds: L.latLngBounds(L.latLng(profile.southWestLat, profile.southWestLon),
+                L.latLng(profile.northEastLat, profile.northEastLon)),
+            maxBounds: L.latLngBounds(L.latLng(profile.southWestLat, profile.southWestLon),
+                L.latLng(profile.northEastLat, profile.northEastLon)),
+            minZoom: profile.minZoom,
+        }, profile.centerLat, profile.centerLon, profile.initialZoom);
+        this.createLayer().addTo(map);
+        container.nativeElement.style.height = (window.innerHeight) + 'px';
+        map.invalidateSize(true);
+
+        this.map = map;
+
+        // map listeners
+        var comp = this;
+        var _map = this.map;
+        map.on('click', function (e: any) {
+            // prevent control clicks
+            if (e.originalEvent && e.originalEvent.currentTarget
+                && e.originalEvent.currentTarget
+                && e.originalEvent.path) {
+                // prev target
+                var idx = e.originalEvent.path.indexOf(e.originalEvent.currentTarget) - 1;
+                if (idx > 0 && e.originalEvent.path[idx]
+                    && e.originalEvent.path[idx].className === 'leaflet-control-container') {
+                    return;
+                }
+            }
+            if (comp.ctxMenu) {
+                if (comp.ctxMenu.isOpen()) {
+                    _map.closePopup();
+                } else {
+                    comp.ctxMenu.setLatLng(e.latlng);
+                    comp.ctxMenu.openOn(_map);
+                    comp.setCurrentCoordinates(e.latlng);
+                }
+            }
+        });
+
+        this.layerRouting.addTo(this.map);
+    }
+    private createLayer(): any {
+        return L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            id: 'osm.default'
+        });
+    }
+    private updateBusStopLayer(busstops: BusStop[]): void {
+        var start = (new Date()).getTime();
+        this.layerBusStop.clearLayers();
+        console.log('total bus stops [' + busstops.length + ']');
+        if (busstops.length === 0) {
+            return;
+        }
+        var arrayElements = [];
+        for (var i = 0; i < busstops.length; i++) {
+            var m = this.createMarker(busstops[i]);
+            arrayElements.push(m);
+        }
+        this.layerBusStop = L.layerGroup(arrayElements).addTo(this.map);
+        console.log('draw bus stop layer elapsed time [' + ((new Date()).getTime() - start) + '] ms');
     }
     private changeTemplate<T extends SwitchedContent>(t: Type<T>, data: any) {
         var component = this;
@@ -174,8 +322,18 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
     private isBusStopGrid() {
         return this.viewInstance && this.viewInstance instanceof BusStopGrid;
     }
-    // ================================ LEAFLET ===============================
-    createMarker(bs: BusStop): any {
+    private createContextMenuBtn(container: any, item: CtxMenuItem): any {
+        var btn = L.DomUtil.create('button', '', container);
+        btn.setAttribute('type', 'button');
+        btn.className = "l-context-menu-button";
+        btn.innerHTML = '<i class="material-icons">'
+            + item.icon + '</i> <span>' + item.label + '</span>';
+        return btn;
+    }
+    private setCurrentCoordinates(coords: any): void {
+        this.coords = coords;
+    }
+    private createMarker(bs: BusStop): any {
         var marker = L.marker(new L.LatLng(bs.latitude, bs.longitude), {
             icon: bs.name === this.MOCK_BS
                 ? this.createIcon('busstop_mock') : this.createIcon('busstop'),
@@ -205,7 +363,7 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         });
         return marker;
     }
-    appendMarkerToRoute(markerBs: BusStop) {
+    private appendMarkerToRoute(markerBs: BusStop) {
         let bsGrid: BusStopGrid = <BusStopGrid> this.viewInstance;
         let exist: BusStop[] = bsGrid.busstops.filter((bs: BusStop) => bs.id === markerBs.id);
         if (exist.length === 0) {
@@ -239,7 +397,7 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         let routeSettings: RouteProfile = bsGrid.path.route.type;
         this.drawRoute(bsGrid.busstops, routeSettings);
     }
-    drawRoute(way: BusStop[], routeSettings: RouteProfile) {
+    private drawRoute(way: BusStop[], routeSettings: RouteProfile) {
         this.layerRouting.clearLayers();
         if (way.length < 2) {
             return;
@@ -282,3 +440,20 @@ export class TransportProfileMap extends LeafletMap implements OnInit {
         });
     }
 }
+
+
+L.Map.Sonya = L.Map.extend({
+    options: {
+        zoomControl: false,
+        keyboard: false,
+        attributionControl: false
+    },
+    initialize: function (id: number, options: any, lat: number, lon: number, zoom: number) {
+        L.Util.setOptions(this, options);
+        L.Map.prototype.initialize.call(this, id, options);
+        this.setView([lat, lon], zoom);
+    }
+});
+L.map.Sonya = function (id: number, options: any, lat: number, lon: number, zoom: number) {
+    return new L.Map.Sonya(id, options, lat, lon, zoom);
+};

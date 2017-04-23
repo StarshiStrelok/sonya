@@ -23,18 +23,20 @@ import {TransportProfile} from '../model/abs.model';
 import {ModelClass} from '../model/abs.model';
 import {Links} from '../links';
 import {DialogService} from '../service/dialog.service';
+import {slideAnimation, AnimatedSlide} from './../app.component';
 
 @Component({
     selector: 'transport-profile-list',
-    templateUrl: './transport-profile.list.html'
+    templateUrl: './transport-profile.list.html',
+    animations: [slideAnimation]
 })
-export class TransportProfileList implements OnInit {
+export class TransportProfileList extends AnimatedSlide implements OnInit {
     profiles: TransportProfile[];
     constructor(
         private dataService: DataService,
         private dialogService: DialogService,
         private router: Router
-    ) {};
+    ) {super()};
     ngOnInit() {
         this.loadProfiles();
     }
@@ -56,11 +58,11 @@ export class TransportProfileList implements OnInit {
         ).subscribe((result) => {
             if (result) {
                 this.dataService.deleteById(id, ModelClass.TRANSPORT_PROFILE)
-                .then((result: boolean) => {
-                    if (result) {
-                        this.loadProfiles();
-                    }
-                });
+                    .then((result: boolean) => {
+                        if (result) {
+                            this.loadProfiles();
+                        }
+                    });
             }
         });
     }
