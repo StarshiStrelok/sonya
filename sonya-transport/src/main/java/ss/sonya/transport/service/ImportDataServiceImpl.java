@@ -18,12 +18,16 @@ package ss.sonya.transport.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ss.sonya.constants.TransportConst;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
@@ -34,6 +38,7 @@ import ss.sonya.inject.DataService;
 import ss.sonya.transport.api.ImportData;
 import ss.sonya.transport.api.ImportDataSerializer;
 import ss.sonya.transport.api.ImportDataService;
+import ss.sonya.transport.api.TransportDataService;
 import ss.sonya.transport.component.ImportDataEvent;
 import ss.sonya.transport.constants.ImportDataEventType;
 import ss.sonya.transport.constants.ImportInfoKey;
@@ -55,6 +60,9 @@ class ImportDataServiceImpl implements ImportDataService {
     /** Data service. */
     @Autowired
     private DataService dataService;
+    /** Transport service. */
+    @Autowired
+    private TransportDataService transportService;
     @Override
     public List<ImportDataEvent> importData(final MultipartFile file,
             final Integer tpId, final Integer rtID, final boolean isPersist)
@@ -75,22 +83,22 @@ class ImportDataServiceImpl implements ImportDataService {
             // ---------------------- routes ----------------------------------
             List<Route> routes = data.routes();
             if (routes != null && !routes.isEmpty()) {
-                handleRoutes(routes, sb);
+                events.addAll(handleRoutes(routes, isPersist));
             }
             // ---------------------- paths -----------------------------------
             List<Path> paths = data.paths();
             if (paths != null && !paths.isEmpty()) {
-                handlePaths(paths, sb);
+                events.addAll(handlePaths(paths, isPersist));
             }
             // ---------------------- schedule --------------------------------
             Map<Path, List<Trip>> sch = data.schedule();
             if (sch != null && !sch.isEmpty()) {
-                handleSchedule(sch, sb);
+                events.addAll(handleSchedule(sch, isPersist));
             }
             // ---------------------- orphan routes & paths -------------------
-            deleteOrphanRoutesAndPaths(paths, routes, sb);
+            events.addAll(deleteOrphanRoutesAndPaths(paths, routes, isPersist));
             // ---------------------- orphan bus stops ------------------------
-            deleteOrphanBusStops(sb);
+            events.addAll(deleteOrphanBusStops(isPersist));
             return events;
         } catch (Exception e) {
             LOG.error("import data error!", e);
@@ -100,34 +108,44 @@ class ImportDataServiceImpl implements ImportDataService {
 // ================================== PRIVATE =================================
     /**
      * Delete orphan bus stops.
-     * @param sb log container.
+     * @param isPersist persist changes flag.
      * @throws Exception method error.
      */
-    private void deleteOrphanBusStops(final StringBuilder sb) throws Exception {
-        int deleted = 0;
-        for (BusStop bs : dataService.getAll(BusStop.class)) {
-            if (bsDAO.findBusStopPaths(bs.getId()).isEmpty()) {
-                bsDAO.delete(bs.getId());
-                deleted++;
-                String msg = "^^ delete orphan bus stop: " + bs;
-                LOG.info(msg);
-                sb.append(msg).append(BR);
+    private List<ImportDataEvent> deleteOrphanBusStops(final boolean isPersist)
+            throws Exception {
+        List<ImportDataEvent> events = new ArrayList<>();
+        List<Path> allPaths = dataService.getAll(Path.class);
+        List<BusStop> allBs = dataService.getAll(BusStop.class);
+        Set<BusStop> setBs = new HashSet<>();
+        allPaths.stream().forEach(p -> {
+            setBs.addAll(p.getBusstops());
+        });
+        allBs.removeAll(setBs);
+        if (!allBs.isEmpty()) {
+            allBs.forEach(bs -> {
+                events.add(createEvent(bs,
+                    ImportDataEventType.DELETE_ORPHAN_BUS_STOP,
+                    new HashMap<>()
+                ));
+            });
+            if (isPersist) {
+                dataService.deleteAll(allBs);
             }
         }
-        String msg = "^^ orphan bus stops size [" + deleted + "]";
-        LOG.info(msg);
-        sb.append(msg).append(BR);
+        return events;
     }
     /**
      * Delete orphan paths & routes.
      * @param paths actual paths.
      * @param routes actual routes.
-     * @param sb log container.
+     * @param isPersist persist changes flag.
+     * @return events.
      * @throws Exception method error.
      */
-    private void deleteOrphanRoutesAndPaths(final List<Path> paths,
-            final List<Route> routes, final StringBuilder sb)
-            throws Exception {
+    private List<ImportDataEvent> deleteOrphanRoutesAndPaths(
+            final List<Path> paths, final List<Route> routes,
+            final boolean isPersist) throws Exception {
+        List<ImportDataEvent> events = new ArrayList<>();
         List<Route> allRoutes = dataService.getAll(Route.class);
         Map<Long, Route> routeMap = new HashMap<>();
         Map<Long, Path> pathMap = new HashMap<>();
@@ -139,7 +157,11 @@ class ImportDataServiceImpl implements ImportDataService {
         for (Route route : routes) {
             Route exist = routeMap.get(route.getExternalId());
             routeMap.remove(route.getExternalId());
-            List<Path> existPaths = pathDAO.findRoutePaths(exist.getId());
+            if (exist == null) {
+                continue;
+            }
+            List<Path> existPaths = transportService
+                    .getPathsFromRoute(exist.getId());
             for (Path p : existPaths) {
                 if (p.getExternalId() != null) {
                     pathMap.put(p.getExternalId(), p);
@@ -149,43 +171,51 @@ class ImportDataServiceImpl implements ImportDataService {
         for (Path path : paths) {
             pathMap.remove(path.getExternalId());
         }
-        String msg = "^^ orphan paths size [" + pathMap.size() + "]";
-        LOG.info(msg);
-        sb.append(msg).append(BR);
-        msg = "^^ orphan routes size [" + routeMap.size() + "]";
-        LOG.info(msg);
-        sb.append(msg).append(BR);
         for (Path del : pathMap.values()) {
-            msg = "^^ delete orphan path " + del;
-            LOG.info(msg);
-            sb.append(msg).append(BR);
-            pathDAO.delete(del.getId());
+            events.add(createEvent(del,
+                    ImportDataEventType.DELETE_ORPHAN_PATH,
+                    new HashMap<>()
+            ));
         }
         for (Route del : routeMap.values()) {
-            msg = "^^ delete orphan route " + del;
-            LOG.info(msg);
-            sb.append(msg).append(BR);
-            routeDAO.delete(del.getId());
+            events.add(createEvent(del,
+                    ImportDataEventType.DELETE_ORPHAN_ROUTE,
+                    new HashMap<>()
+            ));
         }
+        if (isPersist) {
+            dataService.deleteAll(new ArrayList<>(pathMap.values()));
+            dataService.deleteAll(new ArrayList<>(routeMap.values()));
+        }
+        return events;
     }
     /**
      * Handle schedule.
      * @param sch schedule.
-     * @param sb log container.
+     * @param isPersist persist changes flag.
      * @throws Exception method error.
      */
-    private void handleSchedule(final Map<Path, List<Trip>> sch,
-            final StringBuilder sb) throws Exception {
-        String msg1 = "^^ schedule size [" + sch.size() + "]";
-        LOG.info(msg1);
-        sb.append(msg1).append(BR);
-        int updatedSchedule = 0;
+    private List<ImportDataEvent> handleSchedule(
+            final Map<Path, List<Trip>> sch,
+            final boolean isPersist) throws Exception {
+        List<ImportDataEvent> events = new ArrayList<>();
+        List<Path> update = new ArrayList<>();
+        List<Path> allPaths = dataService.getAll(Path.class);
+        Map<Long, Path> pathMap = new HashMap<>();
+        allPaths.stream().forEach(p -> {
+            if (p.getExternalId() != null) {
+                pathMap.put(p.getExternalId(), p);
+            }
+        });
         for (Path p : sch.keySet()) {
             if (p.getExternalId() == null) {
-                throw new EmptyFieldException("altId", p);
+                throw new EmptyFieldException("externalId", p);
             }
-            Path path = pathDAO.findByAltId(p.getExternalId());
-            List<Trip> persist = pathDAO.getSchedule(path.getId());
+            Path path = pathMap.get(p.getExternalId());
+            if (path == null) {
+                continue;       // path not exist else
+            }
+            List<Trip> persist = transportService.getSchedule(path.getId());
             List<Trip> schedule = sch.get(p);
             boolean hasChanges = false;
             if (schedule.size() != persist.size()) {
@@ -206,98 +236,92 @@ class ImportDataServiceImpl implements ImportDataService {
             }
             if (hasChanges) {
                 path.setSchedule(schedule);
-                pathDAO.update(path);
-                for (Trip t : persist) {
-                    pathDAO.deleteTrip(t.getId());
-                }
-                updatedSchedule++;
-                String msg = "^ schedule updated for: " + path;
-                LOG.info(msg);
-                sb.append(msg).append(BR);
+                update.add(path);
+                events.add(createEvent(path,
+                        ImportDataEventType.PATH_SCHEDULE_CHANGED,
+                        new HashMap<>()
+                ));
             }
         }
-        String msg2 = "^^ updated schedule [" + updatedSchedule + "]";
-        LOG.info(msg2);
-        sb.append(msg2).append(BR);
+        if (isPersist) {
+            dataService.updateAll(update);
+        }
+        return events;
     }
     /**
      * Handle paths.
      * @param paths paths.
-     * @param sb log container.
+     * @param isPersist persist changes flag.
      * @throws Exception method error.
      */
-    private void handlePaths(final List<Path> paths, final StringBuilder sb)
-            throws Exception {
-        String msg1 = "^^ paths found [" + paths.size() + "]";
-        LOG.info(msg1);
-        sb.append(msg1).append(BR);
-        int newPaths = 0;
-        int updatedPaths = 0;
-        List<BusStop> all = bsDAO.getAll();
+    private List<ImportDataEvent> handlePaths(final List<Path> paths,
+            final boolean isPersist) throws Exception {
+        List<ImportDataEvent> events = new ArrayList<>();
+        List<Path> create = new ArrayList<>();
+        List<Path> update = new ArrayList<>();
+        List<BusStop> allBs = dataService.getAll(BusStop.class);
         Map<Long, BusStop> bsMap = new HashMap<>();
-        for (BusStop bs : all) {
-            bsMap.put(bs.getExternalId(), bs);
-        }
+        allBs.stream().forEach(bs -> {
+            if (bs.getExternalId() != null) {
+                bsMap.put(bs.getExternalId(), bs);
+            }
+        });
+        List<Path> allPaths = dataService.getAll(Path.class);
+        Map<Long, Path> pathMap = new HashMap<>();
+        allPaths.stream().forEach(p -> {
+            if (p.getExternalId() != null) {
+                pathMap.put(p.getExternalId(), p);
+            }
+        });
         for (Path path : paths) {
             if (path.getExternalId() == null) {
-                throw new EmptyFieldException("altId", path);
+                throw new EmptyFieldException("externalId", path);
             }
             if (path.getRoute() == null || path.getRoute().getExternalId() == null) {
                 throw new EmptyFieldException("route", path);
             }
-            if (path.getBusStops() == null || path.getBusStops().isEmpty()) {
+            if (path.getBusstops() == null || path.getBusstops().isEmpty()) {
                 throw new EmptyFieldException("busstops", path);
             }
-            Route route = routeDAO.findByAltId(path.getRoute().getExternalId());
-            Path persist = pathDAO.findByAltId(path.getExternalId());
+            Path persist = pathMap.get(path.getExternalId());
             List<BusStop> pathBusStops = new ArrayList<>();
-            for (BusStop bs : path.getBusStops()) {
+            for (BusStop bs : path.getBusstops()) {
                 if (bs.getExternalId() == null) {
-                    throw new EmptyFieldException("altId", bs);
+                    throw new EmptyFieldException("externalId", bs);
                 }
                 if (!bsMap.containsKey(bs.getExternalId())) {
                     throw new IllegalArgumentException("bus stop with "
-                            + "alternative ID [" + bs.getExternalId()
+                            + "external ID [" + bs.getExternalId()
                             + "] not found!");
                 }
                 pathBusStops.add(bsMap.get(bs.getExternalId()));
             }
             if (persist == null) {
-                newPaths++;
-                path.setRoute(route);
-                path.setBusStops(pathBusStops);
-                pathDAO.create(path);
-                String msg = "^ new path created: " + path;
-                sb.append(msg).append(BR);
-                LOG.info(msg);
+                path.setBusstops(pathBusStops);
+                create.add(path);
+                events.add(createEvent(path, ImportDataEventType.PATH_CREATE,
+                        new HashMap<>()
+                ));
             } else {
-                boolean hasChanges = false;
+                List<ImportDataEvent> updEvents = new ArrayList<>();
                 if (!persist.getDescription().equals(path.getDescription())) {
-                    hasChanges = true;
-                    String msg = "^ path old description ["
-                            + persist.getDescription() + "], new description ["
-                            + path.getDescription() + "]";
+                    updEvents.add(createEvent(persist,
+                            ImportDataEventType.PATH_UPDATE,
+                        new HashMap<ImportInfoKey, String>() {{
+                            put(ImportInfoKey.FIELD, "description");
+                            put(ImportInfoKey.OLD_VALUE,
+                                    persist.getDescription());
+                            put(ImportInfoKey.NEW_VALUE,
+                                    path.getDescription());
+                        }}
+                    ));
                     persist.setDescription(path.getDescription());
-                    sb.append(msg).append(BR);
-                    LOG.info(msg);
                 }
-                Route persistRoute = pathDAO.findPathRoute(persist.getId());
-                if (!persistRoute.equals(route)) {
-                    hasChanges = true;
-                    String msg = "^ path old route ["
-                            + persistRoute + "], new route [" + route + "]";
-                    persist.setRoute(route);
-                    sb.append(msg).append(BR);
-                    LOG.info(msg);
-                }
-                List<BusStop> persistBusStops = bsDAO
-                        .findPathBusStops(persist.getId());
-                List<BusStop> mocks = new ArrayList<>();
-                for (BusStop bs : persistBusStops) {
-                    if (TransportConst.MOCK_BS.equals(bs.getName())) {
-                        mocks.add(bs);
-                    }
-                }
+                List<BusStop> persistBusStops = new ArrayList<>();
+                persistBusStops.addAll(persist.getBusstops());
+                List<BusStop> mocks = persistBusStops.stream().filter(
+                        bs -> TransportConst.MOCK_BS.equals(bs.getName()))
+                        .collect(Collectors.toList());
                 persistBusStops.removeAll(mocks);
                 boolean wayChanged = false;
                 if (persistBusStops.size() != pathBusStops.size()) {
@@ -312,7 +336,7 @@ class ImportDataServiceImpl implements ImportDataService {
                     }
                 }
                 if (!mocks.isEmpty()) {
-                    persistBusStops = bsDAO.findPathBusStops(persist.getId());
+                    persistBusStops = persist.getBusstops();
                     for (BusStop mock : mocks) {
                         int preMockIdx = persistBusStops.indexOf(mock) - 1;
                         if (preMockIdx < 0) {
@@ -327,97 +351,96 @@ class ImportDataServiceImpl implements ImportDataService {
                     }
                 }
                 if (wayChanged) {
-                    hasChanges = true;
-                    String msg = "^ path way changed";
-                    persist.setBusStops(pathBusStops);
-                    sb.append(msg).append("<b style=\"color:red;\">")
-                            .append("Check mock bus stops</b>").append(BR);
-                    LOG.info(msg);
+                    persist.setBusstops(pathBusStops);
+                    updEvents.add(createEvent(persist,
+                            ImportDataEventType.PATH_WAY_CHANGED,
+                        new HashMap<>()
+                    ));
                 }
-                if (hasChanges) {
-                    pathDAO.update(persist);
-                    updatedPaths++;
-                    String msg = "^ path updated: " + persist;
-                    LOG.info(msg);
-                    sb.append(msg).append(BR);
+                if (!updEvents.isEmpty()) {
+                    update.add(persist);
+                    events.addAll(updEvents);
                 }
             }
         }
-        String msg2 = "^^ created paths [" + newPaths
-                + "], updated paths [" + updatedPaths + "]";
-        LOG.info(msg2);
-        sb.append(msg2).append(BR);
+        if (isPersist) {
+            dataService.createAll(create);
+            dataService.updateAll(update);
+        }
+        return events;
     }
     /**
      * Handle routes.
      * @param routes routes.
-     * @param sb log container.
-     * @throws Exception method error.
+     * @param isPersist persist changes flag.
+     * @return events.
+     * @throws Exception error.
      */
-    private void handleRoutes(final List<Route> routes, final StringBuilder sb)
-            throws Exception {
-        String msg1 = "^^ routes found [" + routes.size() + "]";
-        LOG.info(msg1);
-        sb.append(msg1).append(BR);
-        int newRoutes = 0;
-        int updatedRoutes = 0;
+    private List<ImportDataEvent> handleRoutes(final List<Route> routes,
+            final boolean isPersist) throws Exception {
+        List<ImportDataEvent> events = new ArrayList<>();
+        List<Route> create = new ArrayList<>();
+        List<Route> update = new ArrayList<>();
+        List<Route> all = dataService.getAll(Route.class);
+        Map<Long, Route> allMap = new HashMap<>();
+        all.stream().forEach(r -> {
+            if (r.getExternalId() != null) {
+                allMap.put(r.getExternalId(), r);
+            }
+        });
         for (Route route : routes) {
             if (route.getExternalId() == null) {
-                throw new EmptyFieldException("altId", route);
+                throw new EmptyFieldException("externalId", route);
             }
-            Route persist = routeDAO.findByAltId(route.getExternalId());
+            Route persist = allMap.get(route.getExternalId());
             if (persist == null) {
-                newRoutes++;
-                routeDAO.create(route);
-                String msg = "^ new route created: " + route;
-                sb.append(msg).append(BR);
-                LOG.info(msg);
+                create.add(route);
+                events.add(createEvent(route, ImportDataEventType.ROUTE_CREATE,
+                        new HashMap<>()
+                ));
             } else {
-                boolean hasChanges = false;
+                List<ImportDataEvent> updEvents = new ArrayList<>();
                 if (!persist.getNamePrefix().equals(route.getNamePrefix())) {
-                    hasChanges = true;
-                    String msg = "^ route old name prefix ["
-                            + persist.getNamePrefix() + "], new name prefix ["
-                            + route.getNamePrefix() + "]";
+                    updEvents.add(createEvent(persist,
+                            ImportDataEventType.ROUTE_UPDATE,
+                        new HashMap<ImportInfoKey, String>() {{
+                            put(ImportInfoKey.FIELD, "namePrefix");
+                            put(ImportInfoKey.OLD_VALUE,
+                                    persist.getNamePrefix());
+                            put(ImportInfoKey.NEW_VALUE,
+                                    route.getNamePrefix());
+                        }}
+                    ));
                     persist.setNamePrefix(route.getNamePrefix());
-                    sb.append(msg).append(BR);
-                    LOG.info(msg);
                 }
                 String persistNP = persist.getNamePostfix();
                 persistNP = persistNP == null ? "" : persistNP;
                 String routeNP = route.getNamePostfix();
                 routeNP = routeNP == null ? "" : routeNP;
                 if (!persistNP.equals(routeNP)) {
-                    hasChanges = true;
-                    String msg = "^ route old name postfix ["
-                            + persist.getNamePostfix() + "], new name postfix ["
-                            + route.getNamePostfix() + "]";
+                    updEvents.add(createEvent(persist,
+                            ImportDataEventType.ROUTE_UPDATE,
+                        new HashMap<ImportInfoKey, String>() {{
+                            put(ImportInfoKey.FIELD, "namePostfix");
+                            put(ImportInfoKey.OLD_VALUE,
+                                    persist.getNamePostfix());
+                            put(ImportInfoKey.NEW_VALUE,
+                                    route.getNamePostfix());
+                        }}
+                    ));
                     persist.setNamePostfix(route.getNamePostfix());
-                    sb.append(msg).append(BR);
-                    LOG.info(msg);
                 }
-                if (!persist.getType().equals(route.getType())) {
-                    hasChanges = true;
-                    String msg = "^ route old type ["
-                            + persist.getType()
-                            + "], new type [" + route.getType() + "]";
-                    persist.setType(route.getType());
-                    sb.append(msg).append(BR);
-                    LOG.info(msg);
-                }
-                if (hasChanges) {
-                    routeDAO.update(persist);
-                    updatedRoutes++;
-                    String msg = "^ route updated: " + persist;
-                    LOG.info(msg);
-                    sb.append(msg).append(BR);
+                if (!updEvents.isEmpty()) {
+                    update.add(persist);
+                    events.addAll(updEvents);
                 }
             }
         }
-        String msg2 = "^^ created routes [" + newRoutes
-                + "], updated routes [" + updatedRoutes + "]";
-        LOG.info(msg2);
-        sb.append(msg2).append(BR);
+        if (isPersist) {
+            dataService.createAll(create);
+            dataService.updateAll(update);
+        }
+        return events;
     }
     /**
      * Handle bus stops data.
@@ -509,7 +532,7 @@ class ImportDataServiceImpl implements ImportDataService {
             final ImportDataEventType type,
             final Map<ImportInfoKey, String> info) {
         ImportDataEvent ev = new ImportDataEvent();
-        ev.setTrigger(entity);
+        ev.setTrigger(entity.toString());
         ev.setType(type);
         ev.setInfo(info);
         return ev;

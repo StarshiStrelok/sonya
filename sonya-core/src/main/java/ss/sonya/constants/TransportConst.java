@@ -14,33 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.transport.constants;
+package ss.sonya.constants;
 
 /**
- * Import data event type.
+ * Transport constants.
  * @author ss
  */
-public enum ImportDataEventType {
-    /** Create new bus stop. */
-    BUS_STOP_CREATE,
-    /** Update bus stop. */
-    BUS_STOP_UPDATE,
-    /** Create new route. */
-    ROUTE_CREATE,
-    /** Update route. */
-    ROUTE_UPDATE,
-    /** Create new path. */
-    PATH_CREATE,
-    /** Update path. */
-    PATH_UPDATE,
-    /** Path way changed. */
-    PATH_WAY_CHANGED,
-    /** Path schedule changed. */
-    PATH_SCHEDULE_CHANGED,
-    /** Delete orphan path. */
-    DELETE_ORPHAN_PATH,
-    /** Delete orphan route. */
-    DELETE_ORPHAN_ROUTE,
-    /** Delete orphan bus stop. */
-    DELETE_ORPHAN_BUS_STOP
+public final class TransportConst {
+    /** Mock bus stop. */
+    public static final String MOCK_BS = "mock";
+    /**
+     * Private constructor.
+     */
+    private TransportConst() {
+    }
 }

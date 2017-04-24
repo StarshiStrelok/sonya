@@ -24,11 +24,10 @@ import ss.sonya.transport.constants.ImportInfoKey;
 /**
  * Import data event.
  * @author ss
- * @param <T> event trigger.
  */
-public class ImportDataEvent<T> {
+public class ImportDataEvent {
     /** Trigger entity. */
-    private T trigger;
+    private String trigger;
     /** Event type. */
     private ImportDataEventType type;
     /** Event info. */
@@ -36,13 +35,13 @@ public class ImportDataEvent<T> {
     /**
      * @return the trigger
      */
-    public T getTrigger() {
+    public String getTrigger() {
         return trigger;
     }
     /**
      * @param trigger the trigger to set
      */
-    public void setTrigger(T trigger) {
+    public void setTrigger(String trigger) {
         this.trigger = trigger;
     }
     /**

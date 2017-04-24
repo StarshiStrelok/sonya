@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
+import ss.sonya.entity.Trip;
 import ss.sonya.transport.api.TransportDataDAO;
 import ss.sonya.transport.api.TransportDataService;
 
@@ -48,5 +49,9 @@ class TransportDataServiceImpl implements TransportDataService {
     @Override
     public List<Path> getPathsFromRoute(Integer id) throws Exception {
         return transportDAO.getPathsFromRoute(id);
+    }
+    @Override
+    public List<Trip> getSchedule(Integer id) throws Exception {
+        return transportDAO.getSchedule(id);
     }
 }

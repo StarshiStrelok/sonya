@@ -19,6 +19,7 @@ package ss.sonya.transport.api;
 import java.util.List;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
+import ss.sonya.entity.Trip;
 
 /**
  * Transport data service API.
@@ -48,4 +49,11 @@ public interface TransportDataService {
      * @throws Exception error.
      */
     List<Path> getPathsFromRoute(Integer id) throws Exception;
+    /**
+     * Get path schedule.
+     * @param id path ID.
+     * @return schedule.
+     * @throws Exception error.
+     */
+    List<Trip> getSchedule(Integer id) throws Exception;
 }

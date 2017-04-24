@@ -63,7 +63,8 @@ public class Path implements Serializable {
     private List<BusStop> busstops;
     /** Path schedule. */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            mappedBy = "path", orphanRemoval = true)
     private List<Trip> schedule;
     /** Path name. */
     @NotNull

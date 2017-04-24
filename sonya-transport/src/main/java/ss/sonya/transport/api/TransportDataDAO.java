@@ -19,6 +19,7 @@ package ss.sonya.transport.api;
 import java.util.List;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
+import ss.sonya.entity.Trip;
 
 /**
  * Transport data DAO API.
@@ -45,4 +46,10 @@ public interface TransportDataDAO {
      * @return all route paths.
      */
     List<Path> getPathsFromRoute(Integer id);
+    /**
+     * Get path schedule.
+     * @param id path ID.
+     * @return schedule.
+     */
+    List<Trip> getSchedule(Integer id);
 }

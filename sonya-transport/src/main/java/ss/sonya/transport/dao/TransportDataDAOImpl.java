@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
+import ss.sonya.entity.Trip;
 import ss.sonya.transport.api.TransportDataDAO;
 
 /**
@@ -71,6 +72,18 @@ class TransportDataDAOImpl implements TransportDataDAO {
         Root<Path> c = criteria.from(Path.class);
         criteria.select(c).where(
                 builder.equal(c.get("route").get("id"), id)
+        );
+        Query query = em.createQuery(criteria);
+        return query.getResultList();
+    }
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Trip> getSchedule(Integer id) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Trip> criteria = builder.createQuery(Trip.class);
+        Root<Trip> c = criteria.from(Trip.class);
+        criteria.select(c).where(
+                builder.equal(c.get("path").get("id"), id)
         );
         Query query = em.createQuery(criteria);
         return query.getResultList();
