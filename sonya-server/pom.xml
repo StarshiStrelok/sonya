@@ -31,6 +31,12 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${lib-spring}</version>
         </dependency>
+        <!-- Auxiliary -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${lib-commons-fileupload}</version>
+        </dependency>
         <!-- =================== PROVIDED ================================== -->
         <dependency>
             <groupId>javax</groupId>

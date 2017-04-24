@@ -181,6 +181,9 @@ public class Route implements Serializable {
     }
     @Override
     public String toString() {
-        return "ss.sonya.entity.Route[ id=" + getId() + " ]";
+        return "ss.sonya.entity.Route[ id=" + getId() + ", name="
+                + getNamePrefix() + (getNamePostfix() == null ? ""
+                : getNamePostfix()) + ", type="
+                + (getType() == null ? "" : getType().getName()) + " ]";
     }
 }

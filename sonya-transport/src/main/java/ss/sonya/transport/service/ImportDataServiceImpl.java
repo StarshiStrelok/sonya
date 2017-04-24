@@ -78,27 +78,29 @@ class ImportDataServiceImpl implements ImportDataService {
             // ---------------------- bus stops -------------------------------
             List<BusStop> busstops = data.busstops();
             if (busstops != null && !busstops.isEmpty()) {
-                events.addAll(handleBusStops(busstops, isPersist));
+                events.addAll(handleBusStops(busstops, isPersist, tpId));
             }
             // ---------------------- routes ----------------------------------
             List<Route> routes = data.routes();
             if (routes != null && !routes.isEmpty()) {
-                events.addAll(handleRoutes(routes, isPersist));
+                events.addAll(handleRoutes(routes, isPersist, tpId));
             }
             // ---------------------- paths -----------------------------------
             List<Path> paths = data.paths();
             if (paths != null && !paths.isEmpty()) {
-                events.addAll(handlePaths(paths, isPersist));
+                events.addAll(handlePaths(paths, isPersist, tpId));
             }
             // ---------------------- schedule --------------------------------
             Map<Path, List<Trip>> sch = data.schedule();
             if (sch != null && !sch.isEmpty()) {
-                events.addAll(handleSchedule(sch, isPersist));
+                events.addAll(handleSchedule(sch, isPersist, tpId));
             }
+            if (isPersist) {
             // ---------------------- orphan routes & paths -------------------
-            events.addAll(deleteOrphanRoutesAndPaths(paths, routes, isPersist));
+                events.addAll(deleteOrphanRoutesAndPaths(paths, routes, tpId));
             // ---------------------- orphan bus stops ------------------------
-            events.addAll(deleteOrphanBusStops(isPersist));
+                events.addAll(deleteOrphanBusStops(tpId));
+            }
             return events;
         } catch (Exception e) {
             LOG.error("import data error!", e);
@@ -108,15 +110,17 @@ class ImportDataServiceImpl implements ImportDataService {
 // ================================== PRIVATE =================================
     /**
      * Delete orphan bus stops.
-     * @param isPersist persist changes flag.
+     * @param profileId transport profile ID.
      * @return events.
      * @throws Exception method error.
      */
-    private List<ImportDataEvent> deleteOrphanBusStops(final boolean isPersist)
+    private List<ImportDataEvent> deleteOrphanBusStops(final Integer profileId)
             throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
-        List<Path> allPaths = dataService.getAll(Path.class);
-        List<BusStop> allBs = dataService.getAll(BusStop.class);
+        List<Path> allPaths = transportService
+                .getFromProfile(profileId, Path.class);
+        List<BusStop> allBs = transportService
+                .getFromProfile(profileId, BusStop.class);
         Set<BusStop> setBs = new HashSet<>();
         allPaths.stream().forEach(p -> {
             setBs.addAll(p.getBusstops());
@@ -129,9 +133,7 @@ class ImportDataServiceImpl implements ImportDataService {
                     new HashMap<>()
                 ));
             });
-            if (isPersist) {
-                dataService.deleteAll(allBs);
-            }
+            dataService.deleteAll(allBs);
         }
         return events;
     }
@@ -139,15 +141,16 @@ class ImportDataServiceImpl implements ImportDataService {
      * Delete orphan paths & routes.
      * @param paths actual paths.
      * @param routes actual routes.
-     * @param isPersist persist changes flag.
+     * @param profileId transport profile ID.
      * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> deleteOrphanRoutesAndPaths(
             final List<Path> paths, final List<Route> routes,
-            final boolean isPersist) throws Exception {
+            final Integer profileId) throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
-        List<Route> allRoutes = dataService.getAll(Route.class);
+        List<Route> allRoutes = transportService
+                .getFromProfile(profileId, Route.class);
         Map<Long, Route> routeMap = new HashMap<>();
         Map<Long, Path> pathMap = new HashMap<>();
         for (Route r : allRoutes) {
@@ -184,25 +187,25 @@ class ImportDataServiceImpl implements ImportDataService {
                     new HashMap<>()
             ));
         }
-        if (isPersist) {
-            dataService.deleteAll(new ArrayList<>(pathMap.values()));
-            dataService.deleteAll(new ArrayList<>(routeMap.values()));
-        }
+        dataService.deleteAll(new ArrayList<>(pathMap.values()));
+        dataService.deleteAll(new ArrayList<>(routeMap.values()));
         return events;
     }
     /**
      * Handle schedule.
      * @param sch schedule.
      * @param isPersist persist changes flag.
+     * @param profileId transport profile ID.
      * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> handleSchedule(
-            final Map<Path, List<Trip>> sch,
-            final boolean isPersist) throws Exception {
+            final Map<Path, List<Trip>> sch, final boolean isPersist,
+            final Integer profileId) throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
         List<Path> update = new ArrayList<>();
-        List<Path> allPaths = dataService.getAll(Path.class);
+        List<Path> allPaths = transportService
+                .getFromProfile(profileId, Path.class);
         Map<Long, Path> pathMap = new HashMap<>();
         allPaths.stream().forEach(p -> {
             if (p.getExternalId() != null) {
@@ -237,6 +240,9 @@ class ImportDataServiceImpl implements ImportDataService {
                 }
             }
             if (hasChanges) {
+                schedule.stream().forEach(t -> {
+                    t.setPath(path);
+                });
                 path.setSchedule(schedule);
                 update.add(path);
                 events.add(createEvent(path,
@@ -254,26 +260,37 @@ class ImportDataServiceImpl implements ImportDataService {
      * Handle paths.
      * @param paths paths.
      * @param isPersist persist changes flag.
+     * @param profileId transport profile ID.
      * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> handlePaths(final List<Path> paths,
-            final boolean isPersist) throws Exception {
+            final boolean isPersist, final Integer profileId) throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
         List<Path> create = new ArrayList<>();
         List<Path> update = new ArrayList<>();
-        List<BusStop> allBs = dataService.getAll(BusStop.class);
+        List<BusStop> allBs = transportService
+                .getFromProfile(profileId, BusStop.class);
         Map<Long, BusStop> bsMap = new HashMap<>();
         allBs.stream().forEach(bs -> {
             if (bs.getExternalId() != null) {
                 bsMap.put(bs.getExternalId(), bs);
             }
         });
-        List<Path> allPaths = dataService.getAll(Path.class);
+        List<Path> allPaths = transportService
+                .getFromProfile(profileId, Path.class);
         Map<Long, Path> pathMap = new HashMap<>();
         allPaths.stream().forEach(p -> {
             if (p.getExternalId() != null) {
                 pathMap.put(p.getExternalId(), p);
+            }
+        });
+        List<Route> allRoutes = transportService
+                .getFromProfile(profileId, Route.class);
+        Map<Long, Route> routeMap = new HashMap<>();
+        allRoutes.stream().forEach(r -> {
+            if (r.getExternalId() != null) {
+                routeMap.put(r.getExternalId(), r);
             }
         });
         for (Path path : paths) {
@@ -302,6 +319,7 @@ class ImportDataServiceImpl implements ImportDataService {
             }
             if (persist == null) {
                 path.setBusstops(pathBusStops);
+                path.setRoute(routeMap.get(path.getRoute().getExternalId()));
                 create.add(path);
                 events.add(createEvent(path, ImportDataEventType.PATH_CREATE,
                         new HashMap<>()
@@ -377,15 +395,17 @@ class ImportDataServiceImpl implements ImportDataService {
      * Handle routes.
      * @param routes routes.
      * @param isPersist persist changes flag.
+     * @param profileId transport profile ID.
      * @return events.
      * @throws Exception error.
      */
     private List<ImportDataEvent> handleRoutes(final List<Route> routes,
-            final boolean isPersist) throws Exception {
+            final boolean isPersist, final Integer profileId) throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
         List<Route> create = new ArrayList<>();
         List<Route> update = new ArrayList<>();
-        List<Route> all = dataService.getAll(Route.class);
+        List<Route> all = transportService
+                .getFromProfile(profileId, Route.class);
         Map<Long, Route> allMap = new HashMap<>();
         all.stream().forEach(r -> {
             if (r.getExternalId() != null) {
@@ -404,35 +424,23 @@ class ImportDataServiceImpl implements ImportDataService {
                 ));
             } else {
                 List<ImportDataEvent> updEvents = new ArrayList<>();
-                if (!persist.getNamePrefix().equals(route.getNamePrefix())) {
+                String persistName = persist.getNamePrefix()
+                        + (persist.getNamePostfix() == null
+                        ? "" : persist.getNamePostfix());
+                String routeName = route.getNamePrefix()
+                        + (route.getNamePostfix() == null
+                        ? "" : route.getNamePostfix());
+                if (!persistName.equals(routeName)) {
                     updEvents.add(createEvent(persist,
                             ImportDataEventType.ROUTE_UPDATE,
                         new HashMap<ImportInfoKey, String>() { {
-                            put(ImportInfoKey.FIELD, "namePrefix");
-                            put(ImportInfoKey.OLD_VALUE,
-                                    persist.getNamePrefix());
-                            put(ImportInfoKey.NEW_VALUE,
-                                    route.getNamePrefix());
-                        } }
-                    ));
-                    persist.setNamePrefix(route.getNamePrefix());
-                }
-                String persistNP = persist.getNamePostfix();
-                persistNP = persistNP == null ? "" : persistNP;
-                String routeNP = route.getNamePostfix();
-                routeNP = routeNP == null ? "" : routeNP;
-                if (!persistNP.equals(routeNP)) {
-                    updEvents.add(createEvent(persist,
-                            ImportDataEventType.ROUTE_UPDATE,
-                        new HashMap<ImportInfoKey, String>() { {
-                            put(ImportInfoKey.FIELD, "namePostfix");
-                            put(ImportInfoKey.OLD_VALUE,
-                                    persist.getNamePostfix());
-                            put(ImportInfoKey.NEW_VALUE,
-                                    route.getNamePostfix());
+                            put(ImportInfoKey.FIELD, "name");
+                            put(ImportInfoKey.OLD_VALUE, persistName);
+                            put(ImportInfoKey.NEW_VALUE, routeName);
                         } }
                     ));
                     persist.setNamePostfix(route.getNamePostfix());
+                    persist.setNamePrefix(route.getNamePrefix());
                 }
                 if (!updEvents.isEmpty()) {
                     update.add(persist);
@@ -450,15 +458,17 @@ class ImportDataServiceImpl implements ImportDataService {
      * Handle bus stops data.
      * @param busstops bus stops list.
      * @param isPersist persist changes flag.
+     * @param profileId transport profile ID.
      * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> handleBusStops(final List<BusStop> busstops,
-            final boolean isPersist) throws Exception {
+            final boolean isPersist, final Integer profileId) throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
         List<BusStop> create = new ArrayList<>();
         List<BusStop> update = new ArrayList<>();
-        List<BusStop> all = dataService.getAll(BusStop.class);
+        List<BusStop> all = transportService
+                .getFromProfile(profileId, BusStop.class);
         Map<Long, BusStop> allMap = new HashMap<>();
         all.stream().forEach(bs -> {
             if (bs.getExternalId() != null) {

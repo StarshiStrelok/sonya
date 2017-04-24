@@ -19,10 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <md-chip-list class="full-width" selectable="false">
         <md-chip color="accent" selected="true" class="full-width base-font base-font-weight">ROUTES CONTROL</md-chip>
     </md-chip-list>
-    
     <md-grid-list cols="5">
         <md-grid-tile colspan="3">
-            <md-select placeholder="Route type" class="full-width" [(ngModel)]="selectedType"
+            <md-select class="full-width" [(ngModel)]="selectedType"
                        (change)="typeChanged()">
                 <md-option *ngFor="let rp of routeProfiles" [value]="rp">{{ rp.name }}</md-option>
             </md-select>

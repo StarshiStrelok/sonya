@@ -16,7 +16,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {AbsModel, Route, ModelClass, Path} from '../model/abs.model';
+import {AbsModel, Route, ModelClass, Path, ImportDataEvent} from '../model/abs.model';
 import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
@@ -74,6 +74,13 @@ export class DataService {
         return this.http.get(
             this.dataUrl + ModelClass.PATH + '/from-route/' + id, {headers: this.headers}
         ).toPromise().then(res => res.json() as Path[]).catch(this.handleError);
+    }
+    importData(tid: number, rid: number, file: any, persist: boolean): Promise<ImportDataEvent[]> {
+        return this.http.post(
+            this.dataUrl + 'import/' + tid + '/' + rid + '/' + persist, file, {}
+        ).toPromise()
+            .then(res => res.json() as ImportDataEvent[])
+            .catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {
         console.error('An error occurred', error); // for demo purposes only

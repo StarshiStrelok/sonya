@@ -185,6 +185,7 @@ public class Path implements Serializable {
     }
     @Override
     public String toString() {
-        return "ss.sonya.entity.Path[ id=" + getId() + " ]";
+        return "ss.sonya.entity.Path[ id=" + getId()
+                + ", name=" + getDescription() + " ]";
     }
 }

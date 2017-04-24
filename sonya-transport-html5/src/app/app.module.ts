@@ -17,6 +17,7 @@ import {RouteForm} from './form/route.form';
 import {RoutesGrid} from './component/routes.grid';
 import {PathsGrid} from './component/paths.grid';
 import {BusStopGrid} from './component/busstop.grid';
+import {ConfirmImport} from './component/confirm.import.dialog';
 import {PathForm} from './form/path.form';
 import {Window, WindowDirective} from './component/window';
 
@@ -36,6 +37,7 @@ import {OSRMService} from './service/osrm.service'
         PathsGrid,
         BusStopGrid,
         PathForm,
+        ConfirmImport,
         Window,
         WindowDirective,
         SideNavContentDirective
@@ -51,7 +53,7 @@ import {OSRMService} from './service/osrm.service'
         AppRoutingModule
     ],
     entryComponents: [
-        Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm, BusStopGrid
+        Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm, BusStopGrid, ConfirmImport
     ],
     providers: [DataService, DialogService, OSRMService],
     bootstrap: [AppComponent]

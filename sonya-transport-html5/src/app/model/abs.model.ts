@@ -80,3 +80,10 @@ export class Path implements AbsModel {
         public route: Route
     ) {}
 }
+export class ImportDataEvent {
+    constructor(
+        public trigger: string,
+        public type: string,
+        public info: any
+    ) {}
+}

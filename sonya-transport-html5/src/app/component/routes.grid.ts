@@ -22,7 +22,8 @@ import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
 import {DialogService} from './../service/dialog.service';
 import {RouteForm} from './../form/route.form';
-import {PathsGrid} from './../component/paths.grid';
+import {PathsGrid} from './paths.grid';
+import {ConfirmImport} from './confirm.import.dialog';
 import {ModelClass, TransportProfile, RouteProfile, Route} from './../model/abs.model';
 
 @Component({
@@ -122,6 +123,22 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
         let files = event.target.files;
         var binData = new FormData();
         binData.append('file', files[0]);
-        console.log(files[0]);
+        this.dataService.importData(this.profileId, this.selectedType.id, binData, false)
+            .then(events => {
+                this.dialogService.openWindow('Confirm import', '', '50%', ConfirmImport, {
+                    events: events,
+                    persist: false
+                }).subscribe((res: boolean) => {
+                    if (res) {
+                        this.dataService.importData(this.profileId, this.selectedType.id, binData, true)
+                            .then(events => {
+                                this.dialogService.openWindow('Import completed', '', '50%', ConfirmImport, {
+                                    events: events,
+                                    persist: true
+                                }).subscribe((res: boolean) => {});
+                            });
+                    }
+                });
+            });
     }
 }
