@@ -109,6 +109,7 @@ class ImportDataServiceImpl implements ImportDataService {
     /**
      * Delete orphan bus stops.
      * @param isPersist persist changes flag.
+     * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> deleteOrphanBusStops(final boolean isPersist)
@@ -193,6 +194,7 @@ class ImportDataServiceImpl implements ImportDataService {
      * Handle schedule.
      * @param sch schedule.
      * @param isPersist persist changes flag.
+     * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> handleSchedule(
@@ -252,6 +254,7 @@ class ImportDataServiceImpl implements ImportDataService {
      * Handle paths.
      * @param paths paths.
      * @param isPersist persist changes flag.
+     * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> handlePaths(final List<Path> paths,
@@ -277,7 +280,8 @@ class ImportDataServiceImpl implements ImportDataService {
             if (path.getExternalId() == null) {
                 throw new EmptyFieldException("externalId", path);
             }
-            if (path.getRoute() == null || path.getRoute().getExternalId() == null) {
+            if (path.getRoute() == null
+                    || path.getRoute().getExternalId() == null) {
                 throw new EmptyFieldException("route", path);
             }
             if (path.getBusstops() == null || path.getBusstops().isEmpty()) {
@@ -307,13 +311,13 @@ class ImportDataServiceImpl implements ImportDataService {
                 if (!persist.getDescription().equals(path.getDescription())) {
                     updEvents.add(createEvent(persist,
                             ImportDataEventType.PATH_UPDATE,
-                        new HashMap<ImportInfoKey, String>() {{
+                        new HashMap<ImportInfoKey, String>() { {
                             put(ImportInfoKey.FIELD, "description");
                             put(ImportInfoKey.OLD_VALUE,
                                     persist.getDescription());
                             put(ImportInfoKey.NEW_VALUE,
                                     path.getDescription());
-                        }}
+                        } }
                     ));
                     persist.setDescription(path.getDescription());
                 }
@@ -403,13 +407,13 @@ class ImportDataServiceImpl implements ImportDataService {
                 if (!persist.getNamePrefix().equals(route.getNamePrefix())) {
                     updEvents.add(createEvent(persist,
                             ImportDataEventType.ROUTE_UPDATE,
-                        new HashMap<ImportInfoKey, String>() {{
+                        new HashMap<ImportInfoKey, String>() { {
                             put(ImportInfoKey.FIELD, "namePrefix");
                             put(ImportInfoKey.OLD_VALUE,
                                     persist.getNamePrefix());
                             put(ImportInfoKey.NEW_VALUE,
                                     route.getNamePrefix());
-                        }}
+                        } }
                     ));
                     persist.setNamePrefix(route.getNamePrefix());
                 }
@@ -420,13 +424,13 @@ class ImportDataServiceImpl implements ImportDataService {
                 if (!persistNP.equals(routeNP)) {
                     updEvents.add(createEvent(persist,
                             ImportDataEventType.ROUTE_UPDATE,
-                        new HashMap<ImportInfoKey, String>() {{
+                        new HashMap<ImportInfoKey, String>() { {
                             put(ImportInfoKey.FIELD, "namePostfix");
                             put(ImportInfoKey.OLD_VALUE,
                                     persist.getNamePostfix());
                             put(ImportInfoKey.NEW_VALUE,
                                     route.getNamePostfix());
-                        }}
+                        } }
                     ));
                     persist.setNamePostfix(route.getNamePostfix());
                 }
@@ -445,12 +449,12 @@ class ImportDataServiceImpl implements ImportDataService {
     /**
      * Handle bus stops data.
      * @param busstops bus stops list.
-     * @param sb log container.
+     * @param isPersist persist changes flag.
+     * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> handleBusStops(final List<BusStop> busstops,
-            final boolean isPersist)
-            throws Exception {
+            final boolean isPersist) throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
         List<BusStop> create = new ArrayList<>();
         List<BusStop> update = new ArrayList<>();
@@ -478,33 +482,36 @@ class ImportDataServiceImpl implements ImportDataService {
                 if (!persistBs.getName().equals(bs.getName())) {
                     updEvents.add(createEvent(persistBs,
                             ImportDataEventType.BUS_STOP_UPDATE,
-                        new HashMap<ImportInfoKey, String>() {{
+                        new HashMap<ImportInfoKey, String>() { {
                             put(ImportInfoKey.FIELD, "name");
                             put(ImportInfoKey.OLD_VALUE, persistBs.getName());
                             put(ImportInfoKey.NEW_VALUE, bs.getName());
-                        }}
+                        } }
                     ));
                     persistBs.setName(bs.getName());
                 }
                 if (!persistBs.getLatitude().equals(bs.getLatitude())) {
                     updEvents.add(createEvent(persistBs,
                             ImportDataEventType.BUS_STOP_UPDATE,
-                        new HashMap<ImportInfoKey, String>() {{
+                        new HashMap<ImportInfoKey, String>() { {
                             put(ImportInfoKey.FIELD, "latitude");
-                            put(ImportInfoKey.OLD_VALUE, persistBs.getLatitude() + "");
+                            put(ImportInfoKey.OLD_VALUE,
+                                    persistBs.getLatitude() + "");
                             put(ImportInfoKey.NEW_VALUE, bs.getLatitude() + "");
-                        }}
+                        } }
                     ));
                     persistBs.setLatitude(bs.getLatitude());
                 }
                 if (!persistBs.getLongitude().equals(bs.getLongitude())) {
                     updEvents.add(createEvent(persistBs,
                             ImportDataEventType.BUS_STOP_UPDATE,
-                        new HashMap<ImportInfoKey, String>() {{
+                        new HashMap<ImportInfoKey, String>() { {
                             put(ImportInfoKey.FIELD, "longitude");
-                            put(ImportInfoKey.OLD_VALUE, persistBs.getLongitude() + "");
-                            put(ImportInfoKey.NEW_VALUE, bs.getLongitude() + "");
-                        }}
+                            put(ImportInfoKey.OLD_VALUE,
+                                    persistBs.getLongitude() + "");
+                            put(ImportInfoKey.NEW_VALUE,
+                                    bs.getLongitude() + "");
+                        } }
                     ));
                     persistBs.setLongitude(bs.getLongitude());
                 }

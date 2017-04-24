@@ -68,4 +68,8 @@ public class ImportDataEvent {
     public void setInfo(Map<ImportInfoKey, String> info) {
         this.info = info;
     }
+    @Override
+    public String toString() {
+        return type.name() + ": " + trigger;
+    }
 }

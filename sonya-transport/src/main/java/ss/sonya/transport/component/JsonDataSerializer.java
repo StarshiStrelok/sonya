@@ -325,7 +325,8 @@ public class JsonDataSerializer implements ImportDataSerializer {
             }
             o.put(PATH_EXT_ID, path.getExternalId());
             o.put(PATH_NAME, path.getDescription());
-            if (path.getRoute() == null || path.getRoute().getExternalId() == null) {
+            if (path.getRoute() == null
+                    || path.getRoute().getExternalId() == null) {
                 throw new EmptyFieldException("route", path);
             }
             if (path.getRoute() == null) {

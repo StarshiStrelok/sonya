@@ -16,6 +16,8 @@
  */
 package ss.sonya.constants;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Transport constants.
  * @author ss
@@ -23,6 +25,8 @@ package ss.sonya.constants;
 public final class TransportConst {
     /** Mock bus stop. */
     public static final String MOCK_BS = "mock";
+    /** Transport midnight, for example 3:00. */
+    public static final long TRANSPORT_MIDNIGHT = TimeUnit.HOURS.toMillis(3);
     /**
      * Private constructor.
      */

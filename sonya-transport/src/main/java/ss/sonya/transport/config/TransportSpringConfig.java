@@ -31,7 +31,8 @@ import ss.sonya.configuration.SpringConfig;
     "ss.sonya.transport.api",
     "ss.sonya.transport.service",
     "ss.sonya.transport.dao",
-    "ss.sonya.transport.rest"
+    "ss.sonya.transport.rest",
+    "ss.sonya.transport.component"
 })
 public class TransportSpringConfig {
 }
