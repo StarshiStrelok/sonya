@@ -21,8 +21,6 @@ import java.util.Map;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
-import ss.sonya.entity.RouteProfile;
-import ss.sonya.entity.TransportProfile;
 import ss.sonya.entity.Trip;
 
 /**
@@ -50,14 +48,4 @@ public interface ImportData {
      * @return - schedule.
      */
     Map<Path, List<Trip>> schedule();
-    /**
-     * Transport profile.
-     * @return transport profile.
-     */
-    TransportProfile transportProfile();
-    /**
-     * Route profile.
-     * @return route profile.
-     */
-    RouteProfile routeProfile();
 }

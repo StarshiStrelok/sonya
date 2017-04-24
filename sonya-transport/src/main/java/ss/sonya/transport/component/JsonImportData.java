@@ -21,8 +21,6 @@ import java.util.Map;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
-import ss.sonya.entity.RouteProfile;
-import ss.sonya.entity.TransportProfile;
 import ss.sonya.entity.Trip;
 import ss.sonya.transport.api.ImportData;
 
@@ -39,28 +37,19 @@ public class JsonImportData implements ImportData {
     private final List<Route> routes;
     /** Schedule. */
     private final Map<Path, List<Trip>> schedule;
-    /** Transport profile. */
-    private final TransportProfile transportProfile;
-    /** Route profile. */
-    private final RouteProfile routeProfile;
     /**
      * Constructor.
      * @param lBs bus stops.
      * @param lP paths.
      * @param lR routes.
      * @param sch schedule.
-     * @param tP transport profile.
-     * @param rP route profile.
      */
     public JsonImportData(final List<BusStop> lBs, final List<Path> lP,
-            final List<Route> lR, final Map<Path, List<Trip>> sch,
-            final TransportProfile tP, final RouteProfile rP) {
+            final List<Route> lR, final Map<Path, List<Trip>> sch) {
         busstops = lBs;
         paths = lP;
         routes = lR;
         schedule = sch;
-        transportProfile = tP;
-        routeProfile = rP;
     }
     @Override
     public List<BusStop> busstops() {
@@ -77,13 +66,5 @@ public class JsonImportData implements ImportData {
     @Override
     public Map<Path, List<Trip>> schedule() {
         return schedule;
-    }
-    @Override
-    public TransportProfile transportProfile() {
-        return transportProfile;
-    }
-    @Override
-    public RouteProfile routeProfile() {
-        return routeProfile;
     }
 }

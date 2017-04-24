@@ -25,9 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
@@ -40,6 +37,8 @@ import org.springframework.stereotype.Component;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
+import ss.sonya.entity.RouteProfile;
+import ss.sonya.entity.TransportProfile;
 import ss.sonya.entity.Trip;
 import ss.sonya.transport.api.ImportData;
 import ss.sonya.transport.api.ImportDataSerializer;
@@ -77,8 +76,6 @@ public class JsonDataSerializer implements ImportDataSerializer {
     private static final String BS_LAT = "lat";
     /** --> Longitude. */
     private static final String BS_LON = "lon";
-    /** --> Route type. */
-    private static final String ROUTE_TYPE = "type";
     /** --> Route name prefix. */
     private static final String ROUTE_N_PREFIX = "name_prefix";
     /** --> Route name postfix. */
@@ -110,36 +107,36 @@ public class JsonDataSerializer implements ImportDataSerializer {
         try {
             LOG.info("&&& serializer start...");
             long start = System.currentTimeMillis();
-            JsonObjectBuilder root = Json.createObjectBuilder();
+            JSONObject root = new JSONObject();
             // ----------------- bus stops -------------------------------------
             if (data.busstops() != null && !data.busstops().isEmpty()) {
                 LOG.info("& bus stops found");
-                root.add(PART_BUSSTOPS, serBusstops(data.busstops()));
+                root.put(PART_BUSSTOPS, serBusstops(data.busstops()));
             }
             //------------------ routes ----------------------------------------
             if (data.routes() != null && !data.routes().isEmpty()) {
                 LOG.info("& routes found");
-                root.add(PART_ROUTES, serRoutes(data.routes()));
+                root.put(PART_ROUTES, serRoutes(data.routes()));
             }
             // ----------------- paths -----------------------------------------
             if (data.paths() != null && !data.paths().isEmpty()) {
                 LOG.info("& paths found");
-                root.add(PART_PATHS, serPaths(data.paths()));
+                root.put(PART_PATHS, serPaths(data.paths()));
             }
             // ----------------- schedule --------------------------------------
             if (data.schedule() != null && !data.schedule().isEmpty()) {
                 LOG.info("& schedule found");
-                root.add(PART_SCHEDULE, serSchedule(data.schedule()));
+                root.put(PART_SCHEDULE, serSchedule(data.schedule()));
             }
             // ----------------- meta ------------------------------------------
-            JsonObjectBuilder meta = Json.createObjectBuilder();
-            meta.add(CREATED, new SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
+            JSONObject meta = new JSONObject();
+            meta.put(CREATED, new SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
                     .format(new Date()));
-            root.add(META, meta);
+            root.put(META, meta);
             LOG.info("& elapsed time [" + (System.currentTimeMillis() - start)
                     + "] ms");
             LOG.info("&&& serializer end...");
-            return root.build().toString().getBytes("UTF-8");
+            return root.toString().getBytes("UTF-8");
         } catch (ConstraintViolationException | UnsupportedEncodingException
                 | EmptyFieldException e) {
             LOG.error("serialize import data error!", e);
@@ -189,30 +186,31 @@ public class JsonDataSerializer implements ImportDataSerializer {
 // ============================= PRIVATE ======================================
     /**
      * Create bus stops JSON array.
-     * @param bsList list bus stops.
+     * @param bsList bus stops.
      * @return JSON array.
      * @throws EmptyFieldException - field required.
      */
-    private JsonArrayBuilder serBusstops(final List<BusStop> bsList)
+    private JSONArray serBusstops(final List<BusStop> bsList)
             throws EmptyFieldException {
-        JsonArrayBuilder arr = Json.createArrayBuilder();
+        JSONArray arr = new JSONArray();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         for (BusStop bs : bsList) {
+            bs.setTransportProfile(new TransportProfile());
             LOG.debug(bs);
             Set<ConstraintViolation<BusStop>> v = validator.validate(bs);
             if (!v.isEmpty()) {
                 throw new ConstraintViolationException(v);
             }
-            JsonObjectBuilder o = Json.createObjectBuilder();
+            JSONObject o = new JSONObject();
             if (bs.getExternalId() == null) {
                 throw new EmptyFieldException(BS_EXT_ID, bs);
             }
-            o.add(BS_EXT_ID, bs.getExternalId());
-            o.add(BS_NAME, bs.getName());
-            o.add(BS_LAT, bs.getLatitude());
-            o.add(BS_LON, bs.getLongitude());
-            arr.add(o);
+            o.put(BS_EXT_ID, bs.getExternalId());
+            o.put(BS_NAME, bs.getName());
+            o.put(BS_LAT, bs.getLatitude());
+            o.put(BS_LON, bs.getLongitude());
+            arr.put(o);
         }
         LOG.info("& added bus stops [" + bsList.size() + "]");
         return arr;
@@ -242,28 +240,29 @@ public class JsonDataSerializer implements ImportDataSerializer {
      * @return JSON array.
      * @throws EmptyFieldException field required.
      */
-    private JsonArrayBuilder serRoutes(final List<Route> routes)
+    private JSONArray serRoutes(final List<Route> routes)
             throws EmptyFieldException {
-        JsonArrayBuilder arr = Json.createArrayBuilder();
+        JSONArray arr = new JSONArray();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         for (Route route : routes) {
+            route.setTransportProfile(new TransportProfile());
+            route.setType(new RouteProfile());
             LOG.debug(route);
             Set<ConstraintViolation<Route>> v = validator.validate(route);
             if (!v.isEmpty()) {
                 throw new ConstraintViolationException(v);
             }
-            JsonObjectBuilder o = Json.createObjectBuilder();
+            JSONObject o = new JSONObject();
             if (route.getExternalId() == null) {
-                throw new EmptyFieldException("altId", route);
+                throw new EmptyFieldException(ROUTE_EXT_ID, route);
             }
-            o.add(ROUTE_EXT_ID, route.getExternalId());
-            o.add(ROUTE_TYPE, route.getType().name());
-            o.add(ROUTE_N_PREFIX, route.getNamePrefix());
+            o.put(ROUTE_EXT_ID, route.getExternalId());
+            o.put(ROUTE_N_PREFIX, route.getNamePrefix());
             if (route.getNamePostfix() != null) {
-                o.add(ROUTE_N_POSTFIX, route.getNamePostfix());
+                o.put(ROUTE_N_POSTFIX, route.getNamePostfix());
             }
-            arr.add(o);
+            arr.put(o);
         }
         LOG.info("& added routes [" + routes.size() + "]");
         return arr;
@@ -283,7 +282,6 @@ public class JsonDataSerializer implements ImportDataSerializer {
             if (o.has(ROUTE_N_POSTFIX)) {
                 route.setNamePostfix(o.getString(ROUTE_N_POSTFIX));
             }
-            route.setType(RouteType.valueOf(o.getString(ROUTE_TYPE)));
             list.add(route);
         }
         LOG.info("& restore routes [" + list.size() + "]");
@@ -295,42 +293,43 @@ public class JsonDataSerializer implements ImportDataSerializer {
      * @return JSON array.
      * @throws EmptyFieldException - field required.
      */
-    private JsonArrayBuilder serPaths(final List<Path> paths)
+    private JSONArray serPaths(final List<Path> paths)
             throws EmptyFieldException {
-        JsonArrayBuilder arr = Json.createArrayBuilder();
+        JSONArray arr = new JSONArray();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         for (Path path : paths) {
+            path.setTransportProfile(new TransportProfile());
             LOG.debug(path);
             Set<ConstraintViolation<Path>> v = validator.validate(path);
             if (!v.isEmpty()) {
                 throw new ConstraintViolationException(v);
             }
-            JsonObjectBuilder o = Json.createObjectBuilder();
+            JSONObject o = new JSONObject();
             if (path.getExternalId() == null) {
-                throw new EmptyFieldException("altId", path);
+                throw new EmptyFieldException(PATH_EXT_ID, path);
             }
-            o.add(PATH_EXT_ID, path.getExternalId());
-            o.add(PATH_NAME, path.getDescription());
+            o.put(PATH_EXT_ID, path.getExternalId());
+            o.put(PATH_NAME, path.getDescription());
             if (path.getRoute() == null || path.getRoute().getExternalId() == null) {
                 throw new EmptyFieldException("route", path);
             }
             if (path.getRoute() == null) {
                 throw new EmptyFieldException("route", path);
             }
-            o.add(PATH_ROUTE, path.getRoute().getExternalId());
+            o.put(PATH_ROUTE, path.getRoute().getExternalId());
             if (path.getBusstops() == null || path.getBusstops().isEmpty()) {
                 throw new EmptyFieldException("busstops", path);
             }
-            JsonArrayBuilder way = Json.createArrayBuilder();
+            JSONArray way = new JSONArray();
             for (BusStop bs : path.getBusstops()) {
                 if (bs.getExternalId() == null) {
                     throw new EmptyFieldException("altId", bs);
                 }
-                way.add(bs.getExternalId());
+                way.put(bs.getExternalId());
             }
-            o.add(PATH_WAY, way);
-            arr.add(o);
+            o.put(PATH_WAY, way);
+            arr.put(o);
         }
         LOG.info("& added paths [" + paths.size() + "]");
         return arr;
@@ -369,29 +368,29 @@ public class JsonDataSerializer implements ImportDataSerializer {
      * @return JSON array.
      * @throws EmptyFieldException required field.
      */
-    private JsonArrayBuilder serSchedule(
+    private JSONArray serSchedule(
             final Map<Path, List<Trip>> schedule) throws EmptyFieldException {
-        JsonArrayBuilder arr = Json.createArrayBuilder();
+        JSONArray arr = new JSONArray();
         for (Path p : schedule.keySet()) {
-            JsonObjectBuilder oo = Json.createObjectBuilder();
+            JSONObject oo = new JSONObject();
             if (p.getExternalId() == null) {
                 throw new EmptyFieldException("altId", p);
             }
-            oo.add(SCH_PATH_ID, p.getExternalId());
-            JsonArrayBuilder arr2 = Json.createArrayBuilder();
+            oo.put(SCH_PATH_ID, p.getExternalId());
+            JSONArray arr2 = new JSONArray();
             for (Trip t : schedule.get(p)) {
-                JsonObjectBuilder ooo = Json.createObjectBuilder();
-                ooo.add(SCH_DAYS, t.getDays());
+                JSONObject ooo = new JSONObject();
+                ooo.put(SCH_DAYS, t.getDays());
                 if (t.getRegular() != null && !t.getRegular().isEmpty()) {
-                    ooo.add(SCH_REGULAR, t.getRegular());
+                    ooo.put(SCH_REGULAR, t.getRegular());
                 }
                 if (t.getIrregular() != null && !t.getIrregular().isEmpty()) {
-                    ooo.add(SCH_IRREGULAR, t.getIrregular());
+                    ooo.put(SCH_IRREGULAR, t.getIrregular());
                 }
-                arr2.add(ooo);
+                arr2.put(ooo);
             }
-            oo.add(SCH_DATA, arr2);
-            arr.add(oo);
+            oo.put(SCH_DATA, arr2);
+            arr.put(oo);
         }
         LOG.info("& added schedule for [" + schedule.size() + "] paths");
         return arr;
