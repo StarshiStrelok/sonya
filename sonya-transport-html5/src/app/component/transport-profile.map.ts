@@ -79,6 +79,7 @@ export class TransportProfileMap extends AnimatedSlide implements OnInit {
     layerRouting: any = L.layerGroup([]);
     // transport profile ID
     profileId: number;
+    allBusStops: BusStop[] = [];
 
     constructor(
         private location: Location,
@@ -111,7 +112,8 @@ export class TransportProfileMap extends AnimatedSlide implements OnInit {
         this.dataService.getFromProfile<BusStop>(this.profileId, ModelClass.BUS_STOP)
             .then((all: BusStop[]) => {
                 console.log('profile bus stops loaded [' + all.length + ']');
-                this.updateBusStopLayer(all);
+                this.allBusStops = all;
+                this.mapInteract();
             });
     }
     moveBusStop(model: BusStop, lat: number, lon: number) {
@@ -328,6 +330,12 @@ export class TransportProfileMap extends AnimatedSlide implements OnInit {
                 }
             }
         });
+        map.on('zoomend', function (e) {
+            comp.mapInteract();
+        });
+        map.on('dragend', function (e) {
+            comp.mapInteract();
+        });
 
         this.layerRouting.addTo(this.map);
     }
@@ -438,6 +446,32 @@ export class TransportProfileMap extends AnimatedSlide implements OnInit {
         }
         let routeSettings: RouteProfile = bsGrid.path.route.type;
         this.drawRoute(bsGrid.busstops, routeSettings);
+    }
+    private mapInteract() {
+        let bounds = this.map.getBounds();
+        let totalMarkers: BusStop[] = this.calcBounds(this.allBusStops, bounds);
+        if (totalMarkers.length < 200) { // no more then 200 bus stops, performance!
+            this.updateBusStopLayer(totalMarkers);
+        } else {
+            this.updateBusStopLayer([]);
+        }
+    };
+    private calcBounds(markers: BusStop[], bounds: any) {
+        var p = {
+            NElat: bounds._northEast.lat,
+            SWlat: bounds._southWest.lat,
+            NElng: bounds._northEast.lng,
+            SWlng: bounds._southWest.lng
+        };
+        var rest: BusStop[] = [];
+        for (var i = 0; i < markers.length; i++) {
+            var lat = markers[i].latitude;
+            var lon = markers[i].longitude;
+            if (lat > p.SWlat && lat < p.NElat && lon > p.SWlng && lon < p.NElng) {
+                rest.push(markers[i]);
+            }
+        }
+        return rest;
     }
 }
 

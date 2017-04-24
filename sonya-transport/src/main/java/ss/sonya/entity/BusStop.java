@@ -177,6 +177,7 @@ public class BusStop implements Serializable {
     }
     @Override
     public String toString() {
-        return "ss.sonya.entity.BusStop[ id=" + getId() + " ]";
+        return "ss.sonya.entity.BusStop[ id=" + getId()
+                + ", name=" + getName() + "]";
     }
 }

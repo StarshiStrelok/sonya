@@ -18,7 +18,6 @@ import {RoutesGrid} from './component/routes.grid';
 import {PathsGrid} from './component/paths.grid';
 import {BusStopGrid} from './component/busstop.grid';
 import {PathForm} from './form/path.form';
-import {ImportDataPanel} from './component/import.data.panel';
 import {Window, WindowDirective} from './component/window';
 
 import {DataService} from './service/data.service';
@@ -31,7 +30,6 @@ import {OSRMService} from './service/osrm.service'
         TransportProfileForm,
         TransportProfileList,
         TransportProfileMap,
-        ImportDataPanel,
         BusStopForm,
         RouteForm,
         RoutesGrid,

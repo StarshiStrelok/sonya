@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <md-chip color="accent" selected="true" class="full-width base-font base-font-weight">ROUTES CONTROL</md-chip>
     </md-chip-list>
     
-    <md-grid-list cols="4">
+    <md-grid-list cols="5">
         <md-grid-tile colspan="3">
             <md-select placeholder="Route type" class="full-width" [(ngModel)]="selectedType"
                        (change)="typeChanged()">
@@ -28,7 +28,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-select>
         </md-grid-tile>
         <md-grid-tile>
-            <button md-mini-fab color="accent" mdTooltip="New route" class="rg-new-route"
+            <button md-mini-fab color="accent" mdTooltip="Import data"
+                    mdTooltipPosition="above" (click)="importData()">
+                <md-icon>file_upload</md-icon></button>
+        </md-grid-tile>
+        <md-grid-tile>
+            <button md-mini-fab color="accent" mdTooltip="New route"
                     mdTooltipPosition="above" (click)="openCreateRouteDialog()">
                 <md-icon>add</md-icon></button>
         </md-grid-tile>
@@ -45,4 +50,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <button md-menu-item (click)="deleteRoute()"><md-icon>delete_forever</md-icon> Delete</button>
 </md-menu>
 <button [mdMenuTriggerFor]="appMenu" hidden="true"></button>
+<input type="file" hidden="true" id="import-data-upload"
+       (change)="selectFile($event)">
 

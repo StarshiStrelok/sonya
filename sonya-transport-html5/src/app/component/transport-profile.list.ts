@@ -68,8 +68,5 @@ export class TransportProfileList extends AnimatedSlide implements OnInit {
     openMap(id: number) {
         this.router.navigate([Links.PROFILE_MAP, id]);
     }
-    openImportPanel(id: number) {
-        this.router.navigate([Links.PROFILE_IMPORT, id]);
-    }
 }
 

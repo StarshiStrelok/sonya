@@ -27,8 +27,7 @@ import {ModelClass, TransportProfile, RouteProfile, Route} from './../model/abs.
 
 @Component({
     selector: 'routes-grid',
-    templateUrl: './routes.grid.html',
-    styles: [`.rg-new-route {margin-left: 20px;}`]
+    templateUrl: './routes.grid.html'
 })
 export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
     @ViewChild(MdMenuTrigger) ctxMenuTrigger: MdMenuTrigger;
@@ -115,5 +114,14 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
                     });
             }
         });
+    }
+    importData() {
+        document.getElementById('import-data-upload').click();
+    }
+    selectFile(event: any) {
+        let files = event.target.files;
+        var binData = new FormData();
+        binData.append('file', files[0]);
+        console.log(files[0]);
     }
 }
