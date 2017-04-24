@@ -72,4 +72,28 @@ class CommonDAOImpl implements CommonDAO {
         Query query = em.createQuery(criteria);
         return query.getResultList();
     }
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED,
+            rollbackFor = Exception.class)
+    public <T> void createAll(final List<T> entities) {
+        entities.stream().forEach(e -> {
+            em.persist(e);
+        });
+    }
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED,
+            rollbackFor = Exception.class)
+    public <T> void updateAll(final List<T> entities) {
+        entities.stream().forEach(e -> {
+            em.merge(e);
+        });
+    }
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED,
+            rollbackFor = Exception.class)
+    public <T> void deleteAll(List<T> entities) {
+        entities.stream().forEach(e -> {
+            em.remove(e);
+        });
+    }
 }

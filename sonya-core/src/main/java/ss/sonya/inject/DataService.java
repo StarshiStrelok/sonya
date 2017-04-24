@@ -66,4 +66,25 @@ public interface DataService {
      * @throws Exception error.
      */
     <T> List<T> getAll(Class<T> cl) throws Exception;
+    /**
+     * Create entities.
+     * @param <T> entity type.
+     * @param entities list entities.
+     * @throws Exception error.
+     */
+    <T> void createAll(List<T> entities) throws Exception;
+    /**
+     * Update entities.
+     * @param <T> entity type.
+     * @param entities list entities.
+     * @throws Exception error.
+     */
+    <T> void updateAll(List<T> entities) throws Exception;
+    /**
+     * Delete entities.
+     * @param <T> entity type.
+     * @param entities list entities.
+     * @throws Exception error.
+     */
+    <T> void deleteAll(List<T> entities) throws Exception;
 }

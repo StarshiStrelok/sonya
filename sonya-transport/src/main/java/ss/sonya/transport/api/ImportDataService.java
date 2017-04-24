@@ -16,10 +16,26 @@
  */
 package ss.sonya.transport.api;
 
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
+import ss.sonya.transport.component.ImportDataEvent;
+import ss.sonya.transport.exception.ImportDataException;
+
 /**
  * Import data service.
  * @author ss
  */
 public interface ImportDataService {
-    
+    /**
+     * Import data.
+     * @param file uploaded file with data.
+     * @param tpId transport profile ID.
+     * @param rtID route profile ID.
+     * @param isPersist persist changes flag, if false - changes not committed.
+     * @return list changes.
+     * @throws ImportDataException import error.
+     */
+    List<ImportDataEvent> importData(MultipartFile file,
+            Integer tpId, Integer rtID, boolean isPersist)
+            throws ImportDataException;
 }

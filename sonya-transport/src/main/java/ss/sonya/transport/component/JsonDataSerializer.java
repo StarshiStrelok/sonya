@@ -145,7 +145,9 @@ public class JsonDataSerializer implements ImportDataSerializer {
         }
     }
     @Override
-    public ImportData deserialize(final byte[] binData)
+    public ImportData deserialize(final byte[] binData,
+            final TransportProfile transportProfile,
+            final RouteProfile routeProfile)
             throws DataDeserializationException {
         try {
             LOG.info("&&& deserializer start...");
@@ -157,15 +159,18 @@ public class JsonDataSerializer implements ImportDataSerializer {
             JSONObject root = new JSONObject(new String(binData, "UTF-8"));
             // ------------------------- bus stops ----------------------------
             if (root.has(PART_BUSSTOPS)) {
-                busstops = deserBusstops(root.getJSONArray(PART_BUSSTOPS));
+                busstops = deserBusstops(root.getJSONArray(PART_BUSSTOPS),
+                        transportProfile);
             }
             // ------------------------- routes -------------------------------
             if (root.has(PART_ROUTES)) {
-                routes = deserRoutes(root.getJSONArray(PART_ROUTES));
+                routes = deserRoutes(root.getJSONArray(PART_ROUTES),
+                        transportProfile, routeProfile);
             }
             // ------------------------- paths --------------------------------
             if (root.has(PART_PATHS)) {
-                paths = deserPaths(root.getJSONArray(PART_PATHS));
+                paths = deserPaths(root.getJSONArray(PART_PATHS),
+                        transportProfile);
             }
             // ------------------------- schedule -----------------------------
             if (root.has(PART_SCHEDULE)) {
@@ -218,9 +223,11 @@ public class JsonDataSerializer implements ImportDataSerializer {
     /**
      * Deserialize bus stops.
      * @param data JSON array.
+     * @param transportProfile transport profile.
      * @return list bus stops.
      */
-    private List<BusStop> deserBusstops(final JSONArray data) {
+    private List<BusStop> deserBusstops(final JSONArray data,
+            final TransportProfile transportProfile) {
         List<BusStop> list = new ArrayList<>();
         for (int i = 0; i < data.length(); i++) {
             JSONObject o = data.getJSONObject(i);
@@ -229,6 +236,7 @@ public class JsonDataSerializer implements ImportDataSerializer {
             bs.setName(o.getString(BS_NAME));
             bs.setLatitude(o.getDouble(BS_LAT));
             bs.setLongitude(o.getDouble(BS_LON));
+            bs.setTransportProfile(transportProfile);
             list.add(bs);
         }
         LOG.info("& restore bus stops [" + list.size() + "]");
@@ -270,13 +278,19 @@ public class JsonDataSerializer implements ImportDataSerializer {
     /**
      * Deserialize routes.
      * @param data JSON array.
+     * @param routeProfile route profile.
+     * @param transportProfile transport profile.
      * @return routes.
      */
-    private List<Route> deserRoutes(final JSONArray data) {
+    private List<Route> deserRoutes(final JSONArray data,
+            final TransportProfile transportProfile,
+            final RouteProfile routeProfile) {
         List<Route> list = new ArrayList<>();
         for (int i = 0; i < data.length(); i++) {
             JSONObject o = data.getJSONObject(i);
             Route route = new Route();
+            route.setType(routeProfile);
+            route.setTransportProfile(transportProfile);
             route.setExternalId(o.getLong(ROUTE_EXT_ID));
             route.setNamePrefix(o.getString(ROUTE_N_PREFIX));
             if (o.has(ROUTE_N_POSTFIX)) {
@@ -337,13 +351,16 @@ public class JsonDataSerializer implements ImportDataSerializer {
     /**
      * Deserialize paths.
      * @param data JSON array.
+     * @param transportProfile transport profile.
      * @return paths.
      */
-    private List<Path> deserPaths(final JSONArray data) {
+    private List<Path> deserPaths(final JSONArray data,
+            final TransportProfile transportProfile) {
         List<Path> list = new ArrayList<>();
         for (int i = 0; i < data.length(); i++) {
             JSONObject o = data.getJSONObject(i);
             Path path = new Path();
+            path.setTransportProfile(transportProfile);
             path.setExternalId(o.getLong(PATH_EXT_ID));
             path.setDescription(o.getString(PATH_NAME));
             Route route = new Route();

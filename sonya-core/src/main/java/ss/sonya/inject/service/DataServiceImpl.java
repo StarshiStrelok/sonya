@@ -55,4 +55,16 @@ class DataServiceImpl implements DataService {
     public <T> List<T> getAll(Class<T> cl) throws Exception {
         return commonDAO.getAll(cl);
     }
+    @Override
+    public <T> void createAll(List<T> entities) throws Exception {
+        commonDAO.createAll(entities);
+    }
+    @Override
+    public <T> void updateAll(List<T> entities) throws Exception {
+        commonDAO.updateAll(entities);
+    }
+    @Override
+    public <T> void deleteAll(List<T> entities) throws Exception {
+        commonDAO.deleteAll(entities);
+    }
 }

@@ -16,6 +16,8 @@
  */
 package ss.sonya.transport.api;
 
+import ss.sonya.entity.RouteProfile;
+import ss.sonya.entity.TransportProfile;
 import ss.sonya.transport.exception.DataDeserializationException;
 import ss.sonya.transport.exception.DataSerializationException;
 
@@ -30,13 +32,15 @@ public interface ImportDataSerializer {
      * @return binary data.
      * @throws DataSerializationException serialization error.
      */
-    byte[] serialize(final ImportData data) throws DataSerializationException;
+    byte[] serialize(ImportData data) throws DataSerializationException;
     /**
      * Deserialize import data.
      * @param binData binary data.
+     * @param transportProfile transport profile.
+     * @param routeProfile route profile.
      * @return import data.
      * @throws DataDeserializationException deserialization error.
      */
-    ImportData deserialize(final byte[] binData)
-            throws DataDeserializationException;
+    ImportData deserialize(byte[] binData, TransportProfile transportProfile,
+            RouteProfile routeProfile) throws DataDeserializationException;
 }

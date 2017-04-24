@@ -60,4 +60,22 @@ public interface CommonDAO {
      * @return list entities.
      */
     <T> List<T> getAll(Class<T> cl);
+    /**
+     * Create entities.
+     * @param <T> entity type.
+     * @param entities list entities.
+     */
+    <T> void createAll(List<T> entities);
+    /**
+     * Update entities.
+     * @param <T> entity type.
+     * @param entities list entities.
+     */
+    <T> void updateAll(List<T> entities);
+    /**
+     * Delete entities.
+     * @param <T> entity type.
+     * @param entities list entities.
+     */
+    <T> void deleteAll(List<T> entities);
 }
