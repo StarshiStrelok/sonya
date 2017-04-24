@@ -18,10 +18,8 @@ package ss.sonya.transport.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,9 +95,8 @@ class ImportDataServiceImpl implements ImportDataService {
             }
             if (isPersist) {
             // ---------------------- orphan routes & paths -------------------
-                events.addAll(deleteOrphanRoutesAndPaths(paths, routes, tpId));
-            // ---------------------- orphan bus stops ------------------------
-                events.addAll(deleteOrphanBusStops(tpId));
+                events.addAll(deleteOrphanRoutesAndPaths(
+                        paths, routes, tpId, rtID));
             }
             return events;
         } catch (Exception e) {
@@ -109,52 +106,24 @@ class ImportDataServiceImpl implements ImportDataService {
     }
 // ================================== PRIVATE =================================
     /**
-     * Delete orphan bus stops.
-     * @param profileId transport profile ID.
-     * @return events.
-     * @throws Exception method error.
-     */
-    private List<ImportDataEvent> deleteOrphanBusStops(final Integer profileId)
-            throws Exception {
-        List<ImportDataEvent> events = new ArrayList<>();
-        List<Path> allPaths = transportService
-                .getFromProfile(profileId, Path.class);
-        List<BusStop> allBs = transportService
-                .getFromProfile(profileId, BusStop.class);
-        Set<BusStop> setBs = new HashSet<>();
-        allPaths.stream().forEach(p -> {
-            setBs.addAll(p.getBusstops());
-        });
-        allBs.removeAll(setBs);
-        if (!allBs.isEmpty()) {
-            allBs.forEach(bs -> {
-                events.add(createEvent(bs,
-                    ImportDataEventType.DELETE_ORPHAN_BUS_STOP,
-                    new HashMap<>()
-                ));
-            });
-            dataService.deleteAll(allBs);
-        }
-        return events;
-    }
-    /**
      * Delete orphan paths & routes.
      * @param paths actual paths.
      * @param routes actual routes.
      * @param profileId transport profile ID.
+     * @param rid route profile ID.
      * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> deleteOrphanRoutesAndPaths(
             final List<Path> paths, final List<Route> routes,
-            final Integer profileId) throws Exception {
+            final Integer profileId, final Integer rid) throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
         List<Route> allRoutes = transportService
                 .getFromProfile(profileId, Route.class);
         Map<Long, Route> routeMap = new HashMap<>();
         Map<Long, Path> pathMap = new HashMap<>();
         for (Route r : allRoutes) {
-            if (r.getExternalId() != null) {
+            if (r.getExternalId() != null && rid.equals(r.getType().getId())) {
                 routeMap.put(r.getExternalId(), r);
             }
         }
@@ -187,6 +156,8 @@ class ImportDataServiceImpl implements ImportDataService {
                     new HashMap<>()
             ));
         }
+        LOG.info("orphan paths [" + pathMap.values().size() + "]");
+        LOG.info("orphan routes [" + routeMap.values().size() + "]");
         dataService.deleteAll(new ArrayList<>(pathMap.values()));
         dataService.deleteAll(new ArrayList<>(routeMap.values()));
         return events;
@@ -251,7 +222,8 @@ class ImportDataServiceImpl implements ImportDataService {
                 ));
             }
         }
-        if (isPersist) {
+        if (isPersist && !update.isEmpty()) {
+            LOG.info("schedules for update [" + update.size() + "]");
             dataService.updateAll(update);
         }
         return events;

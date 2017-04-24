@@ -51,10 +51,10 @@ public class Path implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    /** TRoute. */
+    /** Route. */
     @ManyToOne(fetch = FetchType.EAGER)
     private Route route;
-    /** TRoute paths. */
+    /** Route paths. */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "path_busstops", joinColumns =
             @JoinColumn(name = "path_fk"), inverseJoinColumns =

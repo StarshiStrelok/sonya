@@ -63,6 +63,9 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
         if (this.selectedType) {
             this.dataService.getRoutesFromSameType(this.selectedType.id)
                 .then((routes: Route[]) => {
+//                    routes.sort(function (a, b) {
+//                        return parseFloat(a.namePrefix) - parseFloat(b.namePrefix);
+//                    });
                     this.routes = routes;
                 });
         }

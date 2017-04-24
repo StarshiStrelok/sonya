@@ -85,7 +85,7 @@ class CommonDAOImpl implements CommonDAO {
             rollbackFor = Exception.class)
     public <T> void updateAll(final List<T> entities) {
         entities.stream().forEach(e -> {
-            em.merge(e);
+            em.merge(em.contains(e) ? e : em.merge(e));
         });
     }
     @Override
@@ -93,7 +93,7 @@ class CommonDAOImpl implements CommonDAO {
             rollbackFor = Exception.class)
     public <T> void deleteAll(List<T> entities) {
         entities.stream().forEach(e -> {
-            em.remove(e);
+            em.remove(em.contains(e) ? e : em.merge(e));
         });
     }
 }

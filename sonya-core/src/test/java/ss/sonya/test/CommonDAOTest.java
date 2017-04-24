@@ -16,7 +16,9 @@
  */
 package ss.sonya.test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,7 @@ public class CommonDAOTest extends TestConfig {
     public void test() {
         UserProfile up = createValid();
         up = commonDAO.create(up);
+        Integer id = up.getId();
         up = commonDAO.findById(up.getId(), UserProfile.class);
         Assert.assertNotNull(up);
         String newLogin = "New test login";
@@ -43,7 +46,13 @@ public class CommonDAOTest extends TestConfig {
         up = commonDAO.update(up);
         up = commonDAO.findById(up.getId(), UserProfile.class);
         Assert.assertEquals(up.getLogin(), newLogin);
-        Integer id = up.getId();
+        String newLogin2 = "New test login 2";
+        up.setLogin(newLogin2);
+        List<UserProfile> list = new ArrayList<>();
+        list.add(up);
+        commonDAO.updateAll(list);
+        up = commonDAO.findById(id, UserProfile.class);
+        Assert.assertEquals(up.getLogin(), newLogin2);
         commonDAO.delete(id, UserProfile.class);
         up = commonDAO.findById(id, UserProfile.class);
         Assert.assertNull(up);

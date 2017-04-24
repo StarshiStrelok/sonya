@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <p *ngFor="let event of events">{{event.type}}: {{event.trigger}}</p>
 <md-grid-list cols="2" rowHeight="56px;">
     <md-grid-tile>
-        <button md-fab color="warn" (click)="dialogRef.close(true)" [hidden]="persist"
+        <button md-fab color="warn" (click)="dialogRef.close(true)" *ngIf="!persist"
                 mdTooltip="Import" mdTooltipPosition="above">
             <md-icon>done</md-icon></button>
     </md-grid-tile>
