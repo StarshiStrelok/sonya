@@ -33,7 +33,7 @@ import ss.sonya.entity.RouteProfile;
 import ss.sonya.entity.TransportProfile;
 import ss.sonya.entity.Trip;
 import ss.sonya.inject.DataService;
-import ss.sonya.transport.api.ImportData;
+import ss.sonya.transport.iface.ImportData;
 import ss.sonya.transport.api.ImportDataSerializer;
 import ss.sonya.transport.api.ImportDataService;
 import ss.sonya.transport.api.TransportDataService;
@@ -42,6 +42,7 @@ import ss.sonya.transport.constants.ImportDataEventType;
 import ss.sonya.transport.constants.ImportInfoKey;
 import ss.sonya.transport.exception.EmptyFieldException;
 import ss.sonya.transport.exception.ImportDataException;
+import ss.sonya.transport.iface.ExternalRef;
 
 /**
  * Import data service implementation.
@@ -175,14 +176,7 @@ class ImportDataServiceImpl implements ImportDataService {
             final Integer profileId) throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
         List<Path> update = new ArrayList<>();
-        List<Path> allPaths = transportService
-                .getFromProfile(profileId, Path.class);
-        Map<Long, Path> pathMap = new HashMap<>();
-        allPaths.stream().forEach(p -> {
-            if (p.getExternalId() != null) {
-                pathMap.put(p.getExternalId(), p);
-            }
-        });
+        Map<Long, Path> pathMap = createFullMap(Path.class, profileId);
         for (Path p : sch.keySet()) {
             if (p.getExternalId() == null) {
                 throw new EmptyFieldException("externalId", p);
@@ -222,8 +216,8 @@ class ImportDataServiceImpl implements ImportDataService {
                 ));
             }
         }
+        LOG.info("update schedules [" + update.size() + "]");
         if (isPersist && !update.isEmpty()) {
-            LOG.info("schedules for update [" + update.size() + "]");
             dataService.updateAll(update);
         }
         return events;
@@ -241,30 +235,9 @@ class ImportDataServiceImpl implements ImportDataService {
         List<ImportDataEvent> events = new ArrayList<>();
         List<Path> create = new ArrayList<>();
         List<Path> update = new ArrayList<>();
-        List<BusStop> allBs = transportService
-                .getFromProfile(profileId, BusStop.class);
-        Map<Long, BusStop> bsMap = new HashMap<>();
-        allBs.stream().forEach(bs -> {
-            if (bs.getExternalId() != null) {
-                bsMap.put(bs.getExternalId(), bs);
-            }
-        });
-        List<Path> allPaths = transportService
-                .getFromProfile(profileId, Path.class);
-        Map<Long, Path> pathMap = new HashMap<>();
-        allPaths.stream().forEach(p -> {
-            if (p.getExternalId() != null) {
-                pathMap.put(p.getExternalId(), p);
-            }
-        });
-        List<Route> allRoutes = transportService
-                .getFromProfile(profileId, Route.class);
-        Map<Long, Route> routeMap = new HashMap<>();
-        allRoutes.stream().forEach(r -> {
-            if (r.getExternalId() != null) {
-                routeMap.put(r.getExternalId(), r);
-            }
-        });
+        Map<Long, BusStop> bsMap = createFullMap(BusStop.class, profileId);
+        Map<Long, Path> pathMap = createFullMap(Path.class, profileId);
+        Map<Long, Route> routeMap = createFullMap(Route.class, profileId);
         for (Path path : paths) {
             if (path.getExternalId() == null) {
                 throw new EmptyFieldException("externalId", path);
@@ -357,6 +330,8 @@ class ImportDataServiceImpl implements ImportDataService {
                 }
             }
         }
+        LOG.info("create paths [" + create.size() + "]");
+        LOG.info("update paths [" + update.size() + "]");
         if (isPersist) {
             dataService.createAll(create);
             dataService.updateAll(update);
@@ -376,14 +351,7 @@ class ImportDataServiceImpl implements ImportDataService {
         List<ImportDataEvent> events = new ArrayList<>();
         List<Route> create = new ArrayList<>();
         List<Route> update = new ArrayList<>();
-        List<Route> all = transportService
-                .getFromProfile(profileId, Route.class);
-        Map<Long, Route> allMap = new HashMap<>();
-        all.stream().forEach(r -> {
-            if (r.getExternalId() != null) {
-                allMap.put(r.getExternalId(), r);
-            }
-        });
+        Map<Long, Route> allMap = createFullMap(Route.class, profileId);
         for (Route route : routes) {
             if (route.getExternalId() == null) {
                 throw new EmptyFieldException("externalId", route);
@@ -420,6 +388,8 @@ class ImportDataServiceImpl implements ImportDataService {
                 }
             }
         }
+        LOG.info("create routes [" + create.size() + "]");
+        LOG.info("update routes [" + update.size() + "]");
         if (isPersist) {
             dataService.createAll(create);
             dataService.updateAll(update);
@@ -439,14 +409,7 @@ class ImportDataServiceImpl implements ImportDataService {
         List<ImportDataEvent> events = new ArrayList<>();
         List<BusStop> create = new ArrayList<>();
         List<BusStop> update = new ArrayList<>();
-        List<BusStop> all = transportService
-                .getFromProfile(profileId, BusStop.class);
-        Map<Long, BusStop> allMap = new HashMap<>();
-        all.stream().forEach(bs -> {
-            if (bs.getExternalId() != null) {
-                allMap.put(bs.getExternalId(), bs);
-            }
-        });
+        Map<Long, BusStop> allMap = createFullMap(BusStop.class, profileId);
         for (BusStop bs : busstops) {
             if (bs.getExternalId() == null) {
                 throw new EmptyFieldException("externalId", bs);
@@ -503,6 +466,8 @@ class ImportDataServiceImpl implements ImportDataService {
                 }
             }
         }
+        LOG.info("create bus stops [" + create.size() + "]");
+        LOG.info("update bus stops [" + update.size() + "]");
         if (isPersist) {
             dataService.createAll(create);
             dataService.updateAll(update);
@@ -525,5 +490,24 @@ class ImportDataServiceImpl implements ImportDataService {
         ev.setType(type);
         ev.setInfo(info);
         return ev;
+    }
+    /**
+     * Create map with full entities set.
+     * @param <T> external ref entity type.
+     * @param cl entity class.
+     * @param pid transport profile ID.
+     * @return map, key - external ID, value - entity.
+     * @throws Exception error.
+     */
+    private <T extends ExternalRef> Map<Long, T> createFullMap(
+            final Class<T> cl, final Integer pid) throws Exception {
+        List<T> all = transportService.getFromProfile(pid, cl);
+        Map<Long, T> map = new HashMap<>();
+        all.stream().forEach(p -> {
+            if (p.getExternalId() != null) {
+                map.put(p.getExternalId(), p);
+            }
+        });
+        return map;
     }
 }

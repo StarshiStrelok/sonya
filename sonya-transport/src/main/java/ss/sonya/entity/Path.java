@@ -36,6 +36,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import ss.sonya.transport.iface.ExternalRef;
 
 /**
  * Route path.
@@ -43,7 +44,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "paths")
-public class Path implements Serializable {
+public class Path implements Serializable, ExternalRef {
     /** Default UID. */
     private static final long serialVersionUID = 1L;
 // ====================== FIELDS ==============================================
@@ -145,6 +146,7 @@ public class Path implements Serializable {
     /**
      * @return the externalId
      */
+    @Override
     public Long getExternalId() {
         return externalId;
     }

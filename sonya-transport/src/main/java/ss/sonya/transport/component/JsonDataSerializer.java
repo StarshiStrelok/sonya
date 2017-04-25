@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,11 +41,13 @@ import ss.sonya.entity.Route;
 import ss.sonya.entity.RouteProfile;
 import ss.sonya.entity.TransportProfile;
 import ss.sonya.entity.Trip;
-import ss.sonya.transport.api.ImportData;
+import ss.sonya.transport.iface.ImportData;
 import ss.sonya.transport.api.ImportDataSerializer;
 import ss.sonya.transport.exception.DataDeserializationException;
 import ss.sonya.transport.exception.DataSerializationException;
+import ss.sonya.transport.exception.DuplicateExternalIDException;
 import ss.sonya.transport.exception.EmptyFieldException;
+import ss.sonya.transport.iface.ExternalRef;
 
 /**
  * Data serializer / deserializer.
@@ -111,16 +114,19 @@ public class JsonDataSerializer implements ImportDataSerializer {
             // ----------------- bus stops -------------------------------------
             if (data.busstops() != null && !data.busstops().isEmpty()) {
                 LOG.info("& bus stops found");
+                checkUnique(data.busstops());
                 root.put(PART_BUSSTOPS, serBusstops(data.busstops()));
             }
             //------------------ routes ----------------------------------------
             if (data.routes() != null && !data.routes().isEmpty()) {
                 LOG.info("& routes found");
+                checkUnique(data.routes());
                 root.put(PART_ROUTES, serRoutes(data.routes()));
             }
             // ----------------- paths -----------------------------------------
             if (data.paths() != null && !data.paths().isEmpty()) {
                 LOG.info("& paths found");
+                checkUnique(data.paths());
                 root.put(PART_PATHS, serPaths(data.paths()));
             }
             // ----------------- schedule --------------------------------------
@@ -138,7 +144,7 @@ public class JsonDataSerializer implements ImportDataSerializer {
             LOG.info("&&& serializer end...");
             return root.toString().getBytes("UTF-8");
         } catch (ConstraintViolationException | UnsupportedEncodingException
-                | EmptyFieldException e) {
+                | EmptyFieldException | DuplicateExternalIDException e) {
             LOG.error("serialize import data error!", e);
             throw new DataSerializationException(
                     "serialize import data error!", e);
@@ -452,5 +458,22 @@ public class JsonDataSerializer implements ImportDataSerializer {
         }
         LOG.info("& restore schedule size [" + schedule.size() + "]");
         return schedule;
+    }
+    /**
+     * Check duplicate external ID.
+     * @param <T> having external ID type.
+     * @param list list entities.
+     * @throws DuplicateExternalIDException duplicate found.
+     */
+    private <T extends ExternalRef> void checkUnique(final List<T> list)
+            throws DuplicateExternalIDException {
+        Set<Long> ids = new HashSet<>();
+        list.stream().forEach(e -> {
+            ids.add(e.getExternalId());
+        });
+        if (ids.size() != list.size()) {
+            throw new DuplicateExternalIDException(list.get(0).getClass()
+                    + " duplicate external ID found!");
+        }
     }
 }

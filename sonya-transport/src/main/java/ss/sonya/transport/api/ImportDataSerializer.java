@@ -16,6 +16,7 @@
  */
 package ss.sonya.transport.api;
 
+import ss.sonya.transport.iface.ImportData;
 import ss.sonya.entity.RouteProfile;
 import ss.sonya.entity.TransportProfile;
 import ss.sonya.transport.exception.DataDeserializationException;

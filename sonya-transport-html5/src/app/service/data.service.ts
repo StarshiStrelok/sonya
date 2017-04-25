@@ -19,6 +19,7 @@ import {Injectable} from '@angular/core';
 import {AbsModel, Route, ModelClass, Path, ImportDataEvent} from '../model/abs.model';
 import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/timeout';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()

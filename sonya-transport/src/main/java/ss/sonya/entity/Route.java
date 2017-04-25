@@ -33,6 +33,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import ss.sonya.transport.iface.ExternalRef;
 
 /**
  * Route.
@@ -40,7 +41,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "routes")
-public class Route implements Serializable {
+public class Route implements Serializable, ExternalRef {
     /** Default UID. */
     private static final long serialVersionUID = 1L;
 // ============================ FIELDS ========================================
@@ -141,6 +142,7 @@ public class Route implements Serializable {
     /**
      * @return the externalId
      */
+    @Override
     public Long getExternalId() {
         return externalId;
     }

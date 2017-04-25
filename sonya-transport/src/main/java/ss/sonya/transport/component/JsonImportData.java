@@ -22,7 +22,7 @@ import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
 import ss.sonya.entity.Trip;
-import ss.sonya.transport.api.ImportData;
+import ss.sonya.transport.iface.ImportData;
 
 /**
  * JSON import data.

@@ -67,6 +67,7 @@ export class TransportProfileMap extends AnimatedSlide implements OnInit {
     @ViewChild('sidenav') sideNav: MdSidenav;
     @ViewChild(SideNavContentDirective) sideNavTmpl: SideNavContentDirective;
     viewInstance: SwitchedContent;
+    showProgress = false;
     // constants
     MOCK_BS: string = 'mock';
     EARTH_RAD: number = 6371; // km

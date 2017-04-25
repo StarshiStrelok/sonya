@@ -24,7 +24,7 @@ import {DialogService} from './../service/dialog.service';
 import {RouteForm} from './../form/route.form';
 import {PathsGrid} from './paths.grid';
 import {ConfirmImport} from './confirm.import.dialog';
-import {ModelClass, TransportProfile, RouteProfile, Route} from './../model/abs.model';
+import {ModelClass, TransportProfile, RouteProfile, Route, ImportDataEvent} from './../model/abs.model';
 
 @Component({
     selector: 'routes-grid',
@@ -63,9 +63,19 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
         if (this.selectedType) {
             this.dataService.getRoutesFromSameType(this.selectedType.id)
                 .then((routes: Route[]) => {
-//                    routes.sort(function (a, b) {
-//                        return parseFloat(a.namePrefix) - parseFloat(b.namePrefix);
-//                    });
+                    routes.sort(function (a, b) {
+                        if (!isNaN(a.namePrefix as any) && !isNaN(b.namePrefix as any)) {
+                            let dif = parseFloat(a.namePrefix) - parseFloat(b.namePrefix);
+                            if (dif === 0) {
+                                return a.namePostfix.localeCompare(b.namePostfix);
+                            } else {
+                                return dif;
+                            }
+                        } else {
+                            return (a.namePrefix + a.namePostfix)
+                                    .localeCompare(b.namePrefix + b.namePostfix);
+                        }
+                    });
                     this.routes = routes;
                 });
         }
@@ -125,20 +135,31 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
     selectFile(event: any) {
         let files = event.target.files;
         var binData = new FormData();
+        if (!files[0]) {
+            return;
+        }
         binData.append('file', files[0]);
+        this.mapComponent.showProgress = true;
+        let inputFile: any = document.getElementById("import-data-upload");
+        inputFile.value = "";
         this.dataService.importData(this.profileId, this.selectedType.id, binData, false)
-            .then(events => {
+            .then((events: ImportDataEvent[]) => {
+                this.mapComponent.showProgress = false;
                 this.dialogService.openWindow('Confirm import', '', '50%', ConfirmImport, {
                     events: events,
                     persist: false
                 }).subscribe((res: boolean) => {
                     if (res) {
+                        this.mapComponent.showProgress = true;
                         this.dataService.importData(this.profileId, this.selectedType.id, binData, true)
-                            .then(events => {
+                            .then((events: ImportDataEvent[]) => {
+                                this.mapComponent.showProgress = false;
                                 this.dialogService.openWindow('Import completed', '', '50%', ConfirmImport, {
                                     events: events,
                                     persist: true
-                                }).subscribe((res: boolean) => {});
+                                }).subscribe((res: boolean) => {
+                                    this.typeChanged();
+                                });
                             });
                     }
                 });
