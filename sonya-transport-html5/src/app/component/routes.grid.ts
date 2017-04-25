@@ -17,6 +17,7 @@
 
 import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import {MdMenuTrigger} from '@angular/material';
+import {NotificationsService} from 'angular2-notifications';
 
 import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
@@ -40,7 +41,8 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
     selectedRoute: Route;
     constructor(
         private dataService: DataService,
-        private dialogService: DialogService
+        private dialogService: DialogService,
+        private notificationService: NotificationsService
     ) {}
     setData(data: any) {
         this.mapComponent = data.mapComponent;
@@ -73,7 +75,7 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
                             }
                         } else {
                             return (a.namePrefix + a.namePostfix)
-                                    .localeCompare(b.namePrefix + b.namePostfix);
+                                .localeCompare(b.namePrefix + b.namePostfix);
                         }
                     });
                     this.routes = routes;
@@ -145,24 +147,29 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
         this.dataService.importData(this.profileId, this.selectedType.id, binData, false)
             .then((events: ImportDataEvent[]) => {
                 this.mapComponent.showProgress = false;
-                this.dialogService.openWindow('Confirm import', '', '50%', ConfirmImport, {
-                    events: events,
-                    persist: false
-                }).subscribe((res: boolean) => {
-                    if (res) {
-                        this.mapComponent.showProgress = true;
-                        this.dataService.importData(this.profileId, this.selectedType.id, binData, true)
-                            .then((events: ImportDataEvent[]) => {
-                                this.mapComponent.showProgress = false;
-                                this.dialogService.openWindow('Import completed', '', '50%', ConfirmImport, {
-                                    events: events,
-                                    persist: true
-                                }).subscribe((res: boolean) => {
-                                    this.typeChanged();
+                if (events.length === 0) {
+                    this.notificationService.info('Import details',
+                        'Differences from current version not found');
+                } else {
+                    this.dialogService.openWindow('Confirm import', '', '50%', ConfirmImport, {
+                        events: events,
+                        persist: false
+                    }).subscribe((res: boolean) => {
+                        if (res) {
+                            this.mapComponent.showProgress = true;
+                            this.dataService.importData(this.profileId, this.selectedType.id, binData, true)
+                                .then((events: ImportDataEvent[]) => {
+                                    this.mapComponent.showProgress = false;
+                                    this.dialogService.openWindow('Import completed', '', '50%', ConfirmImport, {
+                                        events: events,
+                                        persist: true
+                                    }).subscribe((res: boolean) => {
+                                        this.typeChanged();
+                                    });
                                 });
-                            });
-                    }
-                });
+                        }
+                    });
+                }
             });
     }
 }

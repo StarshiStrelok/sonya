@@ -33,8 +33,7 @@ export class WindowDirective {
     templateUrl: './window.html',
     styles: [`.window-title {
                 text-align: center;
-                font-weight: 500;
-                font-family: Roboto,"Helvetica Neue",sans-serif;
+                font-weight: bold;
             }`]
 })
 export class Window implements AfterViewInit {

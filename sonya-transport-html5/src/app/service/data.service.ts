@@ -18,8 +18,8 @@
 import {Injectable} from '@angular/core';
 import {AbsModel, Route, ModelClass, Path, ImportDataEvent} from '../model/abs.model';
 import {Http, Headers} from '@angular/http';
+import {NotificationsService} from 'angular2-notifications';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -27,64 +27,73 @@ export class DataService {
     /** REST URL. */
     private dataUrl: string = '/rest/data/';
     private headers = new Headers({'Content-Type': 'application/json'});
-    constructor(private http: Http) {}
+
+    constructor(private http: Http, private notificationService: NotificationsService) {}
     create<T extends AbsModel>(model: T, clazz: string): Promise<T> {
         console.log('create model [' + clazz + '] start...');
         return this.http.post(
             this.dataUrl + clazz, JSON.stringify(model), {headers: this.headers}
-        ).toPromise()
-            .then(res => res.json() as T)
-            .catch(this.handleError);
+        ).toPromise().then(res => res.json() as T).catch(err => this.handleErrorUI(err));
     }
     update<T extends AbsModel>(model: T, clazz: string): Promise<T> {
         console.log('update model [' + model['id'] + '] [' + clazz + '] start...');
         return this.http.put(
             this.dataUrl + clazz, JSON.stringify(model), {headers: this.headers}
-        ).toPromise().then(res => res.json() as T).catch(this.handleError);
+        ).toPromise().then(res => res.json() as T).catch(err => this.handleErrorUI(err));
     }
     getAll<T extends AbsModel>(clazz: string): Promise<T[]> {
         console.info('get all [' + clazz + '] start...');
         return this.http.get(
             this.dataUrl + clazz + '/all', {headers: this.headers}
-        ).toPromise().then(res => res.json() as T[]).catch(this.handleError);
+        ).toPromise().then(res => res.json() as T[]).catch(err => this.handleErrorUI(err));
     }
     findById<T extends AbsModel>(id: number, clazz: string): Promise<T> {
         console.log('get by id [' + id + '] [' + clazz + ']');
         return this.http.get(
             this.dataUrl + clazz + '/' + id, {headers: this.headers}
-        ).toPromise().then(res => res.json() as T).catch(this.handleError);
+        ).toPromise().then(res => res.json() as T).catch(err => this.handleErrorUI(err));
     }
     deleteById<T extends AbsModel>(id: number, clazz: string): Promise<boolean> {
         console.log('delete [' + id + '] [' + clazz + ']');
         return this.http.delete(
             this.dataUrl + clazz + '/' + id, {headers: this.headers}
-        ).toPromise().then(res => true).catch(this.handleError);
+        ).toPromise().then(res => true).catch(err => this.handleErrorUI(err));
     }
     getFromProfile<T extends AbsModel>(id: number, clazz: string): Promise<T[]> {
         console.log('get from profile [' + id + '] [' + clazz + ']');
         return this.http.get(
             this.dataUrl + clazz + '/from-profile/' + id, {headers: this.headers}
-        ).toPromise().then(res => res.json() as T[]).catch(this.handleError);
+        ).toPromise().then(res => res.json() as T[]).catch(err => this.handleErrorUI(err));
     }
     getRoutesFromSameType(id: number): Promise<Route[]> {
         return this.http.get(
             this.dataUrl + ModelClass.ROUTE + '/from-type/' + id, {headers: this.headers}
-        ).toPromise().then(res => res.json() as Route[]).catch(this.handleError);
+        ).toPromise().then(res => res.json() as Route[]).catch(err => this.handleErrorUI(err));
     }
     getPathsFromRoute(id: number): Promise<Path[]> {
         return this.http.get(
             this.dataUrl + ModelClass.PATH + '/from-route/' + id, {headers: this.headers}
-        ).toPromise().then(res => res.json() as Path[]).catch(this.handleError);
+        ).toPromise().then(res => res.json() as Path[]).catch(err => this.handleErrorUI(err));
     }
     importData(tid: number, rid: number, file: any, persist: boolean): Promise<ImportDataEvent[]> {
         return this.http.post(
             this.dataUrl + 'import/' + tid + '/' + rid + '/' + persist, file, {}
-        ).toPromise()
-            .then(res => res.json() as ImportDataEvent[])
-            .catch(this.handleError);
+        ).toPromise().then(res => res.json() as ImportDataEvent[])
+            .catch(err => this.handleErrorUI(err));
     }
-    private handleError(error: any): Promise<any> {
-        console.error('An error occurred', error); // for demo purposes only
+    private handleErrorUI(error: any): Promise<any> {
+        console.error('An error occurred', error);
+        let status = error.status;
+        if (status === 404 || status === 504) {
+            this.notificationService.error('No connection',
+                'Connection to the server is not available, please try later');
+        } else if (status === 500) {
+            this.notificationService.error('Server error',
+                'Internal server error occured, please try again');
+        } else {
+            this.notificationService.error('Error',
+                'Unknown error occured');
+        }
         return Promise.reject(error.message || error);
     }
 }

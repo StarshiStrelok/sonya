@@ -24,6 +24,10 @@ import {Window, DialogContent} from '../component/window';
 @Component({
     selector: 'confirm-import-dialog',
     templateUrl: './confirm.import.dialog.html',
+    styles: [`.line-style {
+                font-size: 12px;
+                color: #3a3a3a;
+             }`]
 })
 export class ConfirmImport extends DialogContent implements OnInit {
     events: ImportDataEvent[];

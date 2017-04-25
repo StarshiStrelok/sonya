@@ -18,6 +18,7 @@ package ss.sonya.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,6 +28,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -64,6 +67,10 @@ public class RouteProfile implements Serializable {
     @Size(max = 10)
     @Column(name = "line_color", length = 10)
     private String lineColor;
+    /** Last data update. */
+    @Temporal(TemporalType.DATE)
+    @Column(name = "last_update")
+    private Date lastUpdate;
     /** Transport profile. */
     @JsonIgnore
     @NotNull
@@ -142,6 +149,18 @@ public class RouteProfile implements Serializable {
      */
     public void setLineColor(String lineColor) {
         this.lineColor = lineColor;
+    }
+    /**
+     * @return the lastUpdate
+     */
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+    /**
+     * @param lastUpdate the lastUpdate to set
+     */
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 // ============================================================================
     @Override

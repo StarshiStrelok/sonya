@@ -192,6 +192,7 @@ export class TransportProfileMap extends AnimatedSlide implements OnInit {
                     );
                 });
             });
+            this.fitBoundsByMarkers(way, -400);     // sidenav width
         });
     }
     // ========================================================================
@@ -473,6 +474,47 @@ export class TransportProfileMap extends AnimatedSlide implements OnInit {
             }
         }
         return rest;
+    }
+    private fitBoundsByMarkers(markers: BusStop[], paddingX: number) {
+        if (markers.length === 0) {
+            return;
+        }
+        this.map.fitBounds(this.getMarkersBounds(markers), {
+            animate: true,
+            duration: 1,
+            easeLinearity: 0.25,
+            paddingTopLeft: [paddingX ? paddingX : 0, 0]
+        });
+    }
+    private getMarkersBounds(markers: BusStop[]) {
+        var _sw_lat;
+        var _sw_lon;
+        var _ne_lat;
+        var _ne_lon;
+        var _delta = 0.003;
+        for (var i = 0; i < markers.length; i++) {
+            var m = markers[i];
+            var lat = m.latitude;
+            var lon = m.longitude;
+            lon = lon ? lon : m.longitude;
+            if (!_sw_lat || _sw_lat > lat) {
+                _sw_lat = lat;
+            }
+            if (!_sw_lon || _sw_lon > lon) {
+                _sw_lon = lon;
+            }
+            if (!_ne_lat || _ne_lat < lat) {
+                _ne_lat = lat;
+            }
+            if (!_ne_lon || _ne_lon < lon) {
+                _ne_lon = lon;
+            }
+        }
+        var bounds = [
+            [_sw_lat - _delta, _sw_lon - _delta],
+            [_ne_lat + _delta, _ne_lon + _delta]
+        ];
+        return bounds;
     }
 }
 

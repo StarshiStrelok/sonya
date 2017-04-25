@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {SimpleNotificationsModule} from 'angular2-notifications';
 
 import {AppRoutingModule} from './route.module';
 import {SSMaterialModule} from './lib/material/module';
@@ -48,6 +49,7 @@ import {OSRMService} from './service/osrm.service'
         ReactiveFormsModule,
         HttpModule,
         BrowserAnimationsModule,
+        SimpleNotificationsModule.forRoot(),
         SSMaterialModule,
         SSValidatorModule,
         AppRoutingModule

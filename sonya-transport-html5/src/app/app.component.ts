@@ -6,7 +6,11 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
     templateUrl: './app.component.html'
 })
 export class AppComponent {
-
+    options = {
+        position: ["top", "right"],
+        timeOut: 5000,
+        maxStack: 4
+    };
 }
 
 export class AnimatedSlide {

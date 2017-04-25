@@ -17,6 +17,7 @@
 package ss.sonya.transport.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,14 +65,16 @@ class ImportDataServiceImpl implements ImportDataService {
     private TransportDataService transportService;
     @Override
     public List<ImportDataEvent> importData(final MultipartFile file,
-            final Integer tpId, final Integer rtID, final boolean isPersist)
+            final Integer tpId, final Integer rpId, final boolean isPersist)
             throws ImportDataException {
+        LOG.info("==========> start import, transport profile [" + tpId
+                + "], route profile [" + rpId + "]");
         List<ImportDataEvent> events = new ArrayList<>();
         try {
             TransportProfile tProfile = dataService
                     .findById(tpId, TransportProfile.class);
             RouteProfile rProfile = dataService
-                    .findById(rtID, RouteProfile.class);
+                    .findById(rpId, RouteProfile.class);
             ImportData data = serializer.deserialize(file.getBytes(),
                     tProfile, rProfile);
             // ---------------------- bus stops -------------------------------
@@ -94,11 +97,14 @@ class ImportDataServiceImpl implements ImportDataService {
             if (sch != null && !sch.isEmpty()) {
                 events.addAll(handleSchedule(sch, isPersist, tpId));
             }
-            if (isPersist) {
             // ---------------------- orphan routes & paths -------------------
-                events.addAll(deleteOrphanRoutesAndPaths(
-                        paths, routes, tpId, rtID));
+            events.addAll(deleteOrphanRoutesAndPaths(
+                    paths, routes, tpId, rpId, isPersist));
+            if (isPersist) {
+                rProfile.setLastUpdate(new Date());
+                dataService.update(rProfile);
             }
+            LOG.info("==========> finish import");
             return events;
         } catch (Exception e) {
             LOG.error("import data error!", e);
@@ -112,12 +118,14 @@ class ImportDataServiceImpl implements ImportDataService {
      * @param routes actual routes.
      * @param profileId transport profile ID.
      * @param rid route profile ID.
+     * @param isPersist persist changes flag.
      * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> deleteOrphanRoutesAndPaths(
             final List<Path> paths, final List<Route> routes,
-            final Integer profileId, final Integer rid) throws Exception {
+            final Integer profileId, final Integer rid, final boolean isPersist)
+            throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
         List<Route> allRoutes = transportService
                 .getFromProfile(profileId, Route.class);
@@ -159,8 +167,10 @@ class ImportDataServiceImpl implements ImportDataService {
         }
         LOG.info("orphan paths [" + pathMap.values().size() + "]");
         LOG.info("orphan routes [" + routeMap.values().size() + "]");
-        dataService.deleteAll(new ArrayList<>(pathMap.values()));
-        dataService.deleteAll(new ArrayList<>(routeMap.values()));
+        if (isPersist) {
+            dataService.deleteAll(new ArrayList<>(pathMap.values()));
+            dataService.deleteAll(new ArrayList<>(routeMap.values()));
+        }
         return events;
     }
     /**
