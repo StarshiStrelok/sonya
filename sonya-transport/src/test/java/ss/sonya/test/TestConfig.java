@@ -16,10 +16,15 @@
  */
 package ss.sonya.test;
 
+import java.util.Arrays;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import ss.sonya.entity.RouteProfile;
+import ss.sonya.entity.TransportProfile;
+import ss.sonya.inject.DataService;
 import ss.sonya.transport.config.TransportSpringConfig;
 
 /**
@@ -33,5 +38,27 @@ public abstract class TestConfig {
     public static void initTest() {
         // put test sonya.properties to /home/ss/kira/testing/conf
         System.setProperty("catalina.base", "/home/ss/kira/testing");
+    }
+    @Autowired
+    protected DataService dataService;
+    protected TransportProfile createValidTransportProfile() {
+        TransportProfile tp = new TransportProfile();
+        tp.setCenterLat(30.0);
+        tp.setCenterLon(30.0);
+        tp.setInitialZoom(12);
+        tp.setMinZoom(12);
+        tp.setName("test profile");
+        tp.setNorthEastLat(32.0);
+        tp.setNorthEastLon(32.0);
+        tp.setSouthWestLat(28.0);
+        tp.setSouthWestLon(28.0);
+        RouteProfile rp = new RouteProfile();
+        rp.setAvgSpeed(30d);
+        rp.setLineColor("#343434");
+        rp.setName("test route type");
+        rp.setTransportProfile(tp);
+        rp.setRoutingURL("http://example.com");
+        tp.setRouteProfiles(Arrays.asList(new RouteProfile[] {rp}));
+        return tp;
     }
 }

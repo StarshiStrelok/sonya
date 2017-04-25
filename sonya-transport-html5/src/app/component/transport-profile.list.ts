@@ -28,6 +28,10 @@ import {slideAnimation, AnimatedSlide} from './../app.component';
 @Component({
     selector: 'transport-profile-list',
     templateUrl: './transport-profile.list.html',
+    styles: [`.list-item {
+                border: 1px groove;
+                margin-bottom: 3px;
+            }`],
     animations: [slideAnimation]
 })
 export class TransportProfileList extends AnimatedSlide implements OnInit {

@@ -90,7 +90,7 @@ class ImportDataServiceImpl implements ImportDataService {
             // ---------------------- paths -----------------------------------
             List<Path> paths = data.paths();
             if (paths != null && !paths.isEmpty()) {
-                events.addAll(handlePaths(paths, isPersist, tpId));
+                events.addAll(handlePaths(paths, busstops, isPersist, tpId));
             }
             // ---------------------- schedule --------------------------------
             Map<Path, List<Trip>> sch = data.schedule();
@@ -235,17 +235,22 @@ class ImportDataServiceImpl implements ImportDataService {
     /**
      * Handle paths.
      * @param paths paths.
+     * @param busstops bus stops.
      * @param isPersist persist changes flag.
      * @param profileId transport profile ID.
      * @return events.
      * @throws Exception method error.
      */
     private List<ImportDataEvent> handlePaths(final List<Path> paths,
+            final List<BusStop> busstops,
             final boolean isPersist, final Integer profileId) throws Exception {
         List<ImportDataEvent> events = new ArrayList<>();
         List<Path> create = new ArrayList<>();
         List<Path> update = new ArrayList<>();
         Map<Long, BusStop> bsMap = createFullMap(BusStop.class, profileId);
+        if (!isPersist) {
+            busstops.stream().forEach(bs -> bsMap.put(bs.getExternalId(), bs));
+        }
         Map<Long, Path> pathMap = createFullMap(Path.class, profileId);
         Map<Long, Route> routeMap = createFullMap(Route.class, profileId);
         for (Path path : paths) {

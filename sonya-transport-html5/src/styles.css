@@ -34,24 +34,11 @@ body {
 .full-width, longitude-field, latitude-field, zoom-field {
     width: 100%;
 }
-.divider {
-    border: none;
-}
 .main-card {
     margin: 8px;
 }
 .spacer {
     flex: 1 1 auto;
-}
-.vr {
-    width: 10px;
-}
-.list-item {
-    border: 1px groove;
-    margin-bottom: 3px;
-}
-md-toolbar {
-    box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
 }
 * {
     font-family: Roboto,"Helvetica Neue",sans-serif;

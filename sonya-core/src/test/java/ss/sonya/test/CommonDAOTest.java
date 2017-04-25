@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ss.sonya.constants.UserRole;
 import ss.sonya.entity.UserProfile;
-import ss.sonya.inject.CommonDAO;
+import ss.sonya.inject.DataService;
 
 /**
  * Common DAO test.
@@ -33,29 +33,42 @@ import ss.sonya.inject.CommonDAO;
 public class CommonDAOTest extends TestConfig {
     /** Common DAO. */
     @Autowired
-    private CommonDAO commonDAO;
+    private DataService dataService;
     @Test
-    public void test() {
+    public void test() throws Exception {
         UserProfile up = createValid();
-        up = commonDAO.create(up);
+        UserProfile up2 = createValid();
+        UserProfile up3 = createValid();
+        List<UserProfile> createList = new ArrayList<>();
+        createList.add(up2);
+        createList.add(up3);
+        up = dataService.create(up);
         Integer id = up.getId();
-        up = commonDAO.findById(up.getId(), UserProfile.class);
+        up = dataService.findById(up.getId(), UserProfile.class);
         Assert.assertNotNull(up);
+        dataService.createAll(createList);
+        List<UserProfile> all = dataService.getAll(UserProfile.class);
+        Assert.assertTrue(all.size() == 3);
         String newLogin = "New test login";
         up.setLogin(newLogin);
-        up = commonDAO.update(up);
-        up = commonDAO.findById(up.getId(), UserProfile.class);
+        up = dataService.update(up);
+        up = dataService.findById(up.getId(), UserProfile.class);
         Assert.assertEquals(up.getLogin(), newLogin);
         String newLogin2 = "New test login 2";
         up.setLogin(newLogin2);
         List<UserProfile> list = new ArrayList<>();
         list.add(up);
-        commonDAO.updateAll(list);
-        up = commonDAO.findById(id, UserProfile.class);
+        dataService.updateAll(list);
+        up = dataService.findById(id, UserProfile.class);
         Assert.assertEquals(up.getLogin(), newLogin2);
-        commonDAO.delete(id, UserProfile.class);
-        up = commonDAO.findById(id, UserProfile.class);
+        dataService.delete(id, UserProfile.class);
+        up = dataService.findById(id, UserProfile.class);
         Assert.assertNull(up);
+        all = dataService.getAll(UserProfile.class);
+        Assert.assertTrue(all.size() == 2);
+        dataService.deleteAll(all);
+        all = dataService.getAll(UserProfile.class);
+        Assert.assertTrue(all.size() == 0);
     }
     private UserProfile createValid() {
         UserProfile up = new UserProfile();
