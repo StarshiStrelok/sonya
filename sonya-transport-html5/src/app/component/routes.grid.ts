@@ -49,6 +49,7 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
     setData(data: any) {
         this.mapComponent = data.mapComponent;
         this.profileId = this.mapComponent.profileId;
+        this.selectedType = data.selectedType;
     }
     ngOnInit() {
 
@@ -58,11 +59,15 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
             .then((profile: TransportProfile) => {
                 this.routeProfiles = profile.routeProfiles;
                 if (this.routeProfiles.length > 0) {
-                    this.selectedType = this.routeProfiles[0];
+                    if (!this.selectedType) {
+                        this.selectedType = this.routeProfiles[0];
+                    } else {
+                        this.selectedType = this.routeProfiles.filter(p => p.id === this.selectedType.id)[0];
+                    }
                     let _grid = this;
                     setTimeout(function () {        // performance
                         _grid.typeChanged();
-                    }, 300);
+                    }, 400);
                 }
             });
     }

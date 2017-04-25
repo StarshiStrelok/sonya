@@ -68,7 +68,8 @@ export class PathsGrid implements OnInit, AfterViewInit, SwitchedContent {
     goBack() {
         this.mapComponent.sideNavTmpl.viewContainerRef.clear();
         this.mapComponent.switchSideNavContent(RoutesGrid, {
-            mapComponent: this.mapComponent
+            mapComponent: this.mapComponent,
+            selectedType: this.route.type
         })
     }
     editPath(path: Path) {

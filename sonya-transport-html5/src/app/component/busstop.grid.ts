@@ -19,7 +19,6 @@ import {Component, OnInit, AfterViewInit, HostBinding} from '@angular/core';
 
 import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
-import {DialogService} from './../service/dialog.service';
 import {PathsGrid} from './../component/paths.grid';
 import {ModelClass, Path, BusStop, TransportProfile} from './../model/abs.model';
 import {slideAnimation} from './../app.component';
@@ -36,15 +35,13 @@ export class BusStopGrid implements OnInit, AfterViewInit, SwitchedContent {
     public mapComponent: TransportProfileMap;
     busstops: BusStop[];
     constructor(
-        private dataService: DataService,
-        private dialogService: DialogService
+        private dataService: DataService
     ) {}
     ngOnInit() {}
     setData(data: any) {
         this.mapComponent = data.component;
         this.profileId = this.mapComponent.profileId;
         this.path = data.path;
-        console.log(this.path);
     }
     ngAfterViewInit() {
         this.load();
