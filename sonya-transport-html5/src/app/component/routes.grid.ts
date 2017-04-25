@@ -26,10 +26,12 @@ import {RouteForm} from './../form/route.form';
 import {PathsGrid} from './paths.grid';
 import {ConfirmImport} from './confirm.import.dialog';
 import {ModelClass, TransportProfile, RouteProfile, Route, ImportDataEvent} from './../model/abs.model';
+import {slideAnimation} from './../app.component';
 
 @Component({
     selector: 'routes-grid',
-    templateUrl: './routes.grid.html'
+    templateUrl: './routes.grid.html',
+    animations: [slideAnimation]
 })
 export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
     @ViewChild(MdMenuTrigger) ctxMenuTrigger: MdMenuTrigger;
@@ -57,7 +59,10 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
                 this.routeProfiles = profile.routeProfiles;
                 if (this.routeProfiles.length > 0) {
                     this.selectedType = this.routeProfiles[0];
-                    this.typeChanged();
+                    let _grid = this;
+                    setTimeout(function () {        // performance
+                        _grid.typeChanged();
+                    }, 300);
                 }
             });
     }

@@ -24,11 +24,13 @@ import {PathForm} from './../form/path.form';
 import {RoutesGrid} from './../component/routes.grid';
 import {BusStopGrid} from './../component/busstop.grid';
 import {ModelClass, Route, Path} from './../model/abs.model';
+import {slideAnimation} from './../app.component';
 
 @Component({
     selector: 'paths-grid',
     templateUrl: './paths.grid.html',
-    styles: [`.pg-button {width: 100%; text-align: left;}`]
+    styles: [`.pg-button {width: 100%; text-align: left;}`],
+    animations: [slideAnimation]
 })
 export class PathsGrid implements OnInit, AfterViewInit, SwitchedContent {
     public profileId: number;

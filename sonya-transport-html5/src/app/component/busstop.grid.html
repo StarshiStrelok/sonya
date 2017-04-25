@@ -15,9 +15,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div>
+<div [@routeAnimation]="true">
     <md-chip-list class="full-width" selectable="false">
-        <md-chip color="accent" selected="true" class="full-width">
+        <md-chip color="accent" selected="true" class="full-width ss-shadow">
             {{path.route.namePrefix}}{{path.route.namePostfix}} | {{path.description}}</md-chip>
     </md-chip-list>
 
@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </md-grid-tile>
 
         <md-grid-tile>
-            <button md-mini-fab color="accent" mdTooltip="Save path"
+            <button md-mini-fab color="accent" mdTooltip="Save changes"
                     mdTooltipPosition="above" (click)="saveBusStops()">
                 <md-icon>save</md-icon></button>
         </md-grid-tile>

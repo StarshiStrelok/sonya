@@ -15,18 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, AfterViewInit} from '@angular/core';
+import {Component, OnInit, AfterViewInit, HostBinding} from '@angular/core';
 
 import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
 import {DialogService} from './../service/dialog.service';
 import {PathsGrid} from './../component/paths.grid';
 import {ModelClass, Path, BusStop, TransportProfile} from './../model/abs.model';
+import {slideAnimation} from './../app.component';
 
 @Component({
     selector: 'busstop-grid',
     templateUrl: './busstop.grid.html',
-    styles: [`.bsg-btn {text-align: left}`]
+    styles: [`.bsg-btn {text-align: left}`],
+    animations: [slideAnimation]
 })
 export class BusStopGrid implements OnInit, AfterViewInit, SwitchedContent {
     public profileId: number;
