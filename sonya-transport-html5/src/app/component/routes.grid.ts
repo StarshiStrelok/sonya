@@ -79,7 +79,8 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
                         if (!isNaN(a.namePrefix as any) && !isNaN(b.namePrefix as any)) {
                             let dif = parseFloat(a.namePrefix) - parseFloat(b.namePrefix);
                             if (dif === 0) {
-                                return a.namePostfix.localeCompare(b.namePostfix);
+                                return (a.namePostfix === null ? '' : a.namePostfix)
+                                        .localeCompare(b.namePostfix);
                             } else {
                                 return dif;
                             }
