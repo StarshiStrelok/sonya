@@ -248,7 +248,7 @@ class ImportDataServiceImpl implements ImportDataService {
         List<Path> create = new ArrayList<>();
         List<Path> update = new ArrayList<>();
         Map<Long, BusStop> bsMap = createFullMap(BusStop.class, profileId);
-        if (!isPersist) {
+        if (!isPersist && busstops != null) {
             busstops.stream().forEach(bs -> bsMap.put(bs.getExternalId(), bs));
         }
         Map<Long, Path> pathMap = createFullMap(Path.class, profileId);
