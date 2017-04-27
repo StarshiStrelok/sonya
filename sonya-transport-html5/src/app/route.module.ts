@@ -20,10 +20,11 @@ import {RouterModule, Routes} from '@angular/router';
 import {TransportProfileForm} from './form/transport-profile.form';
 import {TransportProfileList} from './component/transport-profile.list';
 import {TransportProfileMap} from './component/transport-profile.map';
+import {TransportMap} from './component2/transport.map'
 import {Links} from './links';
 
 const routes: Routes = [
-    {path: '', redirectTo: Links.PROFILE_LIST, pathMatch: 'full'},
+    {path: '', component: TransportMap},
     {path: Links.PROFILE_LIST, component: TransportProfileList},
     {path: Links.PROFILE_FORM, component: TransportProfileForm},
     {path: Links.PROFILE_FORM + "/:id", component: TransportProfileForm},

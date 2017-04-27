@@ -14,19 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.transport.config;
+package ss.sonya.transport.search;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import ss.sonya.configuration.SpringConfig;
+import java.util.Date;
 
 /**
- * Spring configuration.
+ * Bus stop + it time.
  * @author ss
  */
-@Configuration
-@Import(SpringConfig.class)
-@ComponentScan("ss.sonya.transport")
-public class TransportSpringConfig {
+public class BusStopTime {
+    /** Bus stop name. */
+    private String busstop;
+    /** Bus stop time. */
+    private Date time;
+    /**
+     * @return the busstop
+     */
+    public String getBusstop() {
+        return busstop;
+    }
+    /**
+     * @param busstop the busstop to set
+     */
+    public void setBusstop(String busstop) {
+        this.busstop = busstop;
+    }
+    /**
+     * @return the time
+     */
+    public Date getTime() {
+        return time;
+    }
+    /**
+     * @param time the time to set
+     */
+    public void setTime(Date time) {
+        this.time = time;
+    }
 }

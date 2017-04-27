@@ -14,19 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.transport.config;
+package ss.sonya.transport.search;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import ss.sonya.configuration.SpringConfig;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 /**
- * Spring configuration.
+ * Graph constructor.
+ * Build all graphs from transport profiles.
  * @author ss
  */
-@Configuration
-@Import(SpringConfig.class)
-@ComponentScan("ss.sonya.transport")
-public class TransportSpringConfig {
+@Service
+public class GraphConstructor {
+    /** Logger. */
+    private static final Logger LOG = Logger.getLogger(GraphConstructor.class);
+    /** All graphs, key - transport profile ID. */
+    private static final Map<Integer, Graph> GRAPHS = new ConcurrentHashMap<>();
+    
 }

@@ -24,6 +24,8 @@ import {BusStopGrid} from './component/busstop.grid';
 import {ConfirmImport} from './component/confirm.import.dialog';
 import {PathForm} from './form/path.form';
 import {Window, WindowDirective} from './component/window';
+// ---------------------- UI components ---------------------------------------
+import {TransportMap} from './component2/transport.map';
 // ---------------------- Services --------------------------------------------
 import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
@@ -49,7 +51,9 @@ export function HttpLoaderFactory(http: Http) {
         ConfirmImport,
         Window,
         WindowDirective,
-        SideNavContentDirective
+        SideNavContentDirective,
+        
+        TransportMap
     ],
     imports: [
         BrowserModule,
