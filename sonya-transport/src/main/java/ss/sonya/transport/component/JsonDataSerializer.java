@@ -403,6 +403,9 @@ public class JsonDataSerializer implements ImportDataSerializer {
             oo.put(SCH_PATH_ID, p.getExternalId());
             JSONArray arr2 = new JSONArray();
             for (Trip t : schedule.get(p)) {
+                if (t.getDays() == null || t.getDays().isEmpty()) {
+                    throw new EmptyFieldException("days", t);
+                }
                 JSONObject ooo = new JSONObject();
                 ooo.put(SCH_DAYS, t.getDays());
                 if (t.getRegular() != null && !t.getRegular().isEmpty()) {

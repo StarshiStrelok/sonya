@@ -1,11 +1,18 @@
 import {Component, HostBinding} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html'
 })
 export class AppComponent {
+    constructor(translate: TranslateService) {
+        // this language will be used as a fallback when a translation isn't found in the current language
+        translate.setDefaultLang('en');
+         // the lang to use, if the lang isn't available, it will use the current loader to get them
+        translate.use('en');
+    }
     options = {
         position: ["top", "right"],
         timeOut: 5000,

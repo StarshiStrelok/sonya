@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <md-card class="main-card">
     <md-card-title>
-        <md-card-title>Transport profiles</md-card-title>
+        <md-card-title [translate]="'transport-profiles.title'"></md-card-title>
     </md-card-title>
     <md-card-content>
         <md-list>
@@ -37,7 +37,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </md-list>
     </md-card-content>
     <md-card-actions align="end">
-        <button md-fab color="primary" (click)="newProfile()"><md-icon>add</md-icon></button>
+        <button md-fab color="primary" (click)="newProfile()"
+                mdTooltip="{{ 'transport-profiles.new' | translate }}">
+            <md-icon>add</md-icon></button>
     </md-card-actions>
 </md-card>
 
