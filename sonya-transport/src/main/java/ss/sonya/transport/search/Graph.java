@@ -96,6 +96,13 @@ public class Graph {
         return paths.get(idx);
     }
     /**
+     * Get graph paths.
+     * @return all paths.
+     */
+    public List<Path> getPaths() {
+        return paths;
+    }
+    /**
      * Find numbers of self loops.
      * @return - numbers of self loops.
      */

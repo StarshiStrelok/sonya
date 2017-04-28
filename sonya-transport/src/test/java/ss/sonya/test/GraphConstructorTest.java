@@ -26,12 +26,11 @@ import org.junit.Test;
 public class GraphConstructorTest extends TestConfig {
     @BeforeClass
     public static void initTest() {
-        // put test sonya.properties to /home/ss/kira/testing/conf
+        // !!! PRODUCTION DATABASE, ONLY FOR READ
         System.setProperty("catalina.base",
                 "/home/ss/kira/apache-tomcat-9.0.0.M19");
     }
     @Test
     public void test() {
-        System.out.println("COMPLETE");
     }
 }

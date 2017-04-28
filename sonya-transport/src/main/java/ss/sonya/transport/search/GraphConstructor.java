@@ -55,6 +55,9 @@ public class GraphConstructor {
     private static final int TRANSFER_2_TO = 3;
     /** All graphs, key - transport profile ID. */
     private static final Map<Integer, Graph> GRAPHS = new ConcurrentHashMap<>();
+    /** Transport profiles map. */
+    private static final Map<Integer, TransportProfile> PROFILES =
+            new ConcurrentHashMap<>();
     /** Data service. */
     @Autowired
     private DataService dataService;
@@ -77,6 +80,7 @@ public class GraphConstructor {
             profiles.stream().forEach(profile -> {
                 try {
                     GRAPHS.put(profile.getId(), buildGraph(profile));
+                    PROFILES.put(profile.getId(), profile);
                     LOG.info("================================================"
                             + "===========");
                 } catch (Exception ex) {
@@ -87,6 +91,22 @@ public class GraphConstructor {
             LOG.fatal("init graph constructor error!", e);
         }
         LOG.info("======================= COMPLETE ==========================");
+    }
+    /**
+     * Find graph.
+     * @param profileId transport profile ID.
+     * @return graph.
+     */
+    public Graph findGraph(final Integer profileId) {
+        return GRAPHS.get(profileId);
+    }
+    /**
+     * Find transport profile.
+     * @param profileId transport profile ID.
+     * @return transport profile.
+     */
+    public TransportProfile findProfile(final Integer profileId) {
+        return PROFILES.get(profileId);
     }
     /**
      * Build graph for one transport profile.

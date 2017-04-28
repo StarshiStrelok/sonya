@@ -106,6 +106,13 @@ public class TransportProfile implements Serializable {
     @NotNull
     @Min(0)
     private Double busStopAccessZoneRadius;
+    /**
+     * Limits the number of bus stops to search near
+     * the start and end points.
+     */
+    @NotNull
+    @Min(1)
+    private Integer searchLimitForPoints;
     /** Route profiles. */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true, mappedBy = "transportProfile")
@@ -254,6 +261,18 @@ public class TransportProfile implements Serializable {
      */
     public void setBusStopAccessZoneRadius(Double busStopAccessZoneRadius) {
         this.busStopAccessZoneRadius = busStopAccessZoneRadius;
+    }
+    /**
+     * @return the searchLimitForPoints
+     */
+    public Integer getSearchLimitForPoints() {
+        return searchLimitForPoints;
+    }
+    /**
+     * @param searchLimitForPoints the searchLimitForPoints to set
+     */
+    public void setSearchLimitForPoints(Integer searchLimitForPoints) {
+        this.searchLimitForPoints = searchLimitForPoints;
     }
 // ============================================================================
     @Override

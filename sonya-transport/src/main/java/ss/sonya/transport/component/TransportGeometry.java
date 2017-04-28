@@ -18,8 +18,11 @@
 package ss.sonya.transport.component;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ss.sonya.constants.TransportConst;
@@ -35,38 +38,37 @@ public class TransportGeometry {
     /** Geometry. */
     @Autowired
     private Geometry geometry;
-//    /**
-//     * Find fixed number closest bus stops.
-//     * @param all - all bus stops.
-//     * @param lat - latitude.
-//     * @param lon - longitude.
-//     * @return - list bus stops.
-//     */
-//    public List<BusStop> findFixedCountClosestBusstops(
-//        final List<Busstop> all,
-//            final double lat, final double lon) {
-//        double dist;
-//        int nearest = KiraConf.settingI(AppProp.NUMBER_CLOSER_BUSSTOPS);
-//        Map<Double, Busstop> map = new HashMap<>();
-//        for (Busstop b : all) {
-//            if (TransportConst.MOCK_BS.equals(b.getName())) {
-//                continue;
-//            }
-//            dist = geometry.calcDistance(b.getLatitude(), b.getLongitude(),
-//                    lat, lon);
-//            map.put(dist, b);
-//        }
-//        List<Busstop> result = new ArrayList<>();
-//        List<Double> keys = new ArrayList<>(map.keySet());
-//        Collections.sort(keys);
-//        if (keys.size() < nearest) {
-//            return new ArrayList<>(map.values());
-//        }
-//        for (int i = 0; i < nearest; i++) {
-//            result.add(map.get(keys.get(i)));
-//        }
-//        return result;
-//    }
+    /**
+     * Find fixed number closest bus stops.
+     * @param limit maximum result size.
+     * @param all all bus stops.
+     * @param lat latitude.
+     * @param lon longitude.
+     * @return list bus stops.
+     */
+    public List<BusStop> findNearestBusStops(final int limit,
+        final List<BusStop> all, final double lat, final double lon) {
+        double dist;
+        Map<Double, BusStop> map = new HashMap<>();
+        for (BusStop b : all) {
+            if (TransportConst.MOCK_BS.equals(b.getName())) {
+                continue;
+            }
+            dist = geometry.calcDistance(b.getLatitude(), b.getLongitude(),
+                    lat, lon);
+            map.put(dist, b);
+        }
+        List<BusStop> result = new ArrayList<>();
+        List<Double> keys = new ArrayList<>(map.keySet());
+        Collections.sort(keys);
+        if (keys.size() < limit) {
+            return new ArrayList<>(map.values());
+        }
+        for (int i = 0; i < limit; i++) {
+            result.add(map.get(keys.get(i)));
+        }
+        return result;
+    }
     /**
      * Find bus stops in radius.
      * @param all - all bus stops.

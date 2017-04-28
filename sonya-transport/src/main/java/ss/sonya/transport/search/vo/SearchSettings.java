@@ -35,6 +35,8 @@ public class SearchSettings {
     private double endLon;
     /** Selected route types. */
     private List<RouteProfile> types;
+    /** Transport profile ID. */
+    private Integer profileId;
     /** Trip day. */
     private int day;
     /** Trip time. */
@@ -150,5 +152,17 @@ public class SearchSettings {
      */
     public void setMaxTransfers(final int pMaxTransfers) {
         maxTransfers = pMaxTransfers;
+    }
+    /**
+     * @return the profileId
+     */
+    public Integer getProfileId() {
+        return profileId;
+    }
+    /**
+     * @param profileId the profileId to set
+     */
+    public void setProfileId(Integer profileId) {
+        this.profileId = profileId;
     }
 }

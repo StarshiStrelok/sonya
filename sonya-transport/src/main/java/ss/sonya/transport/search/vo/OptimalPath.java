@@ -17,6 +17,7 @@
 package ss.sonya.transport.search.vo;
 
 import java.util.List;
+import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 
 /**
@@ -26,8 +27,10 @@ import ss.sonya.entity.Path;
  * @author ss
  */
 public class OptimalPath {
-    /** Native path. */
+    /** Paths. */
     private List<Path> path;
+    /** Path ways. */
+    private List<List<BusStop>> way;
     /** Way time. */
     private Double time;
     /** Optimal Schedule. */
@@ -67,5 +70,17 @@ public class OptimalPath {
      */
     public void setSchedule(OptimalSchedule schedule) {
         this.schedule = schedule;
+    }
+    /**
+     * @return the way
+     */
+    public List<List<BusStop>> getWay() {
+        return way;
+    }
+    /**
+     * @param way the way to set
+     */
+    public void setWay(List<List<BusStop>> way) {
+        this.way = way;
     }
 }
