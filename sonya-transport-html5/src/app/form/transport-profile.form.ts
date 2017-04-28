@@ -21,7 +21,7 @@ import {slideAnimation, AnimatedSlide} from './../app.component';
 export class TransportProfileForm extends AnimatedSlide implements OnInit {
     transportProfileForm: FormGroup;
     profile: TransportProfile = new TransportProfile(null, null, null, null,
-        null, null, null, null, null, null, []);
+        null, null, null, null, null, null, null, []);
     routeProfiles: FormGroup[];
     routeProfilesNames: string[];
     constructor(
@@ -56,12 +56,14 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
             initialZoom: ['', [Validators.required, minNumberValidator(0), maxNumberValidator(19)]],
             minZoom: ['', [Validators.required, minNumberValidator(0), maxNumberValidator(19)]],
             centerLat: ['', [Validators.required, minNumberValidator(-90), maxNumberValidator(90)]],
-            centerLon: ['', [Validators.required, minNumberValidator(-180), maxNumberValidator(180)]]
+            centerLon: ['', [Validators.required, minNumberValidator(-180), maxNumberValidator(180)]],
+            busStopAccessZoneRadius: ['', [Validators.required, minNumberValidator(0)]]
         });
         let _routeProfiles = this.profile.routeProfiles;
         delete this.profile.routeProfiles;
         this.transportProfileForm.setValue(this.profile);
         _routeProfiles.forEach((profile) => {
+            delete profile.lastUpdate;
             let rpGroup = this.addRouteProfileGroup();
             rpGroup.setValue(profile);
         });

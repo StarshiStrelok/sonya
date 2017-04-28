@@ -1,6 +1,6 @@
 <md-card class="main-card">
     <md-card-header>
-        <md-card-title>Create new transport profile</md-card-title>
+        <md-card-title><h3>Transport profile</h3></md-card-title>
         <md-card-subtitle>Transport profile provided map preferences, 
             search and route settings</md-card-subtitle>
     </md-card-header>
@@ -19,7 +19,11 @@
             
             <md-card>
                 <md-card-header>
-                    <md-card-title>Map settings</md-card-title>
+                    <md-card-title><b>Map settings</b></md-card-title>
+                    <md-card-subtitle>
+                        Define your map settings: zoom and bounds restrictions,
+                        center map and much more
+                    </md-card-subtitle>
                 </md-card-header>
                 <md-card-content>
                     <md-grid-list cols="2" rowHeight="56px;">
@@ -66,9 +70,17 @@
                     </md-grid-list>
                 </md-card-content>
             </md-card>
+            <!-- ROUTES -->
             <md-card>
                 <md-card-header>
-                    <md-card-title>Define route types here</md-card-title>
+                    <md-card-title><b>Route types</b></md-card-title>
+                    <md-card-subtitle>
+                        Define your route types here, for example 'Autobus', 'Metro', 'Trolleybus' etc.<br/>
+                        * Line color - route line color, define as CSS color<br/>
+                        * OSRM service URL - see more info on <a href="http://project-osrm.org">OSRM project</a> page<br/>
+                        * Average speed (in km/h) - average speed for transport,
+                            affects search algorithms and relevance of results, faster transportation rises
+                    </md-card-subtitle>
                 </md-card-header>
                 <md-card-content>
                     <md-grid-list cols="5" rowHeight="56px;" *ngFor="let rp of routeProfiles"
@@ -86,7 +98,7 @@
                             </md-input-container>
                         </md-grid-tile>
                         <md-grid-tile>
-                            <md-input-container>
+                            <md-input-container class="full-width">
                                 <input mdInput placeholder="Average speed, km/h"
                                        formControlName="avgSpeed">
                                 <md-error *ngIf="rp.get('avgSpeed').hasError('required')">
@@ -101,7 +113,7 @@
                             </md-input-container>
                         </md-grid-tile>
                         <md-grid-tile>
-                            <md-input-container>
+                            <md-input-container class="full-width">
                                 <input mdInput placeholder="Routing service URL"
                                        formControlName="routingURL" type="url">
                                 <md-error *ngIf="rp.get('routingURL').hasError('maxlength')">
@@ -113,8 +125,8 @@
                             </md-input-container>
                         </md-grid-tile>
                         <md-grid-tile>
-                            <md-input-container>
-                                <input mdInput placeholder="Line color (HEX)"
+                            <md-input-container class="full-width">
+                                <input mdInput placeholder="Line color (CSS-format)"
                                        formControlName="lineColor">
                                 <md-error *ngIf="rp.get('lineColor').hasError('maxlength')">
                                     Very long string, 10 characters maximum
@@ -133,6 +145,35 @@
                             mdTooltip="Add route profile" mdTooltipPosition="above">
                         <md-icon>add</md-icon></button>
                 </md-card-actions>
+            </md-card>
+            <!-- SEARCH -->
+            <md-card>
+                <md-card-header>
+                    <md-card-title><b>Search settings</b></md-card-title>
+                    <md-card-subtitle>
+                        Search engine controls<br/>
+                        * Access zone radius (km) - the radius inside which 
+                            is looking for bus stops for transfer to another route.
+                            Recommend using 0.1-0.5 km. Affects search accuracy and search routes time,
+                            high value - slower search and high accuracy, low value - faster search, low accuracy
+                    </md-card-subtitle>
+                </md-card-header>
+                <md-card-content>
+                    <md-grid-list cols="4" rowHeight="56px;">
+                        <md-grid-tile>
+                            <md-input-container class="full-width">
+                                <input mdInput placeholder="Transfer access zone radius, km"
+                                       formControlName="busStopAccessZoneRadius">
+                                <md-error *ngIf="transportProfileForm.get('busStopAccessZoneRadius').hasError('required')">
+                                    Required
+                                </md-error>
+                                <md-error *ngIf="transportProfileForm.get('busStopAccessZoneRadius').hasError('minNumber')">
+                                    Must be positive
+                                </md-error>
+                            </md-input-container>
+                        </md-grid-tile>
+                    </md-grid-list>
+                </md-card-content>
             </md-card>
         </md-card-content>
         <md-card-actions align="end">

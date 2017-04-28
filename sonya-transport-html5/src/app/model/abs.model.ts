@@ -40,7 +40,8 @@ export class RouteProfile implements AbsModel {
         public name: string,
         public avgSpeed: number,
         public routingURL: string,
-        public lineColor: string
+        public lineColor: string,
+        public lastUpdate: Date
     ) {}
 }
 
@@ -56,6 +57,7 @@ export class TransportProfile implements AbsModel {
         public centerLat: number,
         public centerLon: number,
         public name: string,
+        public busStopAccessZoneRadius: number,
         public routeProfiles: RouteProfile[]
     ) {}
 }
