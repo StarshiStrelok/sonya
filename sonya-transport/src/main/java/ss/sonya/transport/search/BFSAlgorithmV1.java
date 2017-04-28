@@ -17,11 +17,12 @@
 package ss.sonya.transport.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,7 +31,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import ss.sonya.entity.BusStop;
-import ss.sonya.entity.RouteProfile;
+import ss.sonya.entity.Path;
+import ss.sonya.entity.Route;
 import ss.sonya.entity.TransportProfile;
 import ss.sonya.transport.search.vo.Decision;
 import ss.sonya.transport.search.vo.OptimalPath;
@@ -59,16 +61,8 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         Graph graph = graphConstructor.findGraph(settings.getProfileId());
         TransportProfile profile = graphConstructor
                 .findProfile(settings.getProfileId());
-        List<BusStop> all = new ArrayList<>();
-        Set<BusStop> bsSet = new HashSet<>();
-        // !!! must be more speed for this code, do later
-        graph.getPaths().stream().forEach(path -> {
-            if (settings.getTypes().contains(path.getRoute().getType())) {
-                bsSet.addAll(path.getBusstops());
-            }
-        });
-        all.addAll(bsSet);
-        bsSet.clear();
+        Set<BusStop> all = graphConstructor
+                .findBusStopPathsMap(profile.getId()).keySet();
         LOG.info("#-bfs-# total bus stops [" + all.size() + "]");
         // find fixed count closer bus stops near start point
         List<BusStop> startBs = transportGeometry.findNearestBusStops(
@@ -80,61 +74,40 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
                 + startBs.size() + "]");
         LOG.debug("#-bfs-#   end area - bus stop size [" + endBs.size() + "]");
         // getting start vertices for search (start search conditions)
-        Map<Integer, Set<BusStop>> endVertices = createEndpoints(
-                endBs, false, settings.getTypes());
+        Map<Integer, Set<BusStop>> endVertices = createPointVertices(
+                endBs, false, profile, graph);
         // getting end vertices for search (end search conditions)
-        Map<Integer, Set<BusStop>> startVertices = createEndpoints(
-                startBs, true, settings.getTypes());
+        Map<Integer, Set<BusStop>> startVertices = createPointVertices(
+                startBs, true, profile, graph);
         LOG.debug("#-bfs-# start vertices [" + startVertices.size() + "]");
         LOG.debug("#-bfs-# end vertices [" + endVertices.size() + "]");
         // search straight paths, it's simple -)
         List<OptimalPath> straight = straightPaths(startVertices, endVertices,
-                settings.getTypes());
+                graph);
         if (!straight.isEmpty()) {
             LOG.debug("#-bfs-# straight paths [" + straight.size() + "]");
             result.addAll(straight);
         }
-        // create cache for search speed-up
-        // key - start vertex number, value - graph, broken by depth
-        Map<Integer, Map<Integer, Set<Integer>>> graphCache =
-                new ConcurrentHashMap<>();
         // multi-threading, using [physical processors] or [physical processors]
-        // + [hyper-threading], or predefined setting
+        // + [hyper-threading]
         int cores = Runtime.getRuntime().availableProcessors();
         ExecutorService ex = Executors.newFixedThreadPool(cores);
-        // break by depth operation
-        long startBreak = System.currentTimeMillis();
-        List<Future<Void>> breakTasks = new ArrayList<>();
-        for (int startIdx : startVertices.keySet()) {
-            breakTasks.add(ex.submit(new BreakGraphTask(
-                    graphCache, settings.getTypes(), startIdx, graph)));
-        }
-        for (Future<Void> task : breakTasks) {
-            task.get();
-        }
-        LOG.info("#-bfs-# break graph time ["
-                + (System.currentTimeMillis() - startBreak) + "] ms");
-        Integer limitDepth = 1;
         List<Decision> decisions = new CopyOnWriteArrayList<>();
         // increase search depth
         long startBfs = System.currentTimeMillis();
-        while (limitDepth <= settings.getMaxTransfers()
-                || (decisions.isEmpty() && straight.isEmpty())) {
-            LOG.debug("#-bfs-# current depth [" + limitDepth + "] #-#-#-#-#-#");
-            List<Future<List<Decision>>> futures = new ArrayList<>();
-            // for every start condition create separate thread
-            for (int startIdx : startVertices.keySet()) {
-                futures.add(ex.submit(new BFSTask(graphCache.get(startIdx),
-                        startIdx, limitDepth, endVertices, startVertices,
-                        graph)));
-            }
-            // getting results
-            for (Future<List<Decision>> f : futures) {
-                decisions.addAll(f.get());
-            }
-            LOG.debug("#-bfs-# phase end #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
-            limitDepth++;
+        List<Future<List<Decision>>> futures = new ArrayList<>();
+        // for every start condition create separate thread
+        for (int startIdx : startVertices.keySet()) {
+            futures.add(ex.submit(
+                    new BFSTask(startIdx, endVertices,
+                        startVertices.get(startIdx), graph)
+            ));
         }
+        // getting results
+        for (Future<List<Decision>> f : futures) {
+            decisions.addAll(f.get());
+        }
+        LOG.debug("#-bfs-# phase end #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
         LOG.info("#-bfs-# total number of decisions ["
                 + decisions.size() + "], BFS time ["
                 + (System.currentTimeMillis() - startBfs) + "] ms");
@@ -152,7 +125,8 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
                 max = decisions.size();
             }
             tasks.add(ex.submit(
-                    new TransformDecisionsTask(decisions.subList(min, max))
+                    new TransformDecisionsTask(
+                            decisions.subList(min, max), graph)
             ));
         }
         for (Future<List<OptimalPath>> task : tasks) {
@@ -161,7 +135,6 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         LOG.info("#-bfs-# transform decisions elapsed time ["
                 + (System.currentTimeMillis() - start) + "] ms");
         clearUnrealResults(result, startBs);
-        graphCache.clear();
         startVertices.clear();
         endVertices.clear();
         LOG.info("#-bfs-# total number of optimal paths ["
@@ -172,15 +145,97 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         return result;
     }
     @Override
-    protected Map<Integer, Set<BusStop>> createEndpoints(List<BusStop> bsList, boolean isStart, List<RouteProfile> types) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected Map<Integer, Set<BusStop>> createPointVertices(
+            final List<BusStop> pointBusStops, final boolean isStart,
+            final TransportProfile profile, final Graph graph)
+            throws Exception {
+        // key - vertex number, value - set bus stops
+        Map<Integer, Set<BusStop>> map = new HashMap<>();
+        List<BusStop> way;
+        Route route;
+        Map<BusStop, List<Path>> bsPaths = graphConstructor
+                .findBusStopPathsMap(profile.getId());
+        for (BusStop bs : pointBusStops) {
+            // getting bus stop paths
+            List<Path> paths = bsPaths.get(bs);
+            if (paths == null) {
+                continue;
+            }
+            for (Path path : paths) {
+                // getting path route
+                route = path.getRoute();
+                // getting path way
+                way = path.getBusstops();
+                if (isStart) {
+                    // for start bus stops skip paths where start bus stop
+                    // in the end of way
+                    if (way.indexOf(bs) == way.size() - 1) {
+                        continue;
+                    }
+                } else {
+                    // for end bus stops skip paths where end bus stop
+                    // in the start of way
+                    if (way.indexOf(bs) == 0) {
+                        continue;
+                    }
+                }
+                // getting vertex number for path
+                int idx = graph.indexOfPath(path);
+                if (idx == -1) {
+                    throw new IllegalArgumentException("vertex not defined for "
+                            + path);
+                }
+                if (map.containsKey(idx)) {
+                    map.get(idx).add(bs);
+                } else {
+                    Set<BusStop> l = new HashSet<>();
+                    l.add(bs);
+                    map.put(idx, l);
+                }
+            }
+        }
+        return map;
     }
     @Override
-    protected List<OptimalPath> transformDecisions(List<Decision> decisions) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected List<OptimalPath> straightPaths(
+            final Map<Integer, Set<BusStop>> startVertices,
+            final Map<Integer, Set<BusStop>> endVertices,
+            final Graph graph) throws Exception {
+        List<BusStop> way;
+        Path path;
+        List<OptimalPath> list = new ArrayList<>();
+        for (Integer s : startVertices.keySet()) {
+            for (Integer e : endVertices.keySet()) {
+                // vertex exist in start & end points - straight path
+                if (s.intValue() == e.intValue()) {
+                    // straight path found
+                    path = graph.getPath(s);
+                    way = path.getBusstops();
+                    for (BusStop startBs : startVertices.get(s)) {
+                        for (BusStop endBs : endVertices.get(e)) {
+                            // only if start bus stop before end bus stop
+                            if (way.indexOf(startBs) < way.indexOf(endBs)) {
+                                List<List<BusStop>> opWay =
+                                        new ArrayList<>();
+                                List<Path> opPaths = new ArrayList<>();
+                                opWay.add(way.subList(way.indexOf(startBs),
+                                        way.indexOf(endBs) + 1));
+                                opPaths.add(path);
+                                OptimalPath op = new OptimalPath();
+                                op.setPath(opPaths);
+                                op.setWay(opWay);
+                                list.add(op);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return list;
     }
     @Override
-    protected List<OptimalPath> straightPaths(Map<Integer, Set<BusStop>> startVertices, Map<Integer, Set<BusStop>> endVertices, List<RouteProfile> types) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected List<OptimalPath> transformDecisions(
+            List<Decision> decisions, Graph graph) throws Exception {
+        return Collections.emptyList();
     }
 }

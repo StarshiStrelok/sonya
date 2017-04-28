@@ -25,7 +25,7 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import ss.sonya.entity.BusStop;
-import ss.sonya.entity.RouteProfile;
+import ss.sonya.entity.TransportProfile;
 import ss.sonya.inject.service.Geometry;
 import ss.sonya.transport.component.TransportGeometry;
 import ss.sonya.transport.search.vo.Decision;
@@ -48,38 +48,40 @@ public abstract class BFS implements SearchEngine {
     @Autowired
     protected GraphConstructor graphConstructor;
     /**
-     * Create endpoints for start or end vertices.
+     * Create vertices for start or end vertices.
      * Grouping start / end bus stops by vertices (paths),
      * because every bus stop has paths, passing through it.
-     * @param bsList - bus stop area.
-     * @param isStart - start or end endpoints.
-     * @param types available route types.
-     * @return - endpoints map.
+     * @param pointBusStops point bus stops.
+     * @param isStart start or end point.
+     * @param profile transport profile.
+     * @param graph graph.
+     * @return point vertices map.
      * @throws Exception - method error.
      */
-    protected abstract Map<Integer, Set<BusStop>> createEndpoints(
-            final List<BusStop> bsList, final boolean isStart,
-            final List<RouteProfile> types) throws Exception;
+    protected abstract Map<Integer, Set<BusStop>> createPointVertices(
+            List<BusStop> pointBusStops, boolean isStart,
+            TransportProfile profile, Graph graph) throws Exception;
     /**
      * Transfer decisions to optimal paths.
-     * @param decisions - list decisions.
-     * @return - list optimal paths.
+     * @param decisions list decisions.
+     * @param graph graph.
+     * @return list optimal paths.
      * @throws Exception - method error.
      */
     protected abstract List<OptimalPath> transformDecisions(
-            final List<Decision> decisions) throws Exception;
+            List<Decision> decisions, Graph graph) throws Exception;
     /**
      * Find straight paths.
-     * @param startVertices - start vertices.
-     * @param endVertices - end vertices.
-     * @param types search among this types only.
-     * @return - straight paths list.
-     * @throws Exception - method error.
+     * @param startVertices start vertices.
+     * @param endVertices end vertices.
+     * @param graph graph.
+     * @return straight paths list.
+     * @throws Exception method error.
      */
     protected abstract List<OptimalPath> straightPaths(
-            final Map<Integer, Set<BusStop>> startVertices,
-            final Map<Integer, Set<BusStop>> endVertices,
-            final List<RouteProfile> types) throws Exception;
+            Map<Integer, Set<BusStop>> startVertices,
+            Map<Integer, Set<BusStop>> endVertices,
+            Graph graph) throws Exception;
     /**
      * Clear unreal results.
      * @param dirty dirty optimal paths.
@@ -121,16 +123,21 @@ public abstract class BFS implements SearchEngine {
             implements Callable<List<OptimalPath>> {
         /** Decisions. */
         private final List<Decision> decisions;
+        /** Graph. */
+        private final Graph graph;
         /**
          * Constructor.
          * @param pDecisions portion of decisions.
+         * @param g graph.
          */
-        public TransformDecisionsTask(final List<Decision> pDecisions) {
+        public TransformDecisionsTask(final List<Decision> pDecisions,
+                final Graph g) {
             decisions = pDecisions;
+            graph = g;
         }
         @Override
         public List<OptimalPath> call() throws Exception {
-            return transformDecisions(decisions);
+            return transformDecisions(decisions, graph);
         }
     }
 }

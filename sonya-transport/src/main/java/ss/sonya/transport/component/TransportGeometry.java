@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ss.sonya.constants.TransportConst;
@@ -47,7 +48,7 @@ public class TransportGeometry {
      * @return list bus stops.
      */
     public List<BusStop> findNearestBusStops(final int limit,
-        final List<BusStop> all, final double lat, final double lon) {
+        final Set<BusStop> all, final double lat, final double lon) {
         double dist;
         Map<Double, BusStop> map = new HashMap<>();
         for (BusStop b : all) {

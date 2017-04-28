@@ -58,6 +58,9 @@ public class GraphConstructor {
     /** Transport profiles map. */
     private static final Map<Integer, TransportProfile> PROFILES =
             new ConcurrentHashMap<>();
+    /** Bus stop paths cache. */
+    private static final Map<Integer, Map<BusStop, List<Path>>> BUS_STOP_PATHS =
+            new HashMap<>();
     /** Data service. */
     @Autowired
     private DataService dataService;
@@ -109,6 +112,15 @@ public class GraphConstructor {
         return PROFILES.get(profileId);
     }
     /**
+     * Find bus stop paths map.
+     * @param profileId transport profile ID.
+     * @return map.
+     */
+    public Map<BusStop, List<Path>> findBusStopPathsMap(
+            final Integer profileId) {
+        return BUS_STOP_PATHS.get(profileId);
+    }
+    /**
      * Build graph for one transport profile.
      * @param profile transport profile.
      * @return graph.
@@ -140,6 +152,7 @@ public class GraphConstructor {
                 }
             });
         });
+        BUS_STOP_PATHS.put(profile.getId(), bsPaths);
         // for search transfer paths required found closest bus stops for
         // every bus stop in path way, cache using for speed up
         Map<BusStop, List<BusStop>> nearBsCache = new HashMap<>();

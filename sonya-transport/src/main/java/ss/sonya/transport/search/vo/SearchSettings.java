@@ -17,9 +17,6 @@
  */
 package ss.sonya.transport.search.vo;
 
-import java.util.List;
-import ss.sonya.entity.RouteProfile;
-
 /**
  * Search settings.
  * @author ss
@@ -33,8 +30,6 @@ public class SearchSettings {
     private double endLat;
     /** End longitude. */
     private double endLon;
-    /** Selected route types. */
-    private List<RouteProfile> types;
     /** Transport profile ID. */
     private Integer profileId;
     /** Trip day. */
@@ -92,18 +87,6 @@ public class SearchSettings {
      */
     public void setEndLon(final double pEndLon) {
         endLon = pEndLon;
-    }
-    /**
-     * @return the types
-     */
-    public List<RouteProfile> getTypes() {
-        return types;
-    }
-    /**
-     * @param pTypes the types to set
-     */
-    public void setTypes(List<RouteProfile> pTypes) {
-        types = pTypes;
     }
     /**
      * @return the day
