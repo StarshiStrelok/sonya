@@ -76,7 +76,6 @@ public class GraphConstructor {
                     .getAll(TransportProfile.class);
             profiles.stream().forEach(profile -> {
                 try {
-                    profile.setBusStopAccessZoneRadius(0.3);
                     GRAPHS.put(profile.getId(), buildGraph(profile));
                     LOG.info("================================================"
                             + "===========");
@@ -89,12 +88,18 @@ public class GraphConstructor {
         }
         LOG.info("======================= COMPLETE ==========================");
     }
+    /**
+     * Build graph for one transport profile.
+     * @param profile transport profile.
+     * @return graph.
+     * @throws Exception error.
+     */
     private Graph buildGraph(final TransportProfile profile) throws Exception {
         LOG.info("--------------- GRAPH (" + profile + ") -------------------");
         long start = System.currentTimeMillis();
         List<Path> paths = transportService
                 .getFromProfile(profile.getId(), Path.class);
-        // sort very important, path vertex number will 
+        // sort very important, path vertex number will
         // correspond path in sorted array
         Collections.sort(paths,
                 (Path o1, Path o2) -> o1.getId() > o2.getId() ? 1 : -1);
@@ -128,7 +133,7 @@ public class GraphConstructor {
             // getting transfer paths for current path
             Map<Path, BusStop[]> tMap = analyzePath(path, nearBsCache, bsPaths,
                     all, profile.getBusStopAccessZoneRadius());
-            // for every transfer path create edge 
+            // for every transfer path create edge
             // and add it to current path vertex
             for (Path transferPath : tMap.keySet()) {
                 // getting [path] - [transfer path] transfer bus stops
@@ -157,8 +162,18 @@ public class GraphConstructor {
                 + (System.currentTimeMillis() - start) + "] ms");
         return graph;
     }
+    /**
+     * Analyze path.
+     * @param path current analyzed path.
+     * @param accessZoneBsCache cache for access zones.
+     * @param bsPaths map, contains bus stop and paths, passing through it.
+     * @param all all bus stops.
+     * @param radius access zone radius for bus stop.
+     * @return transfer map, key - transfer bus stop, value - bus stops.
+     * @throws Exception error.
+     */
     private Map<Path, BusStop[]> analyzePath(final Path path,
-            final Map<BusStop, List<BusStop>> nearBsCache,
+            final Map<BusStop, List<BusStop>> accessZoneBsCache,
             final Map<BusStop, List<Path>> bsPaths,
             final List<BusStop> all, final double radius) throws Exception {
         Map<Path, BusStop[]> transferMap = new HashMap<>();
@@ -175,7 +190,7 @@ public class GraphConstructor {
             }
             // getting bus stops in access zone
             List<BusStop> nears = accessZoneBusstops(
-                    bs, all, nearBsCache, radius);
+                    bs, all, accessZoneBsCache, radius);
             // every from closer bus stops has many paths passing through
             for (BusStop transferBs : nears) {
                 // for every from transfer paths
@@ -309,6 +324,14 @@ public class GraphConstructor {
         }
         return transferMap;
     }
+    /**
+     * Get transfer bus stops from access zone for current bus stop.
+     * @param bs current bus stop.
+     * @param allBs all bus stops.
+     * @param zoneBsCache access zone cache.
+     * @param radius access zone radius.
+     * @return list bus stops from access zone.
+     */
     private List<BusStop> accessZoneBusstops(final BusStop bs,
             final List<BusStop> allBs,
             final Map<BusStop, List<BusStop>> zoneBsCache,

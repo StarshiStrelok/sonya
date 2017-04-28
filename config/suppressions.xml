@@ -7,6 +7,7 @@
 <suppressions>
   <suppress checks="MagicNumber" files="ss[\\/]sonya[\\/]entity"/>
   <suppress checks="HiddenField" files="ss[\\/]sonya[\\/]entity"/>
+  <suppress checks="HiddenField" files="ss[\\/]sonya[\\/]transport[\\/]search[\\/]vo"/>
   <suppress checks="HiddenField" files="ImportDataEvent"/>
   <suppress checks="VisibilityModifier" files="DataWS"/>
   <suppress checks="VisibilityModifier" files="TransportWS"/>

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package ss.sonya.transport.search;
+package ss.sonya.transport.search.vo;
 
 import java.util.List;
 import ss.sonya.entity.RouteProfile;

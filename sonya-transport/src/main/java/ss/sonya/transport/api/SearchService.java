@@ -18,8 +18,8 @@
 package ss.sonya.transport.api;
 
 import java.util.List;
-import ss.sonya.transport.search.OptimalPath;
-import ss.sonya.transport.search.SearchSettings;
+import ss.sonya.transport.search.vo.OptimalPath;
+import ss.sonya.transport.search.vo.SearchSettings;
 
 /**
  * Search transport information service API.

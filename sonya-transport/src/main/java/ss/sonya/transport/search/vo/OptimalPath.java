@@ -14,41 +14,58 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.transport.search;
+package ss.sonya.transport.search.vo;
 
-import java.util.Date;
+import java.util.List;
+import ss.sonya.entity.Path;
 
 /**
- * Bus stop + it time.
+ * Optimal path.
+ * Intermediate search result.
+ * Contains set of paths and it's ways.
  * @author ss
  */
-public class BusStopTime {
-    /** Bus stop name. */
-    private String busstop;
-    /** Bus stop time. */
-    private Date time;
+public class OptimalPath {
+    /** Native path. */
+    private List<Path> path;
+    /** Way time. */
+    private Double time;
+    /** Optimal Schedule. */
+    private OptimalSchedule schedule;
     /**
-     * @return the busstop
+     * @return the path
      */
-    public String getBusstop() {
-        return busstop;
+    public List<Path> getPath() {
+        return path;
     }
     /**
-     * @param busstop the busstop to set
+     * @param path the path to set
      */
-    public void setBusstop(String busstop) {
-        this.busstop = busstop;
+    public void setPath(List<Path> path) {
+        this.path = path;
     }
     /**
      * @return the time
      */
-    public Date getTime() {
+    public Double getTime() {
         return time;
     }
     /**
      * @param time the time to set
      */
-    public void setTime(Date time) {
+    public void setTime(Double time) {
         this.time = time;
+    }
+    /**
+     * @return the schedule
+     */
+    public OptimalSchedule getSchedule() {
+        return schedule;
+    }
+    /**
+     * @param schedule the schedule to set
+     */
+    public void setSchedule(OptimalSchedule schedule) {
+        this.schedule = schedule;
     }
 }
