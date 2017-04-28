@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 .tm-sidenav {
-    width: 50%;
+    width: 400px;
 }
 .tm-map {
     padding: 0px;
@@ -28,5 +28,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .tm-map-control {
     position: absolute;
     z-index: 1000;
-    background-color: rgba(244, 67, 54, 0.5);
 }

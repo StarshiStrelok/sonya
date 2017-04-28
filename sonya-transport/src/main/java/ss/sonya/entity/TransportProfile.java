@@ -99,6 +99,13 @@ public class TransportProfile implements Serializable {
     @Size(max = 100)
     @Column(name = "name", length = 100)
     private String name;
+    /**
+     * Bus stop access zone radius in km.
+     * Used for define transfer bus stops for current bus stop.
+     */
+    @NotNull
+    @Min(0)
+    private Double busStopAccessZoneRadius;
     /** Route profiles. */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true, mappedBy = "transportProfile")
@@ -236,6 +243,18 @@ public class TransportProfile implements Serializable {
     public void setRouteProfiles(List<RouteProfile> routeProfiles) {
         this.routeProfiles = routeProfiles;
     }
+    /**
+     * @return the busStopAccessZoneRadius
+     */
+    public Double getBusStopAccessZoneRadius() {
+        return busStopAccessZoneRadius;
+    }
+    /**
+     * @param busStopAccessZoneRadius the busStopAccessZoneRadius to set
+     */
+    public void setBusStopAccessZoneRadius(Double busStopAccessZoneRadius) {
+        this.busStopAccessZoneRadius = busStopAccessZoneRadius;
+    }
 // ============================================================================
     @Override
     public int hashCode() {
@@ -254,6 +273,7 @@ public class TransportProfile implements Serializable {
     }
     @Override
     public String toString() {
-        return "ss.sonya.entity.TransportProfile[ id=" + getId() + " ]";
+        return "ss.sonya.entity.TransportProfile[ id=" + getId() + ", name="
+                + getName() + " ]";
     }
 }

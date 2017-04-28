@@ -17,6 +17,7 @@
  */
 package ss.sonya.transport.search;
 
+import java.util.LinkedList;
 import java.util.List;
 import ss.sonya.entity.Path;
 
@@ -26,11 +27,23 @@ import ss.sonya.entity.Path;
  */
 public class Graph {
     /** Path in vertex order. */
-    private List<Path> paths;
+    private final List<Path> paths;
     /** Edges count. */
     private int edges;
     /** Lists of adjacency. */
-    private List<Integer[]>[] adj;
+    private final List<Integer[]>[] adj;
+    /**
+     * Constructor.
+     * @param sortedPaths sorted paths.
+     */
+    public Graph(final List<Path> sortedPaths) {
+        adj = new List[sortedPaths.size()];
+        paths = sortedPaths;
+        edges = 0;
+        for (int i = 0; i < adj.length; i++) {
+            adj[i] = new LinkedList<>();
+        }
+    }
     /**
      * Add new edge.
      * @param v vertex 1 (path 1).
@@ -102,12 +115,12 @@ public class Graph {
      * @param v - vertex order number.
      * @return - vertex degree.
      */
-    public int degree(int v) {
+    public int vertexDegree(int v) {
         return adj[v].size();
     }
     /**
      * Find graph average degree.
-     * @return - average degree.
+     * @return graph average degree.
      */
     public int avgDegree() {
         return vertices() == 0 ? 0 : (2 * edges() / vertices());
@@ -119,8 +132,8 @@ public class Graph {
     public int maxDegree() {
         int max = 0;
         for (int v = 0; v < vertices(); v++) {
-            if (degree(v) > max) {
-                max = degree(v);
+            if (vertexDegree(v) > max) {
+                max = vertexDegree(v);
             }
         }
         return max;
@@ -148,8 +161,9 @@ public class Graph {
         sb.append(adj.length).append(", edges=").append(edges);
         sb.append(", density=").append(Math.log(edges) / Math.log(adj.length));
         sb.append(", self loops=").append(numbersOfSelfLoops());
-        sb.append(", avg degree=").append(avgDegree());
-        sb.append(", max degree=").append(maxDegree());
+        sb.append(", graph average degree=").append(avgDegree());
+        sb.append(", graph degree=").append(2 * edges());
+        sb.append(", vertex max degree=").append(maxDegree());
         sb.append(" ]");
         return sb.toString();
     }

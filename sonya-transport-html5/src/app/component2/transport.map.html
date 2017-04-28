@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <md-sidenav-container>
-    <md-sidenav #sidenav opened="false" mode="side" class="tm-sidenav">
+    <md-sidenav #sidenav opened="true" mode="side" class="tm-sidenav ss-shadow">
         <ng-template sidenav-content></ng-template>
     </md-sidenav>
 
@@ -27,9 +27,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </md-card-content>
     </md-card>
-    
-    <button md-fab color="warn" class="tm-map-control" style="top: 30px; right: 30px;" (click)="goBack()"
-            mdTooltip="Brest" mdTooltipPosition="below">
-        Brest</button>
     
 </md-sidenav-container>
