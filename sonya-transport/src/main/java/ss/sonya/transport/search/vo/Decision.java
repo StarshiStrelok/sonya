@@ -60,4 +60,13 @@ public class Decision {
     public BusStop getE() {
         return e;
     }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int c : way) {
+            sb.append(c).append("#");
+        }
+        sb.append(s.getId()).append("#").append(e.getId());
+        return sb.toString();
+    }
 }

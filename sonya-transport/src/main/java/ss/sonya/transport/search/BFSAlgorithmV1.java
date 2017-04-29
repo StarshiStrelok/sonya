@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,8 +80,8 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         // getting end vertices for search (end search conditions)
         Map<Integer, Set<BusStop>> startVertices = createPointVertices(
                 startBs, true, profile, graph);
-        LOG.debug("#-bfs-# start vertices [" + startVertices.size() + "]");
-        LOG.debug("#-bfs-# end vertices [" + endVertices.size() + "]");
+        LOG.info("#-bfs-# start vertices [" + startVertices.size() + "]");
+        LOG.info("#-bfs-# end vertices [" + endVertices.size() + "]");
         // search straight paths, it's simple -)
         List<OptimalPath> straight = straightPaths(startVertices, endVertices,
                 graph);
@@ -96,11 +97,20 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         // increase search depth
         long startBfs = System.currentTimeMillis();
         List<Future<List<Decision>>> futures = new ArrayList<>();
-        // for every start condition create separate thread
-        for (int startIdx : startVertices.keySet()) {
+        // break for threads
+        List<Integer>[] portions = new ArrayList[cores];
+        for (int i = 0; i < cores; i++) {
+            portions[i] = new ArrayList<>();
+        }
+        Iterator<Integer> itr = startVertices.keySet().iterator();
+        int counter = 0;
+        while (itr.hasNext()) {
+            portions[counter % cores].add(itr.next());
+            counter++;
+        }
+        for (List<Integer> portion : portions) {
             futures.add(ex.submit(
-                    new BFSTask(startIdx, endVertices,
-                        startVertices.get(startIdx), graph,
+                    new BFSTask(portion, endVertices, startVertices, graph,
                             settings.getMaxTransfers())
             ));
         }
@@ -108,7 +118,6 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         for (Future<List<Decision>> f : futures) {
             decisions.addAll(f.get());
         }
-        LOG.debug("#-bfs-# phase end #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#");
         LOG.info("#-bfs-# total number of decisions ["
                 + decisions.size() + "], BFS time ["
                 + (System.currentTimeMillis() - startBfs) + "] ms");

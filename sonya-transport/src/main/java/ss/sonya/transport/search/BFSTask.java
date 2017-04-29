@@ -18,6 +18,7 @@
 package ss.sonya.transport.search;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,37 +36,41 @@ import ss.sonya.transport.search.vo.Decision;
 public class BFSTask implements Callable<List<Decision>> {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(BFSTask.class);
-    /** Start vertex. */
-    private final int sV;
-    /** End bus stops. */
+    /** Start vertices criteria. */
+    private final List<Integer> startCriteria;
+    /** End vertices and it bus stops. */
     private final Map<Integer, Set<BusStop>> endVertices;
-    /** Start bus stops. */
-    private final Set<BusStop> startBusStops;
+    /** Start vertices and it bus stops. */
+    private final Map<Integer, Set<BusStop>> startVertices;
     /** Graph. */
     private final Graph graph;
     /** Search limit depth (max transfers). */
     private final int limitDepth;
     /**
      * Constructor.
-     * @param startVertex start vertex.
+     * @param pStartCriteria start vertices criteria.
      * @param pEndVertices end bus stops.
-     * @param pStartBusStops start bus stops.
+     * @param pStartVertices start bus stops.
      * @param pGraph graph.
      * @param pLimitDepth search limit depth.
      */
-    public BFSTask(final int startVertex,
+    public BFSTask(final List<Integer> pStartCriteria,
             final Map<Integer, Set<BusStop>> pEndVertices,
-            final Set<BusStop> pStartBusStops, final Graph pGraph,
+            final Map<Integer, Set<BusStop>> pStartVertices, final Graph pGraph,
             final int pLimitDepth) {
-        sV = startVertex;
+        startCriteria = pStartCriteria;
         endVertices = pEndVertices;
-        startBusStops = pStartBusStops;
+        startVertices = pStartVertices;
         graph = pGraph;
         limitDepth = pLimitDepth;
     }
     @Override
     public List<Decision> call() throws Exception {
-        return bfs();
+        List<Decision> all = new ArrayList<>();
+        for (Integer sV : startCriteria) {
+            all.addAll(bfs(sV));
+        }
+        return all;
     }
     /**
      * BFS implementation.
@@ -73,11 +78,14 @@ public class BFSTask implements Callable<List<Decision>> {
      * @return list decisions for depth less or equals limitDepth.
      * @throws Exception method error.
      */
-    private List<Decision> bfs() throws Exception {
+    private List<Decision> bfs(final Integer sV) throws Exception {
         Set<Integer> endCriteria = endVertices.keySet();
         List<Decision> result = new ArrayList<>();
         int[][] edgesTo = new int[limitDepth][graph.vertices()];
         boolean[] marked = new boolean[graph.vertices()];
+        endCriteria.forEach(v -> {
+            marked[v] = true;
+        });
         Queue<Integer> queue = new LinkedList<>();
         queue.add(sV);
         int depth = 0;
@@ -107,7 +115,7 @@ public class BFSTask implements Callable<List<Decision>> {
                     }
                     way[0] = sV;
                     if (way.length > 0) {
-                        for (BusStop startBs : startBusStops) {
+                        for (BusStop startBs : startVertices.get(sV)) {
                             for (BusStop endBs : endVertices.get(w[0])) {
                                 result.add(new Decision(startBs, endBs, way));
                             }
@@ -125,7 +133,11 @@ public class BFSTask implements Callable<List<Decision>> {
                 break;
             }
         }
-        LOG.info("visits [" + visits + "]");
+        Map<String, Decision> set = new HashMap<>();
+        for (Decision d : result) {
+            set.put(d.toString(), d);
+        }
+        LOG.info("total [" + result.size() + "], rest [" + set.size() + "], visits [" + visits + "]");
         return result;
     }
 }
