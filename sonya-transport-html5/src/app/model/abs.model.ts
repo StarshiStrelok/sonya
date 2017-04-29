@@ -58,6 +58,7 @@ export class TransportProfile implements AbsModel {
         public centerLon: number,
         public name: string,
         public busStopAccessZoneRadius: number,
+        public searchLimitForPoints: number,
         public routeProfiles: RouteProfile[]
     ) {}
 }

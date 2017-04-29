@@ -155,11 +155,16 @@
                         * Access zone radius (km) - the radius inside which 
                             is looking for bus stops for transfer to another route.
                             Recommend using 0.1-0.5 km. Affects search accuracy and search routes time,
-                            high value - slower search and high accuracy, low value - faster search, low accuracy
+                            high value - slower search and high accuracy, low value - faster search,
+                            low accuracy<br/>
+                        * Bus stop limit near point (integer) - mean how many bus stops use for search
+                            near start and destination point. Recommend use 4. 
+                            The higher the slower but more accurate
                     </md-card-subtitle>
                 </md-card-header>
                 <md-card-content>
                     <md-grid-list cols="4" rowHeight="56px;">
+                        
                         <md-grid-tile>
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Transfer access zone radius, km"
@@ -172,6 +177,20 @@
                                 </md-error>
                             </md-input-container>
                         </md-grid-tile>
+                        
+                        <md-grid-tile>
+                            <md-input-container class="full-width">
+                                <input mdInput placeholder="Bus stop limit near point"
+                                       formControlName="searchLimitForPoints">
+                                <md-error *ngIf="transportProfileForm.get('searchLimitForPoints').hasError('required')">
+                                    Required
+                                </md-error>
+                                <md-error *ngIf="transportProfileForm.get('searchLimitForPoints').hasError('minNumber')">
+                                    Minimum 1
+                                </md-error>
+                            </md-input-container>
+                        </md-grid-tile>
+                        
                     </md-grid-list>
                 </md-card-content>
             </md-card>

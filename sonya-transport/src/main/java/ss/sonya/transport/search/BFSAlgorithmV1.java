@@ -85,7 +85,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         List<OptimalPath> straight = straightPaths(startVertices, endVertices,
                 graph);
         if (!straight.isEmpty()) {
-            LOG.debug("#-bfs-# straight paths [" + straight.size() + "]");
+            LOG.info("#-bfs-# straight paths [" + straight.size() + "]");
             result.addAll(straight);
         }
         // multi-threading, using [physical processors] or [physical processors]
@@ -100,7 +100,8 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         for (int startIdx : startVertices.keySet()) {
             futures.add(ex.submit(
                     new BFSTask(startIdx, endVertices,
-                        startVertices.get(startIdx), graph)
+                        startVertices.get(startIdx), graph,
+                            settings.getMaxTransfers())
             ));
         }
         // getting results

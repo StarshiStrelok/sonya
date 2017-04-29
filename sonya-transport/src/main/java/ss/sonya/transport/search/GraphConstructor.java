@@ -189,7 +189,6 @@ public class GraphConstructor {
                 }
             }
         }
-        System.out.print("100%\n");
         LOG.info("--- " + graph.toString());       // output graph
         LOG.info("--- build path graph end... Elapsed time ["
                 + (System.currentTimeMillis() - start) + "] ms");

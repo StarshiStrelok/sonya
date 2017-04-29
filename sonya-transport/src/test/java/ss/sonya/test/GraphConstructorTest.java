@@ -18,6 +18,9 @@ package ss.sonya.test;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import ss.sonya.transport.search.SearchEngine;
+import ss.sonya.transport.search.vo.SearchSettings;
 
 /**
  *
@@ -30,7 +33,21 @@ public class GraphConstructorTest extends TestConfig {
         System.setProperty("catalina.base",
                 "/home/ss/kira/apache-tomcat-9.0.0.M19");
     }
+    @Autowired
+    private SearchEngine searchEngine;
     @Test
     public void test() {
+        SearchSettings s = new SearchSettings();
+        s.setStartLat(53.88046424318761);
+        s.setStartLon(27.43041515350342);
+        s.setEndLat(53.88951972656099);
+        s.setEndLon(27.46517658233643);
+        s.setProfileId(4);
+        s.setMaxTransfers(8);
+        try {
+            searchEngine.search(s);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
