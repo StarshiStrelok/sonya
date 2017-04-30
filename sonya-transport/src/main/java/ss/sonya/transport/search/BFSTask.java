@@ -18,7 +18,6 @@
 package ss.sonya.transport.search;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -74,8 +73,8 @@ public class BFSTask implements Callable<List<Decision>> {
     }
     /**
      * BFS implementation.
-     * 
-     * @return list decisions for depth less or equals limitDepth.
+     * @param sV start vertex.
+     * @return list decisions.
      * @throws Exception method error.
      */
     private List<Decision> bfs(final Integer sV) throws Exception {
@@ -83,6 +82,7 @@ public class BFSTask implements Callable<List<Decision>> {
         List<Decision> result = new ArrayList<>();
         int[][] edgesTo = new int[limitDepth][graph.vertices()];
         boolean[] marked = new boolean[graph.vertices()];
+        // end vertices marked as visited already
         endCriteria.forEach(v -> {
             marked[v] = true;
         });
@@ -90,7 +90,7 @@ public class BFSTask implements Callable<List<Decision>> {
         queue.add(sV);
         int depth = 0;
         int levelCount = 0;
-        int visits = 0;
+        int w;
         while (!queue.isEmpty()) {
             if (levelCount == 0) {
                 depth++;
@@ -102,29 +102,30 @@ public class BFSTask implements Callable<List<Decision>> {
             }
             int v = queue.poll();
             levelCount--;
-            for (Integer[] w : graph.adj(v)) {
-                visits++;
-                edgesTo[depth - 1][w[0]] = v;
-                if (endCriteria.contains(w[0])) {
+            for (Integer[] adj : graph.adj(v)) {
+                w = adj[Graph.IDX_W];
+                edgesTo[depth - 1][w] = v;
+                if (endCriteria.contains(w)) {
                     // bingo! found potencial decision
                     // create way
                     int d = depth;
                     int[] way = new int[depth + 1];
-                    for (int x = w[0]; x != sV; x = edgesTo[--d][x]) {
+                    for (int x = w; x != sV; x = edgesTo[--d][x]) {
                         way[d] = x;
                     }
                     way[0] = sV;
                     if (way.length > 0) {
                         for (BusStop startBs : startVertices.get(sV)) {
-                            for (BusStop endBs : endVertices.get(w[0])) {
+                            // TODO check way
+                            for (BusStop endBs : endVertices.get(w)) {
                                 result.add(new Decision(startBs, endBs, way));
                             }
                         }
                     }
                 }
                 // exclude duplicates from next level.
-                if (!queue.contains(w[0]) && !marked[w[0]]) {
-                    queue.add(w[0]);
+                if (!queue.contains(w) && !marked[w]) {
+                    queue.add(w);
                 }
             }
             marked[v] = true;
@@ -133,11 +134,12 @@ public class BFSTask implements Callable<List<Decision>> {
                 break;
             }
         }
-        Map<String, Decision> set = new HashMap<>();
-        for (Decision d : result) {
-            set.put(d.toString(), d);
-        }
-        LOG.info("total [" + result.size() + "], rest [" + set.size() + "], visits [" + visits + "]");
+//        Map<String, Decision> set = new HashMap<>();
+//        for (Decision d : result) {
+//            set.put(d.toString(), d);
+//        }
+//        LOG.info("total [" + result.size() + "], rest [" + set.size()
+//                + "], visits [" + visits + "]");
         return result;
     }
 }

@@ -159,6 +159,8 @@ public class GraphConstructor {
         // For every path search transfer paths and create edges
         BusStop bs;
         BusStop transferBs;
+        BusStop bs2;
+        BusStop transferBs2;
         List<BusStop> way;
         for (Path path : paths) {
             int vertex = paths.indexOf(path);
@@ -171,22 +173,20 @@ public class GraphConstructor {
             for (Path transferPath : tMap.keySet()) {
                 // getting [path] - [transfer path] transfer bus stops
                 BusStop[] pairs = tMap.get(transferPath);
-                for (int k = 0; k < pairs.length; k += 2) {
-                    bs = pairs[k];      // [path] bus stop
-                    transferBs = pairs[k + 1];  // [transfer path] bus stop
-                    if (bs == null || transferBs == null) {
-                        // last transfer not exist, because transfer between
-                        // paths only one (first transfer)
-                        continue;
-                    }
-                    // transfer from path to path
-                    int tPathVertex = paths.indexOf(transferPath);
-                    int pathBsOrder = way.indexOf(bs);
-                    int tPathBsOrder = transferPath.getBusstops()
-                            .indexOf(transferBs);
-                    graph.addEdge(vertex, tPathVertex, pathBsOrder,
-                            tPathBsOrder);
-                }
+                bs = pairs[TRANSFER_1_FROM];      // [path] bus stop
+                transferBs = pairs[TRANSFER_1_TO];  // [transfer path] bus stop
+                bs2 = pairs[TRANSFER_2_FROM];      // [path] bus stop
+                transferBs2 = pairs[TRANSFER_2_TO];  // [transfer path] bus stop
+                // transfer from path to path
+                int tPathVertex = paths.indexOf(transferPath);
+                int pathBsOrder = way.indexOf(bs);
+                int tPathBsOrder = transferPath.getBusstops()
+                        .indexOf(transferBs);
+                int pathBsOrder2 = bs2 == null ? -1 : way.indexOf(bs2);
+                int tPathBsOrder2 = transferBs2 == null ? -1
+                        : transferPath.getBusstops().indexOf(transferBs2);
+                graph.addEdge(vertex, tPathVertex, pathBsOrder,
+                        tPathBsOrder, pathBsOrder2, tPathBsOrder2);
             }
         }
         LOG.info("--- " + graph.toString());       // output graph

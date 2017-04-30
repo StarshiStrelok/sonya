@@ -26,6 +26,16 @@ import ss.sonya.entity.Path;
  * @author ss
  */
 public class Graph {
+    /** Adjacency vertex index. Everywhere is denoted as 'w'. */
+    public static final int IDX_W = 0;
+    /** Vertex transfer bus stop order (index) in way. */
+    public static final int IDX_V_TRANSFER_1 = 1;
+    /** Adjacency vertex transfer bus stop order (index) in way. */
+    public static final int IDX_W_TRANSFER_1 = 2;
+    /** Vertex bus stop order (index) in way for second transfer. */
+    public static final int IDX_V_TRANSFER_2 = 3;
+    /** Adjacency vertex bus stop order (index) in way for second transfer. */
+    public static final int IDX_W_TRANSFER_2 = 4;
     /** Path in vertex order. */
     private final List<Path> paths;
     /** Edges count. */
@@ -48,14 +58,14 @@ public class Graph {
      * Add new edge.
      * @param v vertex 1 (path 1).
      * @param w vertex 2 (path 2).
-     * @param vb vertex 1: path #1 bus stop.
-     * @param wb vertex 2: path #2 bus stop.
+     * @param vb1 vertex 1: path #1 bus stop (first transfer).
+     * @param wb1 vertex 2: path #2 bus stop (first transfer).
+     * @param vb2 vertex 1: path #1 bus stop (second transfer).
+     * @param wb2 vertex 2: path #2 bus stop (second transfer).
      */
-    public void addEdge(int v, int w, int vb, int wb) {
-        if (!isEdgeExist(v, w, vb, wb)) {
-            adj[v].add(new Integer[] {w, vb, wb});
-            edges++;
-        }
+    public void addEdge(int v, int w, int vb1, int wb1, int vb2, int wb2) {
+        adj[v].add(new Integer[] {w, vb1, wb1, vb2, wb2});
+        edges++;
     }
     /**
      * Get graph vertices count.
@@ -175,20 +185,25 @@ public class Graph {
         return sb.toString();
     }
 // ================================ PRIVATE ===================================
-    /**
-     * Check if edge exist.
-     * @param v - vertex.
-     * @param w - other vertex.
-     * @param vb - vertex bus stop.
-     * @param wb - other vertex bus stop.
-     * @return - true if exist.
-     */
-    private boolean isEdgeExist(int v, int w, int vb, int wb) {
-        for (Integer[] e : adj(v)) {
-            if (e[0] == w && e[1] == vb && e[2] == wb) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    /**
+//     * Check if edge exist.
+//     * For diagnostic.
+//     * @param v - vertex.
+//     * @param w - other vertex.
+//     * @param vb1 - vertex bus stop.
+//     * @param wb1 - other vertex bus stop.
+//     * @return - true if exist.
+//     */
+//    private boolean isEdgeExist(
+//            int v, int w, int vb1, int wb1, int vb2, int wb2) {
+//        for (Integer[] e : adj(v)) {
+//            if (e[IDX_W] == w && e[IDX_V_TRANSFER_1] == vb1
+//                    && e[IDX_W_TRANSFER_1] == wb1 && e[IDX_V_TRANSFER_2] == vb2
+//                    && e[IDX_W_TRANSFER_2] == wb2) {
+//                System.out.println("duplicate found");
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 }
