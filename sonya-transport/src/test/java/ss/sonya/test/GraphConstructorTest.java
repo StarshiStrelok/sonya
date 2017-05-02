@@ -40,7 +40,7 @@ public class GraphConstructorTest extends TestConfig {
         SearchSettings s = new SearchSettings();
         s.setStartLat(53.88046424318761);
         s.setStartLon(27.43041515350342);
-        s.setEndLat(53.88951972656099);
+        s.setEndLat(53.7);
         s.setEndLon(27.46517658233643);
         s.setProfileId(4);
         s.setMaxTransfers(8);

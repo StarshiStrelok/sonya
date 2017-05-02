@@ -26,13 +26,15 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import ss.sonya.entity.BusStop;
+import ss.sonya.entity.Path;
 import ss.sonya.transport.search.vo.Decision;
+import ss.sonya.transport.search.vo.OptimalPath;
 
 /**
  * BFS task.
  * @author ss
  */
-public class BFSTask implements Callable<List<Decision>> {
+public class BFSTask implements Callable<List<OptimalPath>> {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(BFSTask.class);
     /** Start vertices criteria. */
@@ -64,12 +66,12 @@ public class BFSTask implements Callable<List<Decision>> {
         limitDepth = pLimitDepth;
     }
     @Override
-    public List<Decision> call() throws Exception {
+    public List<OptimalPath> call() throws Exception {
         List<Decision> all = new ArrayList<>();
         for (Integer sV : startCriteria) {
             all.addAll(bfs(sV));
         }
-        return all;
+        return transformDecisions(all);
     }
     /**
      * BFS implementation.
@@ -116,7 +118,6 @@ public class BFSTask implements Callable<List<Decision>> {
                     way[0] = sV;
                     if (way.length > 0) {
                         for (BusStop startBs : startVertices.get(sV)) {
-                            // TODO check way
                             for (BusStop endBs : endVertices.get(w)) {
                                 result.add(new Decision(startBs, endBs, way));
                             }
@@ -142,4 +143,94 @@ public class BFSTask implements Callable<List<Decision>> {
 //                + "], visits [" + visits + "]");
         return result;
     }
+    /**
+     * Transform found decisions to optimal paths.
+     * @param list list decisions.
+     * @return list optimal paths.
+     */
+    private List<OptimalPath> transformDecisions(final List<Decision> list) {
+        List<OptimalPath> rest = new LinkedList<>();
+        int idxS, idxT, idxE;
+        int[] way;
+        Queue<Integer> queue = new LinkedList<>();
+        for (Decision decision : list) {
+            queue.clear();
+            way = decision.getWay();
+            idxS = graph.getPath(way[0]).getBusstops().indexOf(decision.getS());
+            idxE = graph.getPath(way[way.length - 1]).getBusstops()
+                    .lastIndexOf(decision.getE());
+            if (idxS == -1 || idxE == -1) {
+                throw new RuntimeException("incorrect decision!");
+            }
+            idxT = idxS;
+            boolean isRight = true;
+            queue.add(idxS);
+            for (int k = 0; k < way.length; k++) {
+                int v = way[k];
+                if (way.length - 1 == k) {
+                    if (idxT != -1 && idxT >= idxE) {
+                        idxT = -1;
+                    } else {
+                        queue.add(idxE);
+                    }
+                } else {
+                    int w = way[k + 1];
+                    Integer[] adjW = null;
+                    for (Integer[] adj : graph.adj(v)) {
+                        if (adj[Graph.IDX_W] == w) {
+                            adjW = adj;
+                            break;
+                        }
+                    }
+                    if (idxT != -1) {
+                        int vt1 = adjW[Graph.IDX_V_TRANSFER_1];
+                        int vt2 = adjW[Graph.IDX_V_TRANSFER_2];
+                        int diff1 = vt1 - idxT;
+                        int diff2 = vt2 - idxT;
+                        if (diff1 <= 0 && diff2 <= 0) {
+                            idxT = -1;
+                        } else if (vt1 > idxT
+                                && (vt2 > idxT && vt2 > vt1) || vt2 <= idxT) {
+                            queue.add(adjW[Graph.IDX_V_TRANSFER_1]);
+                            queue.add(adjW[Graph.IDX_W_TRANSFER_1]);
+                            idxT = adjW[Graph.IDX_W_TRANSFER_1];
+                        } else if (vt2 > idxT
+                                && (vt1 > idxT && vt1 > vt1) || vt1 <= idxT) {
+                            queue.add(adjW[Graph.IDX_V_TRANSFER_2]);
+                            queue.add(adjW[Graph.IDX_W_TRANSFER_2]);
+                            idxT = adjW[Graph.IDX_W_TRANSFER_2];
+                        } else {
+                            throw new RuntimeException(
+                                    "unreachable code, check your algorithm");
+                        }
+                    }
+                }
+                if (idxT == -1) {
+                    isRight = false;
+                    break;
+                }
+            }
+            if (isRight) {
+                OptimalPath op = new OptimalPath();
+                List<Path> paths = new ArrayList<>();
+                List<List<BusStop>> pathsWay = new ArrayList<>();
+                for (int i = 0; i < way.length; i++) {
+                    int v = way[i];
+                    int s = queue.poll();
+                    int e = queue.poll();
+                    Path p = graph.getPath(v);
+                    paths.add(p);
+                    pathsWay.add(p.getBusstops().subList(s, e + 1));
+                }
+                op.setPath(paths);
+                op.setWay(pathsWay);
+                rest.add(op);
+            }
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.trace("#-bfs-# remove [" + (list.size() - rest.size())
+                    + "] unreal decisions from [" + list.size() + "]");
+        }
+        return rest;
+    } 
 }

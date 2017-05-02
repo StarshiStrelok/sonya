@@ -17,7 +17,6 @@
 package ss.sonya.transport.search;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,7 +34,6 @@ import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
 import ss.sonya.entity.TransportProfile;
-import ss.sonya.transport.search.vo.Decision;
 import ss.sonya.transport.search.vo.OptimalPath;
 import ss.sonya.transport.search.vo.SearchSettings;
 
@@ -82,6 +80,14 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
                 startBs, true, profile, graph);
         LOG.info("#-bfs-# start vertices [" + startVertices.size() + "]");
         LOG.info("#-bfs-# end vertices [" + endVertices.size() + "]");
+        // exclude vertices which belong to both criteria
+        endVertices.keySet().forEach(v -> {
+            if (startVertices.keySet().contains(v)) {
+                LOG.warn("exclude vertex from start criteria ["
+                        + v + "], it exist in end criteria");
+                startVertices.remove(v);
+            }
+        });
         // search straight paths, it's simple -)
         List<OptimalPath> straight = straightPaths(startVertices, endVertices,
                 graph);
@@ -93,10 +99,9 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         // + [hyper-threading]
         int cores = Runtime.getRuntime().availableProcessors();
         ExecutorService ex = Executors.newFixedThreadPool(cores);
-        List<Decision> decisions = new CopyOnWriteArrayList<>();
         // increase search depth
         long startBfs = System.currentTimeMillis();
-        List<Future<List<Decision>>> futures = new ArrayList<>();
+        List<Future<List<OptimalPath>>> futures = new ArrayList<>();
         // break for threads
         List<Integer>[] portions = new ArrayList[cores];
         for (int i = 0; i < cores; i++) {
@@ -115,35 +120,12 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
             ));
         }
         // getting results
-        for (Future<List<Decision>> f : futures) {
-            decisions.addAll(f.get());
+        for (Future<List<OptimalPath>> f : futures) {
+            result.addAll(f.get());
         }
         LOG.info("#-bfs-# total number of decisions ["
-                + decisions.size() + "], BFS time ["
+                + (result.size() - straight.size()) + "], BFS time ["
                 + (System.currentTimeMillis() - startBfs) + "] ms");
-        // multithreading
-        long start = System.currentTimeMillis();
-        int portionSize = decisions.size() / cores;
-        LOG.info("#-bfs-# portion size [" + portionSize + "]");
-        List<Future<List<OptimalPath>>> tasks = new ArrayList<>(cores);
-        int min, max;
-        for (int i = 1; i <= cores; i++) {
-            min = (i - 1) * portionSize;
-            if ((i + 1) * portionSize < decisions.size()) {
-                max = i * portionSize;
-            } else {
-                max = decisions.size();
-            }
-            tasks.add(ex.submit(
-                    new TransformDecisionsTask(
-                            decisions.subList(min, max), graph)
-            ));
-        }
-        for (Future<List<OptimalPath>> task : tasks) {
-            result.addAll(task.get());
-        }
-        LOG.info("#-bfs-# transform decisions elapsed time ["
-                + (System.currentTimeMillis() - start) + "] ms");
         clearUnrealResults(result, startBs);
         startVertices.clear();
         endVertices.clear();
@@ -242,10 +224,5 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
             }
         }
         return list;
-    }
-    @Override
-    protected List<OptimalPath> transformDecisions(
-            List<Decision> decisions, Graph graph) throws Exception {
-        return Collections.emptyList();
     }
 }

@@ -21,14 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.TransportProfile;
 import ss.sonya.inject.service.Geometry;
 import ss.sonya.transport.component.TransportGeometry;
-import ss.sonya.transport.search.vo.Decision;
 import ss.sonya.transport.search.vo.OptimalPath;
 
 /**
@@ -61,15 +59,6 @@ public abstract class BFS implements SearchEngine {
     protected abstract Map<Integer, Set<BusStop>> createPointVertices(
             List<BusStop> pointBusStops, boolean isStart,
             TransportProfile profile, Graph graph) throws Exception;
-    /**
-     * Transfer decisions to optimal paths.
-     * @param decisions list decisions.
-     * @param graph graph.
-     * @return list optimal paths.
-     * @throws Exception - method error.
-     */
-    protected abstract List<OptimalPath> transformDecisions(
-            List<Decision> decisions, Graph graph) throws Exception;
     /**
      * Find straight paths.
      * @param startVertices start vertices.
@@ -114,30 +103,6 @@ public abstract class BFS implements SearchEngine {
                     + "], dirty size [" + dirty.size() + "], elapsed time ["
                     + (System.currentTimeMillis() - start) + "] ms");
             dirty.removeAll(unreal);
-        }
-    }
-    /**
-     * Transform portion of decisions to optimal paths.
-     */
-    protected class TransformDecisionsTask
-            implements Callable<List<OptimalPath>> {
-        /** Decisions. */
-        private final List<Decision> decisions;
-        /** Graph. */
-        private final Graph graph;
-        /**
-         * Constructor.
-         * @param pDecisions portion of decisions.
-         * @param g graph.
-         */
-        public TransformDecisionsTask(final List<Decision> pDecisions,
-                final Graph g) {
-            decisions = pDecisions;
-            graph = g;
-        }
-        @Override
-        public List<OptimalPath> call() throws Exception {
-            return transformDecisions(decisions, graph);
         }
     }
 }
