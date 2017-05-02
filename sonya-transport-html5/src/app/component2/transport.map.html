@@ -17,7 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <md-sidenav-container>
     <md-sidenav #sidenav opened="true" mode="side" class="tm-sidenav ss-shadow">
-        <ng-template sidenav-content></ng-template>
+        <md-toolbar color="primary" class="tm-toolbar">
+            <span class="spacer"></span>
+            <md-icon class="tm-toolbar-i" (click)="closeMenu()">chevron_left</md-icon>
+        </md-toolbar>
+        <geocoder></geocoder>
     </md-sidenav>
 
     <md-card class="tm-map">
@@ -27,5 +31,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </md-card-content>
     </md-card>
-    
+
+    <button md-fab color="primary" class="tm-map-control" style="top: 25px; left: 25px"
+            (click)="openMenu()" *ngIf="!isMenuOpen"
+            mdTooltip="Menu" mdTooltipPosition="below">
+        <md-icon>menu</md-icon></button>
+
 </md-sidenav-container>

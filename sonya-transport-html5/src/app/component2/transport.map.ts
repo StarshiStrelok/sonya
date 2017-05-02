@@ -16,10 +16,12 @@
  */
 
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {MdSidenav} from '@angular/material';
 
 import {slideAnimation, AnimatedSlide} from './../app.component';
 import {TransportProfile, ModelClass} from '../model/abs.model';
 import {DataService} from '../service/data.service';
+import {CtxMenuItem} from '../model/ctx.menu.item';
 
 declare var L: any;
 
@@ -32,20 +34,54 @@ declare var L: any;
 
 export class TransportMap extends AnimatedSlide implements OnInit {
     @ViewChild('map') mapElement: ElementRef;
+    @ViewChild('sidenav') sideNav: MdSidenav;
     map: any;
+    mapMenu: any
     profiles: TransportProfile[];
+    coordStart: any;
+    coordEnd: any;
+    isMenuOpen: boolean = true;
     constructor(private dataService: DataService) {
         super();
     }
-    
+
     ngOnInit() {
         this.dataService.getAll<TransportProfile>(ModelClass.TRANSPORT_PROFILE)
             .then((profiles: TransportProfile[]) => {
                 this.profiles = profiles;
                 this.createMap(this.profiles[0]);
+                this.mapMenu = this.createMapMenu(180, [
+                    new CtxMenuItem('A', 'Start point',
+                            this.fnMakeStartPoint, this),
+                    new CtxMenuItem('B', 'End point',
+                            this.fnMakeEndPoint, this)
+                ]);
             });
     }
-    
+    fnMakeStartPoint(comp: TransportMap) {
+        comp.search(true);
+    }
+    fnMakeEndPoint(comp: TransportMap) {
+        comp.search(false);
+    }
+    search(isStart: boolean) {
+        if (isStart) {
+            this.coordStart = this.mapMenu.getLatLng();
+        } else {
+            this.coordEnd = this.mapMenu.getLatLng();
+        }
+        if (this.coordStart && this.coordEnd) {
+            console.log('make search');
+        }
+    }
+    openMenu() {
+        this.isMenuOpen = true;
+        this.sideNav.open().then(res => this.map.invalidateSize(true));
+    }
+    closeMenu() {
+        this.isMenuOpen = false;
+        this.sideNav.close().then(res => this.map.invalidateSize(true));
+    }
     private createMap(profile: TransportProfile) {
         var map = L.map.Sonya(this.mapElement.nativeElement, {
             southWest: L.latLng(profile.southWestLat, profile.southWestLon),
@@ -59,6 +95,18 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         this.createLayer().addTo(map);
         this.mapElement.nativeElement.style.height = (window.innerHeight) + 'px';
         map.invalidateSize(true);
+        
+        let comp = this;
+        map.on('click', function (e: any) {
+            if (comp.mapMenu) {
+                if (comp.mapMenu.isOpen()) {
+                    map.closePopup();
+                } else {
+                    comp.mapMenu.setLatLng(e.latlng);
+                    comp.mapMenu.openOn(map);
+                }
+            }
+        });
 
         this.map = map;
     }
@@ -66,5 +114,35 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         return L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             id: 'osm.default'
         });
+    }
+    private createMapMenu(width: number, items: CtxMenuItem[]): any {
+        let _mapMenu = L.popup({
+            minWidth: width,
+            maxWidth: width,
+            className: 'l-ctx-menu l-ctx-menu-offset',
+            offset: [90, 84],
+            closeButton: false,
+            closeOnClick: false
+        })
+        var container = L.DomUtil.create('div');
+        var _map = this.map;
+        items.forEach((item: CtxMenuItem) => {
+            let btn = this.createContextMenuBtn(container, item);
+            L.DomEvent.on(btn, 'click', function () {
+                _map.closePopup();
+                item.onclick(item.component);
+            });
+        });
+        _mapMenu.setContent(container);
+        return _mapMenu;
+    }
+    private createContextMenuBtn(container: any, item: CtxMenuItem): any {
+        var btn = L.DomUtil.create('button', '', container);
+        btn.setAttribute('type', 'button');
+        btn.className = "l-context-menu-button";
+        btn.innerHTML = '<span class="' + (item.icon === 'A' ? 'letter-a' : 'letter-b') + '">'
+                + item.icon + '</span>'
+                + '<span class> ' + item.label + '</span>';
+        return btn;
     }
 }

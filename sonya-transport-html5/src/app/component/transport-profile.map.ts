@@ -32,6 +32,7 @@ import {RoutesGrid} from './routes.grid';
 import {BusStopGrid} from './busstop.grid';
 import {OSRMService} from '../service/osrm.service';
 import {slideAnimation, AnimatedSlide} from './../app.component';
+import {CtxMenuItem} from '../model/ctx.menu.item';
 
 declare var L: any;
 
@@ -44,15 +45,6 @@ export class SideNavContentDirective {
 
 export interface SwitchedContent {
     setData(data: any): void;
-}
-
-export class CtxMenuItem {
-    constructor(
-        public icon: string,
-        public label: string,
-        public onclick: Function,
-        public component: any
-    ) {}
 }
 
 @Component({

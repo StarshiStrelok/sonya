@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .l-context-menu-button span {
     font-size: 16px;
     line-height: 30px;
-    font-family: Roboto,"Helvetica Neue",sans-serif;
+    font-family: Helvetica;
 }
 .l-context-menu-button i {
     min-width: 20px;
@@ -48,4 +48,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .l-ctx-menu > .leaflet-popup-content-wrapper {
     border-radius: 0px;
     padding: 0;
+}
+.l-ctx-menu-offset {
+}
+.l-ctx-menu-offset > .leaflet-popup-tip-container {
+    display: none;
+}
+.letter-a {
+    color: orangered;
+    text-shadow: 1px 1px 1px lightgrey;
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 7px;
+    margin-left: 5px;
+}
+.letter-b {
+    color: green;
+    text-shadow: 1px 1px 1px lightgrey;
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 7px;
+    margin-left: 5px;
 }

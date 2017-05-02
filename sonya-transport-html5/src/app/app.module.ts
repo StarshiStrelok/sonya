@@ -26,6 +26,7 @@ import {PathForm} from './form/path.form';
 import {Window, WindowDirective} from './component/window';
 // ---------------------- UI components ---------------------------------------
 import {TransportMap} from './component2/transport.map';
+import {GeoCoder} from './component2/geocoder';
 // ---------------------- Services --------------------------------------------
 import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
@@ -53,7 +54,8 @@ export function HttpLoaderFactory(http: Http) {
         WindowDirective,
         SideNavContentDirective,
         
-        TransportMap
+        TransportMap,
+        GeoCoder
     ],
     imports: [
         BrowserModule,

@@ -32,7 +32,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
-import ss.sonya.entity.Route;
 import ss.sonya.entity.TransportProfile;
 import ss.sonya.transport.search.vo.OptimalPath;
 import ss.sonya.transport.search.vo.SearchSettings;
@@ -127,8 +126,6 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
                 + (result.size() - straight.size()) + "], BFS time ["
                 + (System.currentTimeMillis() - startBfs) + "] ms");
         clearUnrealResults(result, startBs);
-        startVertices.clear();
-        endVertices.clear();
         LOG.info("#-bfs-# total number of optimal paths ["
                 + result.size() + "]");
         LOG.info("#-bfs-# elapsed time [" + (System.currentTimeMillis() - st)
@@ -144,7 +141,6 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         // key - vertex number, value - set bus stops
         Map<Integer, Set<BusStop>> map = new HashMap<>();
         List<BusStop> way;
-        Route route;
         Map<BusStop, List<Path>> bsPaths = graphConstructor
                 .findBusStopPathsMap(profile.getId());
         for (BusStop bs : pointBusStops) {
@@ -154,8 +150,6 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
                 continue;
             }
             for (Path path : paths) {
-                // getting path route
-                route = path.getRoute();
                 // getting path way
                 way = path.getBusstops();
                 if (isStart) {
