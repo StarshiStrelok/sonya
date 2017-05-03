@@ -169,6 +169,7 @@ export class EndpointLayer {
         if (isMove) {
             this.moveToMarker(lat, lon);
         }
+        this.checkSearchConditions();
     }
     showEndMarker(lat: number, lon: number, isMove: boolean) {
         this.endMarker.setLatLng(new L.LatLng(lat, lon));
@@ -178,6 +179,7 @@ export class EndpointLayer {
         if (isMove) {
             this.moveToMarker(lat, lon);
         }
+        this.checkSearchConditions();
     }
     hideStartMarker() {
         if (this.layerEndpoint.hasLayer(this.startMarker)) {
@@ -198,6 +200,10 @@ export class EndpointLayer {
             title: isStart ? 'Start' : 'Finish',
             isStart: isStart
         });
+        var comp = this;
+        marker.on('dragend', function (e: any) {
+            comp.checkSearchConditions();
+        });
         return marker;
     }
     private createIcon(icName: string) {
@@ -215,5 +221,11 @@ export class EndpointLayer {
         this.map.flyTo(new L.LatLng(lat, lon), 16, {
             animate: true
         });
+    }
+    private checkSearchConditions() {
+        if (this.layerEndpoint.hasLayer(this.startMarker)
+            && this.layerEndpoint.hasLayer(this.endMarker)) {
+            console.log('search');
+        }
     }
 }

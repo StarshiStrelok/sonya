@@ -18,8 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <md-card class="geo-panel">
     <md-card-header>
         <md-icon color="primary" md-card-avatar class="geo-ava-i">search</md-icon>
-        <md-card-title>Geocoder</md-card-title>
-        <md-card-subtitle>search by geographical name</md-card-subtitle>
+        <md-card-title [translate]="'transport-map.geocoder.title'"></md-card-title>
+        <md-card-subtitle [translate]="'transport-map.geocoder.subtitle'"></md-card-subtitle>
     </md-card-header>
     <md-card-content>
         <md-grid-list cols="8" rowHeight="48px;">
@@ -28,7 +28,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-grid-tile>
             <md-grid-tile colspan="6">
                 <md-input-container class="full-width">
-                    <input mdInput placeholder="Departure point" [mdAutocomplete]="auto"
+                    <input mdInput
+                           placeholder="{{'transport-map.geocoder.departure-point' | translate }}"
+                           [mdAutocomplete]="auto"
                            (keypress)="pressStart($event)" [(ngModel)]="start"
                            (ngModelChange)="selectStartAlt($event)">
                 </md-input-container>
@@ -40,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </md-autocomplete>
             </md-grid-tile>
         <md-grid-tile>
-            <md-icon class="geo-btn-i" mdTooltip="Clear"
+            <md-icon class="geo-btn-i" mdTooltip="{{'transport-map.geocoder.clear' | translate }}"
                      (click)="clearStart()">close</md-icon>
         </md-grid-tile>
 
@@ -49,7 +51,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </md-grid-tile>
         <md-grid-tile  colspan="6">
             <md-input-container class="full-width">
-                <input mdInput placeholder="Destination point" [mdAutocomplete]="auto1"
+                <input mdInput placeholder="{{'transport-map.geocoder.destination-point' | translate }}"
+                       [mdAutocomplete]="auto1"
                        (keypress)="pressEnd($event)" [(ngModel)]="end"
                        (ngModelChange)="selectEndAlt($event)">
             </md-input-container>
@@ -61,7 +64,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-autocomplete>
         </md-grid-tile>
         <md-grid-tile>
-            <md-icon class="geo-btn-i" mdTooltip="Clear"
+            <md-icon class="geo-btn-i" mdTooltip="{{'transport-map.geocoder.clear' | translate }}"
                      (click)="clearEnd()">close</md-icon>
         </md-grid-tile>
     </md-grid-list>

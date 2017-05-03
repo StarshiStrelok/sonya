@@ -2,5 +2,24 @@
     "transport-profiles": {
         "title": "Transport profiles",
         "new": "Create new transport profile"
+    },
+    "transport-map": {
+        "geocoder": {
+            "title": "Geocoder",
+            "subtitle": "search by geographical name",
+            "departure-point": "Departure point",
+            "destination-point": "Destination point",
+            "clear": "Clear",
+            "notify": {
+                "not-found": {
+                    "header": "Geocoder report",
+                    "body": "Nothing not found, please change your request and try again"
+                },
+                "error": {
+                    "header": "Geocoder not working",
+                    "body": "Geocoder temporarily not working, please use map for search"
+                }
+            }
+        }
     }
 }

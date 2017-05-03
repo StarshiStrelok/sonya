@@ -18,6 +18,7 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {Http} from '@angular/http';
 import {NotificationsService} from 'angular2-notifications';
+import {TranslateService} from '@ngx-translate/core';
 
 import {TransportProfile} from '../model/abs.model';
 import {EndpointLayer} from '../component2/transport.map';
@@ -38,7 +39,8 @@ export class GeoCoder implements OnInit {
     @Input() layerEndpoint: EndpointLayer;
     constructor(
         private http: Http,
-        private notificationService: NotificationsService
+        private notificationService: NotificationsService,
+        private translate: TranslateService
     ) {}
     ngOnInit() {
 
@@ -92,8 +94,10 @@ export class GeoCoder implements OnInit {
         }
         this.geocoderStraightSearch(text).then(res => {
             if (res.length === 0) {
-                this.notificationService.info('Geocoder info',
-                    'Nothing not found, please change your request and try again');
+                this.notificationService.info(
+                    this.translate.instant('transport-map.geocoder.notify.not-found.header'),
+                    this.translate.instant('transport-map.geocoder.notify.not-found.body')
+                );
             } else if (res.length === 1) {
                 if (isStart) {
                     this.startPositions = [];
@@ -143,8 +147,10 @@ export class GeoCoder implements OnInit {
     }
     private handleError(error: any): Promise<any> {
         console.error('An error occurred', error);
-        this.notificationService.alert('Geocoder not working',
-            'Geocoder temporarily not working, please use map for search');
+        this.notificationService.alert(
+            this.translate.instant('transport-map.geocoder.notify.error.header'),
+            this.translate.instant('transport-map.geocoder.notify.error.body')
+        );
         return Promise.reject(error.message || error);
     }
 }
