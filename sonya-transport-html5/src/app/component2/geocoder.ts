@@ -28,7 +28,8 @@ import {EndpointLayer} from '../component2/transport.map';
     styleUrls: ['./geocoder.css']
 })
 export class GeoCoder implements OnInit {
-    GEOCODER_URL: string = 'http://nominatim.openstreetmap.org/search/';
+    GEOCODER_STRAIGHT_URL: string = 'http://nominatim.openstreetmap.org/search/';
+    GEOCODER_REVERSE_URL: string = 'http://nominatim.openstreetmap.org/reverse/';
     start: string;
     end: string;
     startPositions: Response[] = [];
@@ -40,7 +41,7 @@ export class GeoCoder implements OnInit {
         private notificationService: NotificationsService
     ) {}
     ngOnInit() {
-        
+
     }
     pressStart(event: any) {
         if (event.keyCode === 13) {
@@ -53,10 +54,34 @@ export class GeoCoder implements OnInit {
         }
     }
     selectStart(position: Response) {
-        this.layerEndpoint.showStartMarker(position.lat, position.lon);
+        this.layerEndpoint.showStartMarker(position.lat, position.lon, true);
     }
     selectEnd(position: Response) {
-        this.layerEndpoint.showEndMarker(position.lat, position.lon);
+        this.layerEndpoint.showEndMarker(position.lat, position.lon, true);
+    }
+    selectStartAlt(event: any) {
+        let filter: Response[] = this.startPositions.filter(pos => pos.display_name === this.start);
+        if (filter.length === 1) {
+            let pos = filter[0];
+            this.layerEndpoint.showStartMarker(pos.lat, pos.lon, true);
+        }
+    }
+    selectEndAlt(event: any) {
+        let filter: Response[] = this.endPositions.filter(pos => pos.display_name === this.end);
+        if (filter.length === 1) {
+            let pos = filter[0];
+            this.layerEndpoint.showEndMarker(pos.lat, pos.lon, true);
+        }
+    }
+    clearStart() {
+        this.start = '';
+        this.startPositions = [];
+        this.layerEndpoint.hideStartMarker();
+    }
+    clearEnd() {
+        this.end = '';
+        this.endPositions = [];
+        this.layerEndpoint.hideEndMarker();
     }
     search(isStart: boolean) {
         let text;
@@ -65,30 +90,61 @@ export class GeoCoder implements OnInit {
         } else {
             text = this.end;
         }
-        this.geocoderSearch(text).then(res => {
+        this.geocoderStraightSearch(text).then(res => {
             if (res.length === 0) {
                 this.notificationService.info('Geocoder info',
                     'Nothing not found, please change your request and try again');
-            }
-            if (isStart) {
-                this.startPositions = res;
+            } else if (res.length === 1) {
+                if (isStart) {
+                    this.startPositions = [];
+                    this.start = res[0].display_name;
+                    this.selectStart(res[0]);
+                } else {
+                    this.endPositions = [];
+                    this.end = res[0].display_name;
+                    this.selectEnd(res[0]);
+                }
             } else {
-                this.endPositions = res;
+                if (isStart) {
+                    this.startPositions = res;
+                } else {
+                    this.endPositions = res;
+                }
             }
         });
     }
-    geocoderSearch(text: string): Promise<Response[]> {
+    reverseSearch(isStart: boolean, lat: number, lon: number) {
+        this.geocoderReverseSearch(lat, lon).then(res => {
+            if (!res) {
+                return;
+            }
+            if (isStart) {
+                this.startPositions = [];
+                this.start = res.display_name;
+            } else {
+                this.endPositions = [];
+                this.end = res.display_name;
+            }
+        });
+    }
+    private geocoderStraightSearch(text: string): Promise<Response[]> {
         let params = '?q=' + text + '&limit=10&format=json&addressdetails=1&bounded=1'
             + '&viewbox=' + this.profile.southWestLon + ',' + this.profile.southWestLat
             + ',' + this.profile.northEastLon + ',' + this.profile.northEastLat;
-        return this.http.get(this.GEOCODER_URL + params)
+        return this.http.get(this.GEOCODER_STRAIGHT_URL + params)
             .toPromise().then(res => res.json() as Response[])
-            .catch(this.handleError);
+            .catch(err => this.handleError(err));
+    }
+    private geocoderReverseSearch(lat: number, lon: number): Promise<Response> {
+        let params = '?lat=' + lat + '&lon=' + lon + '&format=json&addressdetails=1';
+        return this.http.get(this.GEOCODER_REVERSE_URL + params)
+            .toPromise().then(res => res.json() as Response)
+            .catch(err => this.handleError(err));
     }
     private handleError(error: any): Promise<any> {
         console.error('An error occurred', error);
         this.notificationService.alert('Geocoder not working',
-                'Geocoder temporarily not working, please use map for search');
+            'Geocoder temporarily not working, please use map for search');
         return Promise.reject(error.message || error);
     }
 }

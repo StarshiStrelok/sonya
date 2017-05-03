@@ -29,7 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <md-grid-tile colspan="6">
                 <md-input-container class="full-width">
                     <input mdInput placeholder="Departure point" [mdAutocomplete]="auto"
-                           (keypress)="pressStart($event)" [(ngModel)]="start">
+                           (keypress)="pressStart($event)" [(ngModel)]="start"
+                           (ngModelChange)="selectStartAlt($event)">
                 </md-input-container>
                 <md-autocomplete #auto="mdAutocomplete">
                     <md-option *ngFor="let startPosition of startPositions"
@@ -39,7 +40,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </md-autocomplete>
             </md-grid-tile>
         <md-grid-tile>
-            <md-icon class="geo-btn-i" mdTooltip="Clear">close</md-icon>
+            <md-icon class="geo-btn-i" mdTooltip="Clear"
+                     (click)="clearStart()">close</md-icon>
         </md-grid-tile>
 
         <md-grid-tile>
@@ -48,17 +50,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <md-grid-tile  colspan="6">
             <md-input-container class="full-width">
                 <input mdInput placeholder="Destination point" [mdAutocomplete]="auto1"
-                       (keypress)="pressEnd($event)" [(ngModel)]="end">
+                       (keypress)="pressEnd($event)" [(ngModel)]="end"
+                       (ngModelChange)="selectEndAlt($event)">
             </md-input-container>
             <md-autocomplete #auto1="mdAutocomplete">
-                <md-option *ngFor="let endPosition of endPositions"
+                <md-option *ngFor="let endPosition of endPositions" 
                     [value]="endPosition.display_name" (click)="selectEnd(endPosition)">
                     {{ endPosition.display_name }}
                 </md-option>
             </md-autocomplete>
         </md-grid-tile>
         <md-grid-tile>
-            <md-icon class="geo-btn-i" mdTooltip="Clear">close</md-icon>
+            <md-icon class="geo-btn-i" mdTooltip="Clear"
+                     (click)="clearEnd()">close</md-icon>
         </md-grid-tile>
     </md-grid-list>
 </md-card-content>

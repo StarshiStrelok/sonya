@@ -22,6 +22,7 @@ import {slideAnimation, AnimatedSlide} from './../app.component';
 import {TransportProfile, ModelClass, BusStop} from '../model/abs.model';
 import {DataService} from '../service/data.service';
 import {CtxMenuItem} from '../model/ctx.menu.item';
+import {GeoCoder} from './geocoder';
 
 declare var L: any;
 
@@ -35,6 +36,7 @@ declare var L: any;
 export class TransportMap extends AnimatedSlide implements OnInit {
     @ViewChild('map') mapElement: ElementRef;
     @ViewChild('sidenav') sideNav: MdSidenav;
+    @ViewChild(GeoCoder) geocoder: GeoCoder;
     map: any;
     mapMenu: any
     profiles: TransportProfile[];
@@ -68,10 +70,11 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     setEndpoint(isStart: boolean) {
         let ll = this.mapMenu.getLatLng();
         if (isStart) {
-            this.layerEndpoint.showStartMarker(ll.lat, ll.lng);
+            this.layerEndpoint.showStartMarker(ll.lat, ll.lng, false);
         } else {
-            this.layerEndpoint.showEndMarker(ll.lat, ll.lng);
+            this.layerEndpoint.showEndMarker(ll.lat, ll.lng, false);
         }
+        this.geocoder.reverseSearch(isStart, ll.lat, ll.lng);
     }
     openMenu() {
         this.isMenuOpen = true;
@@ -150,25 +153,42 @@ export class EndpointLayer {
     layerEndpoint: any;
     startMarker: any;
     endMarker: any;
+    map: any;
     init(map: any) {
+        this.map = map;
         this.layerEndpoint = L.layerGroup([]);
         this.layerEndpoint.addTo(map);
         this.startMarker = this.createMarker(true);
         this.endMarker = this.createMarker(false);
     }
-    showStartMarker(lat: number, lon: number) {
+    showStartMarker(lat: number, lon: number, isMove: boolean) {
         this.startMarker.setLatLng(new L.LatLng(lat, lon));
         if (!this.layerEndpoint.hasLayer(this.startMarker)) {
             this.layerEndpoint.addLayer(this.startMarker);
         }
+        if (isMove) {
+            this.moveToMarker(lat, lon);
+        }
     }
-    showEndMarker(lat: number, lon: number) {
+    showEndMarker(lat: number, lon: number, isMove: boolean) {
         this.endMarker.setLatLng(new L.LatLng(lat, lon));
         if (!this.layerEndpoint.hasLayer(this.endMarker)) {
             this.layerEndpoint.addLayer(this.endMarker);
         }
+        if (isMove) {
+            this.moveToMarker(lat, lon);
+        }
     }
-    
+    hideStartMarker() {
+        if (this.layerEndpoint.hasLayer(this.startMarker)) {
+            this.layerEndpoint.removeLayer(this.startMarker);
+        }
+    }
+    hideEndMarker() {
+        if (this.layerEndpoint.hasLayer(this.endMarker)) {
+            this.layerEndpoint.removeLayer(this.endMarker);
+        }
+    }
     private createMarker(isStart: boolean): any {
         var marker = L.marker(new L.LatLng(0, 0), {
             icon: isStart
@@ -189,6 +209,11 @@ export class EndpointLayer {
             iconAnchor: [16, 37],
             shadowAnchor: [12, 27],
             popupAnchor: [0, 0]
+        });
+    }
+    private moveToMarker(lat: number, lon: number) {
+        this.map.flyTo(new L.LatLng(lat, lon), 16, {
+            animate: true
         });
     }
 }
