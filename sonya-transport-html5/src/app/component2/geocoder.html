@@ -28,26 +28,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-grid-tile>
             <md-grid-tile colspan="6">
                 <md-input-container class="full-width">
-                    <input mdInput placeholder="Departure point"
+                    <input mdInput placeholder="Departure point" [mdAutocomplete]="auto"
                            (keypress)="pressStart($event)" [(ngModel)]="start">
                 </md-input-container>
+                <md-autocomplete #auto="mdAutocomplete">
+                    <md-option *ngFor="let startPosition of startPositions"
+                        [value]="startPosition.display_name" (click)="selectStart(startPosition)">
+                        {{ startPosition.display_name }}
+                    </md-option>
+                </md-autocomplete>
             </md-grid-tile>
-            <md-grid-tile>
-                <md-icon class="geo-btn-i" mdTooltip="Clear">close</md-icon>
-            </md-grid-tile>
+        <md-grid-tile>
+            <md-icon class="geo-btn-i" mdTooltip="Clear">close</md-icon>
+        </md-grid-tile>
 
-            <md-grid-tile>
-                <span class="geo-letter geo-b">B</span>
-            </md-grid-tile>
-            <md-grid-tile  colspan="6">
-                <md-input-container class="full-width">
-                    <input mdInput placeholder="Destination point"
-                           (keypress)="pressEnd($event)" [(ngModel)]="end">
-                </md-input-container>
-            </md-grid-tile>
-            <md-grid-tile>
-                <md-icon class="geo-btn-i" mdTooltip="Clear">close</md-icon>
-            </md-grid-tile>
-        </md-grid-list>
-    </md-card-content>
+        <md-grid-tile>
+            <span class="geo-letter geo-b">B</span>
+        </md-grid-tile>
+        <md-grid-tile  colspan="6">
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Destination point" [mdAutocomplete]="auto1"
+                       (keypress)="pressEnd($event)" [(ngModel)]="end">
+            </md-input-container>
+            <md-autocomplete #auto1="mdAutocomplete">
+                <md-option *ngFor="let endPosition of endPositions"
+                    [value]="endPosition.display_name" (click)="selectEnd(endPosition)">
+                    {{ endPosition.display_name }}
+                </md-option>
+            </md-autocomplete>
+        </md-grid-tile>
+        <md-grid-tile>
+            <md-icon class="geo-btn-i" mdTooltip="Clear">close</md-icon>
+        </md-grid-tile>
+    </md-grid-list>
+</md-card-content>
 </md-card>

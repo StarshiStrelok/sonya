@@ -19,7 +19,7 @@ import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {MdSidenav} from '@angular/material';
 
 import {slideAnimation, AnimatedSlide} from './../app.component';
-import {TransportProfile, ModelClass} from '../model/abs.model';
+import {TransportProfile, ModelClass, BusStop} from '../model/abs.model';
 import {DataService} from '../service/data.service';
 import {CtxMenuItem} from '../model/ctx.menu.item';
 
@@ -38,8 +38,8 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     map: any;
     mapMenu: any
     profiles: TransportProfile[];
-    coordStart: any;
-    coordEnd: any;
+    activeProfile: TransportProfile;
+    layerEndpoint: EndpointLayer = new EndpointLayer();
     isMenuOpen: boolean = true;
     constructor(private dataService: DataService) {
         super();
@@ -49,7 +49,8 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         this.dataService.getAll<TransportProfile>(ModelClass.TRANSPORT_PROFILE)
             .then((profiles: TransportProfile[]) => {
                 this.profiles = profiles;
-                this.createMap(this.profiles[0]);
+                this.activeProfile = this.profiles[0];
+                this.createMap(this.activeProfile);
                 this.mapMenu = this.createMapMenu(180, [
                     new CtxMenuItem('A', 'Start point',
                             this.fnMakeStartPoint, this),
@@ -59,19 +60,17 @@ export class TransportMap extends AnimatedSlide implements OnInit {
             });
     }
     fnMakeStartPoint(comp: TransportMap) {
-        comp.search(true);
+        comp.setEndpoint(true);
     }
     fnMakeEndPoint(comp: TransportMap) {
-        comp.search(false);
+        comp.setEndpoint(false);
     }
-    search(isStart: boolean) {
+    setEndpoint(isStart: boolean) {
+        let ll = this.mapMenu.getLatLng();
         if (isStart) {
-            this.coordStart = this.mapMenu.getLatLng();
+            this.layerEndpoint.showStartMarker(ll.lat, ll.lng);
         } else {
-            this.coordEnd = this.mapMenu.getLatLng();
-        }
-        if (this.coordStart && this.coordEnd) {
-            console.log('make search');
+            this.layerEndpoint.showEndMarker(ll.lat, ll.lng);
         }
     }
     openMenu() {
@@ -107,8 +106,8 @@ export class TransportMap extends AnimatedSlide implements OnInit {
                 }
             }
         });
-
         this.map = map;
+        this.layerEndpoint.init(this.map);
     }
     private createLayer(): any {
         return L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -144,5 +143,52 @@ export class TransportMap extends AnimatedSlide implements OnInit {
                 + item.icon + '</span>'
                 + '<span class> ' + item.label + '</span>';
         return btn;
+    }
+}
+
+export class EndpointLayer {
+    layerEndpoint: any;
+    startMarker: any;
+    endMarker: any;
+    init(map: any) {
+        this.layerEndpoint = L.layerGroup([]);
+        this.layerEndpoint.addTo(map);
+        this.startMarker = this.createMarker(true);
+        this.endMarker = this.createMarker(false);
+    }
+    showStartMarker(lat: number, lon: number) {
+        this.startMarker.setLatLng(new L.LatLng(lat, lon));
+        if (!this.layerEndpoint.hasLayer(this.startMarker)) {
+            this.layerEndpoint.addLayer(this.startMarker);
+        }
+    }
+    showEndMarker(lat: number, lon: number) {
+        this.endMarker.setLatLng(new L.LatLng(lat, lon));
+        if (!this.layerEndpoint.hasLayer(this.endMarker)) {
+            this.layerEndpoint.addLayer(this.endMarker);
+        }
+    }
+    
+    private createMarker(isStart: boolean): any {
+        var marker = L.marker(new L.LatLng(0, 0), {
+            icon: isStart
+                ? this.createIcon('start') : this.createIcon('end'),
+            clickable: true,
+            draggable: true,
+            title: isStart ? 'Start' : 'Finish',
+            isStart: isStart
+        });
+        return marker;
+    }
+    private createIcon(icName: string) {
+        return L.icon({
+            iconUrl: '/assets/image/' + icName + '.png',
+            shadowUrl: '/assets/image/shadow.png',
+            iconSize: [32, 37],
+            shadowSize: [39, 27],
+            iconAnchor: [16, 37],
+            shadowAnchor: [12, 27],
+            popupAnchor: [0, 0]
+        });
     }
 }

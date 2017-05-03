@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <span class="spacer"></span>
             <md-icon class="tm-toolbar-i" (click)="closeMenu()">chevron_left</md-icon>
         </md-toolbar>
-        <geocoder></geocoder>
+        <geocoder [profile]="activeProfile" [layerEndpoint]="layerEndpoint"></geocoder>
     </md-sidenav>
 
     <md-card class="tm-map">
