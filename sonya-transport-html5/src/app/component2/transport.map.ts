@@ -84,6 +84,9 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         this.isMenuOpen = false;
         this.sideNav.close().then(res => this.map.invalidateSize(true));
     }
+    isMobile(): boolean {
+        return window.innerWidth <= 600;
+    }
     private createMap(profile: TransportProfile) {
         var map = L.map.Sonya(this.mapElement.nativeElement, {
             southWest: L.latLng(profile.southWestLat, profile.southWestLon),
@@ -95,7 +98,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
             minZoom: profile.minZoom,
         }, profile.centerLat, profile.centerLon, profile.initialZoom);
         this.createLayer().addTo(map);
-        this.mapElement.nativeElement.style.height = (window.innerHeight) + 'px';
+        this.mapElement.nativeElement.style.height = (window.innerHeight - 50) + 'px';
         map.invalidateSize(true);
         
         let comp = this;
