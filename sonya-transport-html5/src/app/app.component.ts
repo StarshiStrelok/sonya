@@ -1,6 +1,9 @@
 import {Component, HostBinding} from '@angular/core';
+import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {TranslateService} from '@ngx-translate/core';
+
+import {Links} from './links';
 
 @Component({
     selector: 'app-root',
@@ -13,7 +16,7 @@ import {TranslateService} from '@ngx-translate/core';
             }`]
 })
 export class AppComponent {
-    constructor(translate: TranslateService) {
+    constructor(private translate: TranslateService, private router: Router) {
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.setDefaultLang('en');
         // the lang to use, if the lang isn't available, it will use the current loader to get them
@@ -24,6 +27,12 @@ export class AppComponent {
         timeOut: 5000,
         maxStack: 4
     };
+    toControl() {
+        this.router.navigate([Links.PROFILE_LIST]);
+    }
+    toMain() {
+        this.router.navigate(['']);
+    }
 }
 
 export class AnimatedSlide {

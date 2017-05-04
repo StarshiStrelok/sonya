@@ -36,7 +36,9 @@ import {
     MdChipsModule,
     MdProgressSpinnerModule,
     MdProgressBarModule,
-    MdAutocompleteModule
+    MdAutocompleteModule,
+    MdSnackBarModule,
+    MdTabsModule
 } from '@angular/material';
 
 import {LatitudeField} from './latitude-field';
@@ -63,6 +65,8 @@ import {ConfirmDialog} from './confirm.dialog';
         MdProgressSpinnerModule,
         MdProgressBarModule,
         MdAutocompleteModule,
+        MdSnackBarModule,
+        MdTabsModule,
         FormsModule,
         ReactiveFormsModule,
         BrowserModule,
@@ -86,6 +90,8 @@ import {ConfirmDialog} from './confirm.dialog';
         MdProgressSpinnerModule,
         MdProgressBarModule,
         MdAutocompleteModule,
+        MdSnackBarModule,
+        MdTabsModule,
         LatitudeField, LongitudeField, ZoomField, ConfirmDialog
     ],
     declarations: [

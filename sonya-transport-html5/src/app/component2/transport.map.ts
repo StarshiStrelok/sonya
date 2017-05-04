@@ -32,7 +32,6 @@ declare var L: any;
     styleUrls: ['./transport.map.css'],
     animations: [slideAnimation]
 })
-
 export class TransportMap extends AnimatedSlide implements OnInit {
     @ViewChild('map') mapElement: ElementRef;
     @ViewChild('sidenav') sideNav: MdSidenav;
@@ -113,7 +112,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
             }
         });
         this.map = map;
-        this.layerEndpoint.init(this.map);
+        this.layerEndpoint.init(this.map, this);
     }
     private createLayer(): any {
         return L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -157,8 +156,10 @@ export class EndpointLayer {
     startMarker: any;
     endMarker: any;
     map: any;
-    init(map: any) {
+    parent: TransportMap;
+    init(map: any, parent: TransportMap) {
         this.map = map;
+        this.parent = parent;
         this.layerEndpoint = L.layerGroup([]);
         this.layerEndpoint.addTo(map);
         this.startMarker = this.createMarker(true);
@@ -205,6 +206,12 @@ export class EndpointLayer {
         });
         var comp = this;
         marker.on('dragend', function (e: any) {
+            let ll = marker.getLatLng();
+            if (e.target.options.isStart) {
+                comp.parent.geocoder.reverseSearch(true, ll.lat, ll.lng);
+            } else {
+                comp.parent.geocoder.reverseSearch(false, ll.lat, ll.lng);
+            }
             comp.checkSearchConditions();
         });
         return marker;
@@ -231,4 +238,8 @@ export class EndpointLayer {
             console.log('search');
         }
     }
+}
+
+export class SearchRoute {
+    
 }

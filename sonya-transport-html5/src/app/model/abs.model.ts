@@ -90,3 +90,17 @@ export class ImportDataEvent {
         public info: any
     ) {}
 }
+
+export class SearchSettings {
+    constructor(
+        public startLat: number,
+        public startLon: number,
+        public endLat: number,
+        public endLon: number,
+        public profileId: number,
+        public day: number,
+        public time: string,
+        public maxResults: number,
+        public maxTransfers: number
+    ) {}
+}

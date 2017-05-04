@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2017 ss
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<form [formGroup]="settingsForm" novalidate>
+    <div class="ssf-spacer"></div>
+    <md-grid-list cols="1" rowHeight="58px;">
+        
+        <md-grid-tile>
+            <md-select placeholder="Day of trip" formControlName="day" class="full-width">
+                <md-option *ngFor="let d of daysOfWeek" [value]="d.id">{{ d.name }}</md-option>
+            </md-select>
+        </md-grid-tile>
+        
+        <md-grid-tile>
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Time of trip (24h format)"
+                       formControlName="time">
+                <md-error *ngIf="settingsForm.get('time').hasError('required')">
+                    Required
+                </md-error>
+                <md-error *ngIf="settingsForm.get('time').hasError('pattern')">
+                    Not time format
+                </md-error>
+            </md-input-container>
+        </md-grid-tile>
+        
+        <md-grid-tile>
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Max results" type="number"
+                       formControlName="maxResults">
+                <md-error *ngIf="settingsForm.get('maxResults').hasError('required')">
+                    Required
+                </md-error>
+                <md-error *ngIf="settingsForm.get('maxResults').hasError('maxNumber')">
+                    20 is minimum value
+                </md-error>
+                <md-error *ngIf="settingsForm.get('maxResults').hasError('minNumber')">
+                    0 is maximum value
+                </md-error>
+            </md-input-container>
+        </md-grid-tile>
+
+        <md-grid-tile>
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Max transfers" type="number"
+                       formControlName="maxTransfers">
+                <md-error *ngIf="settingsForm.get('maxTransfers').hasError('required')">
+                    Required
+                </md-error>
+                <md-error *ngIf="settingsForm.get('maxTransfers').hasError('minNumber')">
+                    0 is minimum value
+                </md-error>
+            </md-input-container>
+        </md-grid-tile>
+        
+        <md-grid-tile>
+            <button md-raised-button><md-icon>done</md-icon> Apply</button>
+        </md-grid-tile>
+        
+    </md-grid-list>
+
+</form>

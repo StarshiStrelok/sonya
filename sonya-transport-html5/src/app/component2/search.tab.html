@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2017 ss
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<md-card class="st-panel">
+    <md-card-content>
+
+        <md-tab-group>
+            <md-tab><ng-template md-tab-label>
+                    <md-icon class="st-h-i" mdTooltip="Search results"
+                             mdTooltipPosition="above">view_list</md-icon>
+                </ng-template>
+                Content 2
+            </md-tab>
+            <md-tab>
+                <ng-template md-tab-label>
+                    <md-icon class="st-h-i" mdTooltip="Search settings"
+                             mdTooltipPosition="above">settings</md-icon>
+                </ng-template>
+                <search-settings></search-settings>
+            </md-tab>
+        </md-tab-group>
+
+    </md-card-content>
+</md-card>

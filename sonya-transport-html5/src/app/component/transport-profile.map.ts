@@ -294,7 +294,7 @@ export class TransportProfileMap extends AnimatedSlide implements OnInit {
             minZoom: profile.minZoom,
         }, profile.centerLat, profile.centerLon, profile.initialZoom);
         this.createLayer().addTo(map);
-        container.nativeElement.style.height = (window.innerHeight) + 'px';
+        container.nativeElement.style.height = (window.innerHeight - 50) + 'px';
         map.invalidateSize(true);
 
         this.map = map;

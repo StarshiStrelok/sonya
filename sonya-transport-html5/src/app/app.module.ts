@@ -27,6 +27,8 @@ import {Window, WindowDirective} from './component/window';
 // ---------------------- UI components ---------------------------------------
 import {TransportMap} from './component2/transport.map';
 import {GeoCoder} from './component2/geocoder';
+import {SearchTab} from './component2/search.tab';
+import {SearchSettingsForm} from './component2/search.settings.form';
 // ---------------------- Services --------------------------------------------
 import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
@@ -55,7 +57,9 @@ export function HttpLoaderFactory(http: Http) {
         SideNavContentDirective,
         
         TransportMap,
-        GeoCoder
+        GeoCoder,
+        SearchTab,
+        SearchSettingsForm
     ],
     imports: [
         BrowserModule,

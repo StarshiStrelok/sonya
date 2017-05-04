@@ -51,3 +51,8 @@ body {
 .mat-toolbar-row {
     height: 50px !important;
 }
+.mat-tab-label {
+    width: 100%;
+    line-height: 40px !important;
+    height: 40px !important;
+}
