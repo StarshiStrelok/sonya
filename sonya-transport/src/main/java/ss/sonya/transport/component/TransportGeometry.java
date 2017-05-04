@@ -28,7 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ss.sonya.constants.TransportConst;
 import ss.sonya.entity.BusStop;
+import ss.sonya.entity.Route;
 import ss.sonya.inject.service.Geometry;
+import ss.sonya.transport.search.vo.OptimalPath;
 
 /**
  * Transport geometry.
@@ -169,57 +171,37 @@ public class TransportGeometry {
         }
         return sum;
     }
-//    /**
-//     * Calculate optimal path time.
-//     * @param op - optimal path.
-//     * @return - time in hours.
-//     * @throws Exception - operation error.
-//     */
-//    public double calcOptimalPathTime(final OptimalPath op) throws Exception {
-//        double transferDist = 0;
-//        double transportTime = 0;
-//        List<BusStop> prevSubWay = null;
-//        Route r;
-//        int cur = 0;
-//        double speed;
-//        for (List<BusStop> subWay : op.getWay()) {
-//            if (prevSubWay != null) {
-//                BusStop prevBs = prevSubWay.get(prevSubWay.size() - 1);
-//                BusStop curBs = subWay.get(0);
-//                transferDist += geometry.calcDistance(prevBs.getLatitude(),
-//                        prevBs.getLongitude(), curBs.getLatitude(),
-//                        curBs.getLongitude());
-//            }
-//            r = op.getPath().get(cur).getRoute();
-//            speed = getSpeed(r.getType());
-//            transportTime += calcWayDistance(subWay) / speed;
-//            prevSubWay = subWay;
-//            cur++;
-//        }
-//        double totalTime = transferDist
-//                / KiraConf.settingD(AppProp.SPEED_HUMAN) + transportTime;
-//        return totalTime;
-//    }
-//    /**
-//     * Get transport speed.
-//     * @param type - route type.
-//     * @return - speed in km/h.
-//     */
-//    public double getSpeed(final RouteType type) {
-//        if (RouteType.AUTOBUS == type) {
-//            return KiraConf.settingD(AppProp.SPEED_AUTOBUS);
-//        } else if (RouteType.TROLLEYBUS == type) {
-//            return KiraConf.settingD(AppProp.SPEED_TROLLEYBUS);
-//        } else if (RouteType.TAXI == type) {
-//            return KiraConf.settingD(AppProp.SPEED_TAXI);
-//        } else if (RouteType.TRAM == type) {
-//            return KiraConf.settingD(AppProp.SPEED_TRAM);
-//        } else if (RouteType.METRO == type) {
-//            return KiraConf.settingD(AppProp.SPEED_METRO);
-//        } else {
-//            return -1;
-//        }
-//    }
+    /**
+     * Calculate optimal path time.
+     * @param op - optimal path.
+     * @return - time in hours.
+     * @throws Exception - operation error.
+     */
+    public double calcOptimalPathTime(final OptimalPath op) throws Exception {
+        double transferDist = 0;
+        double transportTime = 0;
+        List<BusStop> prevSubWay = null;
+        Route r;
+        int cur = 0;
+        double speed;
+        for (List<BusStop> subWay : op.getWay()) {
+            if (prevSubWay != null) {
+                BusStop prevBs = prevSubWay.get(prevSubWay.size() - 1);
+                BusStop curBs = subWay.get(0);
+                transferDist += geometry.calcDistance(prevBs.getLatitude(),
+                        prevBs.getLongitude(), curBs.getLatitude(),
+                        curBs.getLongitude());
+            }
+            r = op.getPath().get(cur).getRoute();
+            speed = r.getType().getAvgSpeed();
+            transportTime += calcWayDistance(subWay) / speed;
+            prevSubWay = subWay;
+            cur++;
+        }
+        double totalTime = transferDist
+                / TransportConst.HUMAN_SPEED + transportTime;
+        return totalTime;
+    }
 //    /**
 //     * Get types with irregular schedule.
 //     * @return - list route types.

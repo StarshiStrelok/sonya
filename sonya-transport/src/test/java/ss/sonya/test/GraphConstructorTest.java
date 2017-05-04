@@ -38,12 +38,13 @@ public class GraphConstructorTest extends TestConfig {
     @Test
     public void test() {
         SearchSettings s = new SearchSettings();
-        s.setStartLat(53.88046424318761);
-        s.setStartLon(27.43041515350342);
-        s.setEndLat(53.7);
-        s.setEndLon(27.46517658233643);
-        s.setProfileId(4);
-        s.setMaxTransfers(8);
+        s.setStartLat(52.08963261363972);
+        s.setStartLon(23.69373321533203);
+        s.setEndLat(52.10292030211327);
+        s.setEndLon(23.76480102539063);
+        s.setProfileId(1);
+        s.setMaxTransfers(2);
+        s.setMaxResults(10);
         try {
             searchEngine.search(s);
         } catch (Exception ex) {

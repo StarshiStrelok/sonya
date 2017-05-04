@@ -104,3 +104,11 @@ export class SearchSettings {
         public maxTransfers: number
     ) {}
 }
+
+export class OptimalPath {
+    constructor(
+        public path: Path[],
+        public way: BusStop[][],
+        public time: number
+    ) {}
+}

@@ -42,6 +42,7 @@ export class SearchSettingsForm implements OnInit {
     ngOnInit() {
         this.initDayOfWeek();
         this.createForm();
+        console.log('search settings initialization complete...');
     }
     createForm() {
         this.settingsForm = this.fb.group({
@@ -69,5 +70,15 @@ export class SearchSettingsForm implements OnInit {
             this.settingsForm.patchValue(this.settings);
         });
 
+    }
+    onSubmit() {
+        if (!this.settingsForm.valid) {
+            return;
+        } else {
+            // TODO
+        }
+    }
+    getSettings(): SearchSettings {
+        return this.settings;
     }
 }

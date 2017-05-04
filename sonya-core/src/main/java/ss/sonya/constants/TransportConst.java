@@ -27,6 +27,8 @@ public final class TransportConst {
     public static final String MOCK_BS = "mock";
     /** Transport midnight, for example 3:00. */
     public static final long TRANSPORT_MIDNIGHT = TimeUnit.HOURS.toMillis(3);
+    /** Average human speed, km/h. */
+    public static final double HUMAN_SPEED = 4;
     /**
      * Private constructor.
      */

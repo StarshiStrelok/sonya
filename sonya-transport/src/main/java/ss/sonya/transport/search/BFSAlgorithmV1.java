@@ -17,6 +17,7 @@
 package ss.sonya.transport.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,9 +28,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import ss.sonya.constants.TransportConst;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.TransportProfile;
@@ -43,6 +46,8 @@ import ss.sonya.transport.search.vo.SearchSettings;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class BFSAlgorithmV1 extends BFS implements SearchEngine {
+    /** Limit time multiplexer. max_time=min_time * multiplexer. */
+    private static final double LIMIT_TIME_MULTIPLEXER = 2;
     @Override
     public List<OptimalPath> search(final SearchSettings settings)
             throws Exception {
@@ -79,14 +84,6 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
                 startBs, true, profile, graph);
         LOG.info("#-bfs-# start vertices [" + startVertices.size() + "]");
         LOG.info("#-bfs-# end vertices [" + endVertices.size() + "]");
-        // exclude vertices which belong to both criteria
-        endVertices.keySet().forEach(v -> {
-            if (startVertices.keySet().contains(v)) {
-                LOG.warn("exclude vertex from start criteria ["
-                        + v + "], it exist in end criteria");
-                startVertices.remove(v);
-            }
-        });
         // search straight paths, it's simple -)
         List<OptimalPath> straight = straightPaths(startVertices, endVertices,
                 graph);
@@ -94,6 +91,14 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
             LOG.info("#-bfs-# straight paths [" + straight.size() + "]");
             result.addAll(straight);
         }
+        // exclude vertices which belong to both criteria (straight vertices)
+        endVertices.keySet().forEach(v -> {
+            if (startVertices.keySet().contains(v)) {
+                LOG.debug("#-bfs-# exclude vertex from start criteria ["
+                        + v + "], it exist in end criteria");
+                startVertices.remove(v);
+            }
+        });
         // multi-threading, using [physical processors] or [physical processors]
         // + [hyper-threading]
         int cores = Runtime.getRuntime().availableProcessors();
@@ -125,7 +130,16 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         LOG.info("#-bfs-# total number of decisions ["
                 + (result.size() - straight.size()) + "], BFS time ["
                 + (System.currentTimeMillis() - startBfs) + "] ms");
-        clearUnrealResults(result, startBs);
+        result = clearUnrealResults(result, startBs);
+        List<OptimalPath>[] grouping = groupingResult(result, settings);
+        result = grouping[0];
+        sortResults(result);
+        result = result.subList(0, settings.getMaxResults());
+        result.forEach(op -> {
+            op.getPath().forEach(p -> {
+                p.setBusstops(null);    // facilitate the size of response
+            });
+        });
         LOG.info("#-bfs-# total number of optimal paths ["
                 + result.size() + "]");
         LOG.info("#-bfs-# elapsed time [" + (System.currentTimeMillis() - st)
@@ -218,5 +232,148 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
             }
         }
         return list;
+    }
+    @Override
+    protected void sortResults(final List<OptimalPath> result)
+            throws Exception {
+        Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
+            if (o1.getTime() > o2.getTime()) {
+                return -1;
+            } else if (o1.getTime() < o2.getTime()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+    }
+    /**
+     * Grouping result by time and distance.
+     * @param dirty dirty result.
+     * @param settings search settings.
+     * @return result in two parts: short paths in under zero index,
+     *      and long under 1 index.
+     * @throws Exception 
+     */
+    private List<OptimalPath>[] groupingResult(final List<OptimalPath> dirty,
+            final SearchSettings settings) throws Exception {
+        long start = System.currentTimeMillis();
+        double sLat = settings.getStartLat();
+        double sLon = settings.getStartLon();
+        double eLat = settings.getEndLat();
+        double eLon = settings.getEndLon();
+        long minInHour = TimeUnit.HOURS.toMinutes(1);
+        List<OptimalPath> total = new ArrayList<>();
+        Map<String, List<OptimalPath>> grouping = new HashMap<>();
+        StringBuilder k = new StringBuilder();
+        for (OptimalPath op : dirty) {
+            k.setLength(0);
+            for (Path p : op.getPath()) {
+                k.append(p.getId()).append("#");
+            }
+            if (grouping.containsKey(k.toString())) {
+                grouping.get(k.toString()).add(op);
+            } else {
+                List<OptimalPath> opList = new ArrayList<>();
+                opList.add(op);
+                grouping.put(k.toString(), opList);
+            }
+        }
+        LOG.info("#-bfs-# dirty [" + dirty.size()
+                + "], groups [" + grouping.size() + "]");
+        double max = -1;
+        double min = Double.MAX_VALUE;
+        for (List<OptimalPath> list : grouping.values()) {
+            OptimalPath best = selectBest(list, sLat, sLon, eLat, eLon);
+            if (best.getTime() > max) {
+                max = best.getTime();
+            }
+            if (best.getTime() < min) {
+                min = best.getTime();
+            }
+            total.add(best);
+        }
+        double limitTime = min * LIMIT_TIME_MULTIPLEXER;
+        LOG.info("#-bfs-# max time [" + (max * minInHour)
+                + "] min");
+        LOG.info("#-bfs-# min time [" + (min * minInHour)
+                + "] min");
+        LOG.info("#-bfs-# limit time [" + (limitTime * minInHour)
+                + "] min");
+        List<OptimalPath> longPaths = new ArrayList<>();
+        List<OptimalPath> shortPaths = new ArrayList<>();
+        for (OptimalPath op : total) {
+            if (op.getTime() < limitTime) {
+                shortPaths.add(op);
+            } else {
+                longPaths.add(op);
+            }
+        }
+        LOG.info("#-bfs-# total paths size [" + total.size() + "]");
+        LOG.info("#-bfs-# short paths size [" + shortPaths.size() + "]");
+        LOG.info("#-bfs-# long paths size [" + longPaths.size() + "]");
+        if (LOG.isDebugEnabled()) {
+            Map<Integer, Integer> m = new HashMap<>();
+            for (OptimalPath op : shortPaths) {
+                double percent = op.getTime() * 100 / max;
+                if (m.containsKey((int) percent)) {
+                    m.put((int) percent, m.get((int) percent) + 1);
+                } else {
+                    m.put((int) percent, 1);
+                }
+            }
+            List<Integer> ks = new ArrayList<>(m.keySet());
+            Collections.sort(ks);
+            if (LOG.isDebugEnabled()) {
+                for (Integer p : ks) {
+                    LOG.debug("#-bfs-#" + String.format("%-7s", m.get(p))
+                            + String.format("%-26s", " [~"
+                            + (p * max / 100) + "] ms") + " : "
+                            + new String(new char[p]).replace("\0", "."));
+                }
+            }
+        }
+        LOG.info("#-bfs-# grouping elapsed time ["
+                + (System.currentTimeMillis() - start) + "]");
+        return new List[] {shortPaths, longPaths};
+    }
+    /**
+     * Select best optimal path from same optimal paths.
+     * @param ops - list optimal ways for same path.
+     * @param sLat - start point latitude.
+     * @param sLng - start point longitude.
+     * @param eLat - end point latitude.
+     * @param eLng - end point longitude.
+     * @return - best optimal path.
+     * @throws Exception - method error.
+     */
+    private OptimalPath selectBest(final List<OptimalPath> ops,
+            final double sLat, final double sLng, final double eLat,
+            final double eLng) throws Exception {
+        OptimalPath best = null;
+        for (OptimalPath op : ops) {
+            BusStop firstBs = op.getWay().get(0).get(0);
+            List<BusStop> lastSubWay = op.getWay()
+                    .get(op.getWay().size() - 1);
+            BusStop lastBs = lastSubWay.get(lastSubWay.size() - 1);
+            double startDist = geometry.calcDistance(sLat, sLng,
+                    firstBs.getLatitude(), firstBs.getLongitude());
+            double endDist = geometry.calcDistance(eLat, eLng,
+                    lastBs.getLatitude(), lastBs.getLongitude());
+            double totalTime = (startDist + endDist)
+                    / TransportConst.HUMAN_SPEED
+                    + transportGeometry.calcOptimalPathTime(op);
+            op.setTime(totalTime);
+            if (best == null) {
+                best = op;
+            } else {
+                if (best.getTime() > totalTime) {
+                    best = op;
+                }
+            }
+        }
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("#-bfs-# best --> " + best);
+        }
+        return best;
     }
 }

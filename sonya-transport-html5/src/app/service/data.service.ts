@@ -16,7 +16,8 @@
  */
 
 import {Injectable} from '@angular/core';
-import {AbsModel, Route, ModelClass, Path, ImportDataEvent} from '../model/abs.model';
+import {AbsModel, Route, ModelClass, Path, ImportDataEvent,
+    SearchSettings, OptimalPath} from '../model/abs.model';
 import {Http, Headers} from '@angular/http';
 import {NotificationsService} from 'angular2-notifications';
 import 'rxjs/add/operator/map';
@@ -80,6 +81,12 @@ export class DataService {
             this.dataUrl + 'import/' + tid + '/' + rid + '/' + persist, file, {}
         ).toPromise().then(res => res.json() as ImportDataEvent[])
             .catch(err => this.handleErrorUI(err));
+    }
+    searchRoutes(settings: SearchSettings): Promise<OptimalPath[]> {
+        console.log(settings);
+        return this.http.post(
+            this.dataUrl + ModelClass.ROUTE + '/search', JSON.stringify(settings), {headers: this.headers}
+        ).toPromise().then(res => res.json() as OptimalPath[]).catch(err => this.handleErrorUI(err));
     }
     private handleErrorUI(error: any): Promise<any> {
         console.error('An error occurred', error);

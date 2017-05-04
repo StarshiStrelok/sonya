@@ -72,21 +72,29 @@ public abstract class BFS implements SearchEngine {
             Map<Integer, Set<BusStop>> endVertices,
             Graph graph) throws Exception;
     /**
+     * Sort result.
+     * @param result result.
+     * @throws Exception error.
+     */
+    protected abstract void sortResults(List<OptimalPath> result)
+            throws Exception;
+    /**
      * Clear unreal results.
      * @param dirty dirty optimal paths.
      * @param startBs all start bus stops.
+     * @return real optimal paths.
      * @throws Exception method error.
      */
-    protected void clearUnrealResults(final List<OptimalPath> dirty,
+    protected List<OptimalPath> clearUnrealResults(
+            final List<OptimalPath> dirty,
             final List<BusStop> startBs) throws Exception {
         long start = System.currentTimeMillis();
-        List<OptimalPath> unreal = new ArrayList<>();
+        List<OptimalPath> rest = new ArrayList<>();
         for (OptimalPath op : dirty) {
             if (op.getWay().size() > 1) {
                 // if next way start bus stop in start area zone - remove it
-                if (startBs.contains(op.getWay().get(1).get(0))) {
-                    unreal.add(op);
-                    continue;
+                if (!startBs.contains(op.getWay().get(1).get(0))) {
+                    rest.add(op);
                 }
             }
 //            for (List<BusStop> way : op.getWay()) {
@@ -98,11 +106,9 @@ public abstract class BFS implements SearchEngine {
 //                }
 //            }
         }
-        if (!unreal.isEmpty()) {
-            LOG.info("#-bfs-# unreal results deleted [" + unreal.size()
-                    + "], dirty size [" + dirty.size() + "], elapsed time ["
+        LOG.info("#-bfs-# unreal results, was [" + dirty.size()
+                    + "], rest [" + rest.size() + "], elapsed time ["
                     + (System.currentTimeMillis() - start) + "] ms");
-            dirty.removeAll(unreal);
-        }
+        return rest;
     }
 }

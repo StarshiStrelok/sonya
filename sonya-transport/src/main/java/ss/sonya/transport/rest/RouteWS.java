@@ -18,12 +18,17 @@ package ss.sonya.transport.rest;
 
 import java.util.List;
 import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ss.sonya.entity.Route;
+import ss.sonya.transport.search.SearchEngine;
+import ss.sonya.transport.search.vo.OptimalPath;
+import ss.sonya.transport.search.vo.SearchSettings;
 
 /**
  * Route web-service.
@@ -32,6 +37,9 @@ import ss.sonya.entity.Route;
 @RestController
 @RequestMapping("/rest/data/route")
 public class RouteWS extends TransportWS<Route> {
+    /** Search engine. */
+    @Autowired
+    private SearchEngine searchEngine;
     /**
      * Initialize controller.
      */
@@ -51,5 +59,18 @@ public class RouteWS extends TransportWS<Route> {
     public List<Route> getFromRouteType(
             @PathVariable("id") Integer id) throws Exception {
         return transportService.getRoutesFromSameType(id);
+    }
+    /**
+     * Search routes.
+     * @param settings search settings.
+     * @return list of optimal paths.
+     * @throws Exception error.
+     */
+    @RequestMapping(value = "/search",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<OptimalPath> searchRoutes(
+            @RequestBody SearchSettings settings) throws Exception {
+        return searchEngine.search(settings);
     }
 }

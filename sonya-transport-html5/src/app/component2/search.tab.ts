@@ -15,7 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
+
+import {SearchSettingsForm} from './search.settings.form';
 
 @Component({
     selector: 'search-tab',
@@ -31,5 +33,5 @@ import {Component} from '@angular/core';
     `]
 })
 export class SearchTab {
-    
+    @ViewChild(SearchSettingsForm) searchSettings: SearchSettingsForm;
 }

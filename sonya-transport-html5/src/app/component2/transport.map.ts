@@ -19,10 +19,11 @@ import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {MdSidenav} from '@angular/material';
 
 import {slideAnimation, AnimatedSlide} from './../app.component';
-import {TransportProfile, ModelClass, BusStop} from '../model/abs.model';
+import {TransportProfile, ModelClass, SearchSettings, OptimalPath} from '../model/abs.model';
 import {DataService} from '../service/data.service';
 import {CtxMenuItem} from '../model/ctx.menu.item';
 import {GeoCoder} from './geocoder';
+import {SearchTab} from './search.tab';
 
 declare var L: any;
 
@@ -36,13 +37,14 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     @ViewChild('map') mapElement: ElementRef;
     @ViewChild('sidenav') sideNav: MdSidenav;
     @ViewChild(GeoCoder) geocoder: GeoCoder;
+    @ViewChild(SearchTab) searchTabs: SearchTab;
     map: any;
     mapMenu: any
     profiles: TransportProfile[];
     activeProfile: TransportProfile;
-    layerEndpoint: EndpointLayer = new EndpointLayer();
+    layerEndpoint = new EndpointLayer();
     isMenuOpen: boolean = true;
-    constructor(private dataService: DataService) {
+    constructor(public dataService: DataService) {
         super();
     }
 
@@ -157,9 +159,11 @@ export class EndpointLayer {
     endMarker: any;
     map: any;
     parent: TransportMap;
+    searchRouteCtrl = new SearchRoute();
     init(map: any, parent: TransportMap) {
         this.map = map;
         this.parent = parent;
+        this.searchRouteCtrl.init(this.parent);
         this.layerEndpoint = L.layerGroup([]);
         this.layerEndpoint.addTo(map);
         this.startMarker = this.createMarker(true);
@@ -193,6 +197,12 @@ export class EndpointLayer {
     hideEndMarker() {
         if (this.layerEndpoint.hasLayer(this.endMarker)) {
             this.layerEndpoint.removeLayer(this.endMarker);
+        }
+    }
+    checkSearchConditions() {
+        if (this.layerEndpoint.hasLayer(this.startMarker)
+            && this.layerEndpoint.hasLayer(this.endMarker)) {
+            this.searchRouteCtrl.search();
         }
     }
     private createMarker(isStart: boolean): any {
@@ -232,14 +242,24 @@ export class EndpointLayer {
             animate: true
         });
     }
-    private checkSearchConditions() {
-        if (this.layerEndpoint.hasLayer(this.startMarker)
-            && this.layerEndpoint.hasLayer(this.endMarker)) {
-            console.log('search');
-        }
-    }
 }
 
 export class SearchRoute {
-    
+    parent: TransportMap
+    init(parent: TransportMap) {
+        this.parent = parent;
+    }
+    search() {
+        let settings: SearchSettings = this.parent.searchTabs.searchSettings.getSettings();
+        let startll = this.parent.layerEndpoint.startMarker.getLatLng();
+        let endll = this.parent.layerEndpoint.endMarker.getLatLng();
+        settings.profileId = this.parent.activeProfile.id;
+        settings.startLat = startll.lat;
+        settings.startLon = startll.lng;
+        settings.endLat = endll.lat;
+        settings.endLon = endll.lng;
+        this.parent.dataService.searchRoutes(settings).then((res: OptimalPath[]) => {
+            console.log(res);
+        });
+    }
 }
