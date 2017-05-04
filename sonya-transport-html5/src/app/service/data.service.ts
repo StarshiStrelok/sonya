@@ -23,6 +23,8 @@ import {NotificationsService} from 'angular2-notifications';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
+import {Waiting} from '../lib/material/waiting';
+
 @Injectable()
 export class DataService {
     /** REST URL. */
@@ -82,11 +84,12 @@ export class DataService {
         ).toPromise().then(res => res.json() as ImportDataEvent[])
             .catch(err => this.handleErrorUI(err));
     }
-    searchRoutes(settings: SearchSettings): Promise<OptimalPath[]> {
+    searchRoutes(settings: SearchSettings, waiting: Waiting): Promise<OptimalPath[]> {
         console.log(settings);
         return this.http.post(
             this.dataUrl + ModelClass.ROUTE + '/search', JSON.stringify(settings), {headers: this.headers}
-        ).toPromise().then(res => res.json() as OptimalPath[]).catch(err => this.handleErrorUI(err));
+        ).toPromise().then(res => res.json() as OptimalPath[]
+        ).catch(err => this.handleSearchError(err, waiting));
     }
     private handleErrorUI(error: any): Promise<any> {
         console.error('An error occurred', error);
@@ -100,6 +103,19 @@ export class DataService {
         } else {
             this.notificationService.error('Error',
                 'Unknown error occured');
+        }
+        return Promise.reject(error.message || error);
+    }
+    private handleSearchError(error: any, waiting: Waiting): Promise<any> {
+        waiting.close();
+        console.error('An error occurred', error);
+        let status = error.status;
+        if (status === 404 || status === 504 || status === 0) {
+            this.notificationService.error('No connection',
+                'Connection to the server is not available, please try later');
+        } else {
+            this.notificationService.error('Search error',
+                'Error occured during search, please try again');
         }
         return Promise.reject(error.message || error);
     }

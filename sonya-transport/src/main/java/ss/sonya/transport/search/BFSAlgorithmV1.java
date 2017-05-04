@@ -135,11 +135,6 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         result = grouping[0];
         sortResults(result);
         result = result.subList(0, settings.getMaxResults());
-        result.forEach(op -> {
-            op.getPath().forEach(p -> {
-                p.setBusstops(null);    // facilitate the size of response
-            });
-        });
         LOG.info("#-bfs-# total number of optimal paths ["
                 + result.size() + "]");
         LOG.info("#-bfs-# elapsed time [" + (System.currentTimeMillis() - st)

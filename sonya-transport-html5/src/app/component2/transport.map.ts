@@ -17,6 +17,7 @@
 
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {MdSidenav} from '@angular/material';
+import {NotificationsService} from 'angular2-notifications';
 
 import {slideAnimation, AnimatedSlide} from './../app.component';
 import {TransportProfile, ModelClass, SearchSettings, OptimalPath} from '../model/abs.model';
@@ -24,6 +25,7 @@ import {DataService} from '../service/data.service';
 import {CtxMenuItem} from '../model/ctx.menu.item';
 import {GeoCoder} from './geocoder';
 import {SearchTab} from './search.tab';
+import {Waiting} from '../lib/material/waiting';
 
 declare var L: any;
 
@@ -38,13 +40,17 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     @ViewChild('sidenav') sideNav: MdSidenav;
     @ViewChild(GeoCoder) geocoder: GeoCoder;
     @ViewChild(SearchTab) searchTabs: SearchTab;
+    @ViewChild(Waiting) waiting: Waiting;
     map: any;
     mapMenu: any
     profiles: TransportProfile[];
     activeProfile: TransportProfile;
     layerEndpoint = new EndpointLayer();
     isMenuOpen: boolean = true;
-    constructor(public dataService: DataService) {
+    constructor(
+        public dataService: DataService,
+        public notificationService: NotificationsService
+    ) {
         super();
     }
 
@@ -56,9 +62,9 @@ export class TransportMap extends AnimatedSlide implements OnInit {
                 this.createMap(this.activeProfile);
                 this.mapMenu = this.createMapMenu(180, [
                     new CtxMenuItem('A', 'Start point',
-                            this.fnMakeStartPoint, this),
+                        this.fnMakeStartPoint, this),
                     new CtxMenuItem('B', 'End point',
-                            this.fnMakeEndPoint, this)
+                        this.fnMakeEndPoint, this)
                 ]);
             });
     }
@@ -101,7 +107,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         this.createLayer().addTo(map);
         this.mapElement.nativeElement.style.height = (window.innerHeight - 50) + 'px';
         map.invalidateSize(true);
-        
+
         let comp = this;
         map.on('click', function (e: any) {
             if (comp.mapMenu) {
@@ -147,8 +153,8 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         btn.setAttribute('type', 'button');
         btn.className = "l-context-menu-button";
         btn.innerHTML = '<span class="' + (item.icon === 'A' ? 'letter-a' : 'letter-b') + '">'
-                + item.icon + '</span>'
-                + '<span class> ' + item.label + '</span>';
+            + item.icon + '</span>'
+            + '<span class> ' + item.label + '</span>';
         return btn;
     }
 }
@@ -258,8 +264,11 @@ export class SearchRoute {
         settings.startLon = startll.lng;
         settings.endLat = endll.lat;
         settings.endLon = endll.lng;
-        this.parent.dataService.searchRoutes(settings).then((res: OptimalPath[]) => {
-            console.log(res);
-        });
+        this.parent.waiting.open();
+        this.parent.dataService.searchRoutes(settings, this.parent.waiting)
+            .then((res: OptimalPath[]) => {
+                this.parent.waiting.close();
+                console.log(res);
+            });
     }
 }

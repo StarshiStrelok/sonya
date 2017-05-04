@@ -45,6 +45,7 @@ import {LatitudeField} from './latitude-field';
 import {LongitudeField} from './longitude-field';
 import {ZoomField} from './zoom-field';
 import {ConfirmDialog} from './confirm.dialog';
+import {Waiting} from './waiting';
 
 @NgModule({
     imports: [
@@ -92,10 +93,10 @@ import {ConfirmDialog} from './confirm.dialog';
         MdAutocompleteModule,
         MdSnackBarModule,
         MdTabsModule,
-        LatitudeField, LongitudeField, ZoomField, ConfirmDialog
+        LatitudeField, LongitudeField, ZoomField, ConfirmDialog, Waiting
     ],
     declarations: [
-        LatitudeField, LongitudeField, ZoomField, ConfirmDialog
+        LatitudeField, LongitudeField, ZoomField, ConfirmDialog, Waiting
     ],
     entryComponents: [
         ConfirmDialog
