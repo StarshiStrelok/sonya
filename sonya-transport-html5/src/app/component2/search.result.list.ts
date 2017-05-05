@@ -15,25 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, ViewChild} from '@angular/core';
+import {Component} from '@angular/core';
 
-import {SearchSettingsForm} from './search.settings.form';
-import {SearchResultList} from './search.result.list';
+import {OptimalPath} from '../model/abs.model';
 
 @Component({
-    selector: 'search-tab',
-    templateUrl: './search.tab.html',
-    styles: [`.st-panel {
-        margin: 10px;
-        padding: 10px;
-    }
-    .st-h-i {
-        font-size: 30px;
-        margin-top: 5px;
-    }
-    `]
+    selector: 'search-result',
+    templateUrl: './search.result.list.html',
+    styles: [`
+            .srl-route-label {
+                padding: 5px;
+                border-radius: 2px;
+                font-weight: bold;
+                margin-left: 5px;
+            }
+            .srl-route-label:hover {
+                cursor: pointer;
+            }
+            `]
 })
-export class SearchTab {
-    @ViewChild(SearchSettingsForm) searchSettings: SearchSettingsForm;
-    @ViewChild(SearchResultList) searchResult: SearchResultList;
+export class SearchResultList {
+    result: OptimalPath[] = [];
+    setResult(res: OptimalPath[]) {
+        this.result = res;
+    }
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2017 ss
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div style="min-height: 100px;" [style.overflow]="result.length > 0 ? 'auto' : 'hidden'">
+    <h4 [hidden]="result.length > 0" style="text-align: center;">
+        No results, make search in first
+    </h4>
+    <div [hidden]="result.length < 1">
+        <md-list>
+            <h3 md-subheader>Found results {{result.length}}</h3>
+            <md-list-item *ngFor="let op of result">
+                <md-icon md-list-icon>chevron_right</md-icon>
+                <p md-line style="line-height: 30px;">
+                    <span *ngFor="let path of op.path" class="srl-route-label"
+                        [style.background-color]="path.route.type.lineColor"
+                        mdTooltip="{{path.description}}" mdTooltipPosition="above">
+                        {{path.route.namePrefix}}{{path.route.namePostfix}}</span>
+                </p>
+            </md-list-item>
+        </md-list>
+    </div>
+</div>
+

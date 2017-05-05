@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ss.sonya.transport.search.SearchEngine;
+import ss.sonya.transport.search.vo.OptimalPath;
 import ss.sonya.transport.search.vo.SearchSettings;
 
 /**
@@ -38,15 +39,17 @@ public class GraphConstructorTest extends TestConfig {
     @Test
     public void test() {
         SearchSettings s = new SearchSettings();
-        s.setStartLat(52.08963261363972);
-        s.setStartLon(23.69373321533203);
-        s.setEndLat(52.10292030211327);
-        s.setEndLon(23.76480102539063);
+        s.setStartLat(52.08604636878005);
+        s.setStartLon(23.695449829101566);
+        s.setEndLat(52.099862375250574);
+        s.setEndLon(23.765830993652347);
         s.setProfileId(1);
         s.setMaxTransfers(2);
         s.setMaxResults(10);
         try {
-            searchEngine.search(s);
+            for (OptimalPath op : searchEngine.search(s)) {
+                System.out.println(op.toString());
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

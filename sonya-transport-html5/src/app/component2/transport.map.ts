@@ -268,6 +268,7 @@ export class SearchRoute {
         this.parent.dataService.searchRoutes(settings, this.parent.waiting)
             .then((res: OptimalPath[]) => {
                 this.parent.waiting.close();
+                this.parent.searchTabs.searchResult.setResult(res);
                 console.log(res);
             });
     }

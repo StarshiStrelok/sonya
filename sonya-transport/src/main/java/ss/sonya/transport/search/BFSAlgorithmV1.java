@@ -130,6 +130,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         LOG.info("#-bfs-# total number of decisions ["
                 + (result.size() - straight.size()) + "], BFS time ["
                 + (System.currentTimeMillis() - startBfs) + "] ms");
+        // at this moment result not thread safe
         result = clearUnrealResults(result, startBs);
         List<OptimalPath>[] grouping = groupingResult(result, settings);
         result = grouping[0];
@@ -233,9 +234,9 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
             throws Exception {
         Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
             if (o1.getTime() > o2.getTime()) {
-                return -1;
-            } else if (o1.getTime() < o2.getTime()) {
                 return 1;
+            } else if (o1.getTime() < o2.getTime()) {
+                return -1;
             } else {
                 return 0;
             }

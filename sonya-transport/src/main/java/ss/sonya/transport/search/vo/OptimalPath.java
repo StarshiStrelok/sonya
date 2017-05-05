@@ -16,7 +16,9 @@
  */
 package ss.sonya.transport.search.vo;
 
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 
@@ -82,5 +84,34 @@ public class OptimalPath {
      */
     public void setWay(List<List<BusStop>> way) {
         this.way = way;
+    }
+    @Override
+    public String toString() {
+        long minInHour = TimeUnit.HOURS.toMinutes(1);
+        String format = "| %-29s | %-8d | %-8d |\n";
+        DecimalFormat df = new DecimalFormat("###.#");
+        String hr = "+-------------------------------+----------+----------+\n";
+        StringBuilder sb = new StringBuilder("> Optimal path <\n");
+        sb.append("> transfers [").append(path.size() - 1).append("]\n");
+        sb.append("> time [").append(df.format(time * minInHour))
+                .append("] min\n");
+        path.forEach(p -> {
+            sb.append("\t").append(p.getRoute().getType().getName());
+            sb.append(": ").append(p.getRoute().getNamePrefix());
+            if (p.getRoute().getNamePostfix() != null) {
+                sb.append(p.getRoute().getNamePostfix());
+            }
+            sb.append(" | ").append(p.getDescription()).append("\n");
+            sb.append(hr);
+            sb.append("|           Bus stop            "
+                    + "|    ID    | External |\n");
+            sb.append(hr);
+            way.get(path.indexOf(p)).forEach(bs -> {
+                sb.append(String.format(format,
+                        bs.getName(), bs.getId(), bs.getExternalId()));
+            });
+            sb.append(hr).append("\n");
+        });
+        return sb.toString();
     }
 }

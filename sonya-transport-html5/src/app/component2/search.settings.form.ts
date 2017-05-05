@@ -42,7 +42,6 @@ export class SearchSettingsForm implements OnInit {
     ngOnInit() {
         this.initDayOfWeek();
         this.createForm();
-        console.log('search settings initialization complete...');
     }
     createForm() {
         this.settingsForm = this.fb.group({
@@ -51,6 +50,9 @@ export class SearchSettingsForm implements OnInit {
             day: ['', [Validators.required]],
             time: ['', [Validators.required, Validators.pattern('^([01]?[0-9]|2[0-3]):[0-5][0-9]$')]]
         });
+        let curDay = new Date().getDay() + 1;
+        this.settings.day = curDay;
+        this.settings.time = new Date().getHours() + ':' + new Date().getMinutes();
         this.settingsForm.patchValue(this.settings);
     }
     initDayOfWeek() {
@@ -64,10 +66,9 @@ export class SearchSettingsForm implements OnInit {
                 {'id': 7, 'name': this.translate.instant('common.day.saturday')},
                 {'id': 1, 'name': this.translate.instant('common.day.sunday')}
             ];
-            let curDay = new Date().getDay() + 1;
-            this.settings.day = curDay;
-            this.settings.time = new Date().getHours() + ':' + new Date().getMinutes();
-            this.settingsForm.patchValue(this.settings);
+            if (this.settingsForm) {
+                this.settingsForm.patchValue(this.settings);
+            }
         });
 
     }

@@ -96,6 +96,8 @@ public abstract class BFS implements SearchEngine {
                 if (!startBs.contains(op.getWay().get(1).get(0))) {
                     rest.add(op);
                 }
+            } else {
+                rest.add(op);
             }
 //            for (List<BusStop> way : op.getWay()) {
 //                if (way.size() <= 2 && op.getPath().get(
