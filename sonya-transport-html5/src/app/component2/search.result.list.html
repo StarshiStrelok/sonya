@@ -20,18 +20,45 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         No results, make search in first
     </h4>
     <div [hidden]="result.length < 1">
-        <md-list>
+
+        <md-list *ngIf="!flags.isDetailsOpen">
             <h3 md-subheader>Found results {{result.length}}</h3>
-            <md-list-item *ngFor="let op of result">
-                <md-icon md-list-icon>chevron_right</md-icon>
+            <md-list-item *ngFor="let op of result" class="srl-item" (click)="openDetails(op)"
+                [@flyInOut]="op.animationTrigger">
+                <md-icon md-list-icon mdTooltip="Open details"
+                     mdTooltipPosition="above">chevron_right</md-icon>
                 <p md-line style="line-height: 30px;">
                     <span *ngFor="let path of op.path" class="srl-route-label"
                         [style.background-color]="path.route.type.lineColor"
-                        mdTooltip="{{path.description}}" mdTooltipPosition="above">
-                        {{path.route.namePrefix}}{{path.route.namePostfix}}</span>
+                        mdTooltip="{{path.description}}" mdTooltipPosition="above">{{path.route.namePrefix}}{{path.route.namePostfix}}</span>
                 </p>
             </md-list-item>
         </md-list>
+
+        <div *ngIf="flags.isDetailsOpen">
+            <md-grid-list cols="7" rowHeight="40px" >
+                <md-grid-tile>
+                    <md-icon>directions_bus</md-icon>
+                </md-grid-tile>
+                <md-grid-tile colspan="5">
+                    <h3 class="srl-details-h">Trip details</h3>
+                </md-grid-tile>
+                <md-grid-tile>
+                    <button md-button mdTooltip="Back to summary" mdTooltipPosition="above"
+                            (click)="closeDetails()">
+                        <md-icon>chevron_left</md-icon>
+                    </button>
+                </md-grid-tile>
+            </md-grid-list>
+            <hr/>
+            <md-grid-list cols="2" rowHeight="50px" >
+                <md-grid-tile>1</md-grid-tile>
+                <md-grid-tile>2</md-grid-tile>
+                <md-grid-tile>3</md-grid-tile>
+                <md-grid-tile>4</md-grid-tile>
+            </md-grid-list>
+        </div>
+
     </div>
 </div>
 

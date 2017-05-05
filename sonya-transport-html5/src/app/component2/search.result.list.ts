@@ -16,27 +16,62 @@
  */
 
 import {Component} from '@angular/core';
+import {trigger, state, style, transition, animate} from '@angular/animations'
 
 import {OptimalPath} from '../model/abs.model';
 
 @Component({
     selector: 'search-result',
     templateUrl: './search.result.list.html',
-    styles: [`
-            .srl-route-label {
-                padding: 5px;
-                border-radius: 2px;
-                font-weight: bold;
-                margin-left: 5px;
-            }
-            .srl-route-label:hover {
-                cursor: pointer;
-            }
-            `]
+    animations: [
+        trigger('flyInOut', [
+            state('in', style({transform: 'translateX(0)'})),
+            transition('void => *', [
+                style({transform: 'translateX(-100%)'}),
+                animate(200)
+            ]),
+            transition('* => void', [
+                animate(200, style({transform: 'translateX(100%)'}))
+            ])
+        ])
+    ],
+    styleUrls: ['./search.result.list.css']
 })
 export class SearchResultList {
     result: OptimalPath[] = [];
+    activePath: OptimalPath;
+    flags: any = {
+        isDetailsOpen: false
+    }
     setResult(res: OptimalPath[]) {
-        this.result = res;
+        var i = 0, l = res.length;
+        this.result = [];
+        var orig = this.result;
+        let itr = function() {
+            res[i]['animationTrigger'] = 'in';
+            orig.push(res[i]);
+            if (++i < l) {
+                setTimeout(itr, 200);
+            }
+        };
+        itr();
+        //this.result = res;
+        if (this.result.length === 0) {
+            // TODO message
+        } else {
+            this.activePath = this.result[0];
+        }
+    }
+    openDetails(path: OptimalPath) {
+        path['animationTrigger'] = 'void';
+        this.activePath = path;
+        let _flags = this.flags;
+        setTimeout(function() {
+            _flags.isDetailsOpen = true;
+        }, 200);
+    }
+    closeDetails() {
+        this.flags.isDetailsOpen = false;
+        this.activePath['animationTrigger'] = 'in';
     }
 }
