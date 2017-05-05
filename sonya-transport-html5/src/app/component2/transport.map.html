@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <geocoder [profile]="activeProfile" [layerEndpoint]="layerEndpoint"></geocoder>
 
-        <search-tab></search-tab>
+        <search-tab [mapComponent]="component"></search-tab>
 
         <button md-mini-fab color="accent" class="tm-map-control" style="top: 20px; right: 20px"
                 (click)="closeMenu()" *ngIf="isMenuOpen"

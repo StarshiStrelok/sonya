@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/animations'
 
 import {OptimalPath} from '../model/abs.model';
+import {TransportMap} from '../component2/transport.map';
 
 @Component({
     selector: 'search-result',
@@ -38,6 +39,7 @@ import {OptimalPath} from '../model/abs.model';
     styleUrls: ['./search.result.list.css']
 })
 export class SearchResultList {
+    @Input() mapComponent: TransportMap;
     result: OptimalPath[] = [];
     activePath: OptimalPath;
     flags: any = {
@@ -60,6 +62,7 @@ export class SearchResultList {
             // TODO message
         } else {
             this.activePath = this.result[0];
+            this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(this.activePath);
         }
     }
     openDetails(path: OptimalPath) {

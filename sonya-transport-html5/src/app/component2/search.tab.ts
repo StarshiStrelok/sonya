@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild, Input} from '@angular/core';
 
 import {SearchSettingsForm} from './search.settings.form';
 import {SearchResultList} from './search.result.list';
+import {TransportMap} from './transport.map';
 
 @Component({
     selector: 'search-tab',
@@ -36,4 +37,5 @@ import {SearchResultList} from './search.result.list';
 export class SearchTab {
     @ViewChild(SearchSettingsForm) searchSettings: SearchSettingsForm;
     @ViewChild(SearchResultList) searchResult: SearchResultList;
+    @Input() mapComponent: TransportMap;
 }
