@@ -255,12 +255,10 @@ export class EndpointLayer {
 }
 
 export class SearchRoute {
-    private layerRouting: any;
+    private layerRouting: any[];
     parent: TransportMap
     init(parent: TransportMap) {
         this.parent = parent;
-        this.layerRouting = L.layerGroup([]);
-        //this.layerRouting.addTo(this.parent.map);
     }
     search() {
         let settings: SearchSettings = this.parent.searchTabs.searchSettings.getSettings();
@@ -281,10 +279,14 @@ export class SearchRoute {
     }
     drawRoute(optimalPath: OptimalPath) {
         // clear previous route
-        this.layerRouting.clearLayers();
+        if (this.layerRouting) {
+            this.layerRouting.forEach(layer => layer.clearLayers());
+        }
+        this.layerRouting = [L.layerGroup([]), L.layerGroup([]), L.layerGroup([])];
         let counter = 0;
         let max = optimalPath.path.length;
         let _comp = this;
+        let groups: any[] = [[], [], []];
         let addPathLayer = function (path: Path, resp: OSRMResponse) {
             let lineColor = path.route.type.lineColor;
             var legs = resp.routes[0].legs;
@@ -310,11 +312,11 @@ export class SearchRoute {
                 weight: 2,
                 snaking: true
             }];
-            opts.forEach(options => {
-                _comp.layerRouting.addLayer(L.polyline(reverseCoords, options));
-            });
+            for (let i = 0; i < opts.length; i++) {
+                groups[i].push(L.polyline(reverseCoords, opts[i]));
+            }
         }
-        let request = function() {
+        let request = function () {
             let way = optimalPath.way[counter];
             let path = optimalPath.path[counter];
             _comp.parent.osrmService.requestPath(way, path.route.type.routingURL).then(resp => {
@@ -322,7 +324,10 @@ export class SearchRoute {
                 if (++counter < max) {
                     request();
                 } else {
-                    _comp.layerRouting.addTo(_comp.parent.map).snakeIn();
+                    for (let i = 0; i < groups.length; i++) {
+                        groups[i].forEach((el: any) => {_comp.layerRouting[i].addLayer(el)});
+                    }
+                    _comp.layerRouting.forEach(layer => layer.addTo(_comp.parent.map).snakeIn());
                 }
             });
         }
@@ -338,6 +343,7 @@ export class SearchRoute {
 ///// FIXME: Panic if this._map doesn't exist when called.
 ///// FIXME: Implement snakeOut()
 ///// FIXME: Implement layerGroup.snakeIn() / Out()
+
 
 L.Polyline.include({
 
@@ -357,17 +363,16 @@ L.Polyline.include({
     // Flag
     _snaking: false,
 
+
     /// TODO: accept a 'map' parameter, fall back to addTo() in case
     /// performance.now is not available.
     snakeIn: function () {
 
-        if (this._snaking) {
-            return;
-        }
+        if (this._snaking) {return;}
 
         if (!('performance' in window) ||
-                !('now' in window.performance) ||
-                !this._map) {
+            !('now' in window.performance) ||
+            !this._map) {
             return;
         }
 
@@ -377,8 +382,8 @@ L.Polyline.include({
 
         if (!this._snakeLatLngs) {
             this._snakeLatLngs = L.Polyline._flat(this._latlngs) ?
-                    [this._latlngs] :
-                    this._latlngs;
+                [this._latlngs] :
+                this._latlngs;
         }
 
         // Init with just the first (0th) vertex in a new ring
@@ -391,6 +396,7 @@ L.Polyline.include({
         return this;
     },
 
+
     _snake: function () {
 
         var now = performance.now();
@@ -399,7 +405,7 @@ L.Polyline.include({
         this._snakingTime = now;
 
         // Chop the head from the previous frame
-        this._latlngs[ this._snakingRings ].pop();
+        this._latlngs[this._snakingRings].pop();
 
         return this._snakeForward(forward);
     },
@@ -409,31 +415,31 @@ L.Polyline.include({
         // Calculate distance from current vertex to next vertex
         try {
             var currPoint = this._map.latLngToContainerPoint(
-                    this._snakeLatLngs[ this._snakingRings ][ this._snakingVertices ]);
+                this._snakeLatLngs[this._snakingRings][this._snakingVertices]);
         } catch (err) {
             return;
         }
         var nextPoint = this._map.latLngToContainerPoint(
-                this._snakeLatLngs[ this._snakingRings ][ this._snakingVertices + 1 ]);
+            this._snakeLatLngs[this._snakingRings][this._snakingVertices + 1]);
 
         var distance = currPoint.distanceTo(nextPoint);
 
-// 		console.log('Distance to next point:', distance, '; Now at: ', this._snakingDistance, '; Must travel forward:', forward);
-// 		console.log('Vertices: ', this._latlngs);
+        // 		console.log('Distance to next point:', distance, '; Now at: ', this._snakingDistance, '; Must travel forward:', forward);
+        // 		console.log('Vertices: ', this._latlngs);
 
         if (this._snakingDistance + forward > distance) {
             // Jump to next vertex
             this._snakingVertices++;
-            this._latlngs[ this._snakingRings ].push(this._snakeLatLngs[ this._snakingRings ][ this._snakingVertices ]);
+            this._latlngs[this._snakingRings].push(this._snakeLatLngs[this._snakingRings][this._snakingVertices]);
 
-            if (this._snakingVertices >= this._snakeLatLngs[ this._snakingRings ].length - 1) {
+            if (this._snakingVertices >= this._snakeLatLngs[this._snakingRings].length - 1) {
                 if (this._snakingRings >= this._snakeLatLngs.length - 1) {
                     return this._snakeEnd();
                 } else {
                     this._snakingVertices = 0;
                     this._snakingRings++;
-                    this._latlngs[ this._snakingRings ] = [
-                        this._snakeLatLngs[ this._snakingRings ][ this._snakingVertices ]
+                    this._latlngs[this._snakingRings] = [
+                        this._snakeLatLngs[this._snakingRings][this._snakingVertices]
                     ];
                 }
             }
@@ -447,12 +453,12 @@ L.Polyline.include({
         var percent = this._snakingDistance / distance;
 
         var headPoint = nextPoint.multiplyBy(percent).add(
-                currPoint.multiplyBy(1 - percent)
-                );
+            currPoint.multiplyBy(1 - percent)
+        );
 
         // Put a new head in place.
         var headLatLng = this._map.containerPointToLatLng(headPoint);
-        this._latlngs[ this._snakingRings ].push(headLatLng);
+        this._latlngs[this._snakingRings].push(headLatLng);
 
         this.setLatLngs(this._latlngs);
         this.fire('snake');
@@ -469,9 +475,14 @@ L.Polyline.include({
 
 });
 
+
 L.Polyline.mergeOptions({
-    snakingSpeed: 2700	// In pixels/sec
+    snakingSpeed: 200	// In pixels/sec
 });
+
+
+
+
 
 L.LayerGroup.include({
 
@@ -481,11 +492,12 @@ L.LayerGroup.include({
     snakeIn: function () {
 
         if (!('performance' in window) ||
-                !('now' in window.performance) ||
-                !this._map ||
-                this._snaking) {
+            !('now' in window.performance) ||
+            !this._map ||
+            this._snaking) {
             return;
         }
+
 
         this._snaking = true;
         this._snakingLayers = [];
@@ -501,7 +513,9 @@ L.LayerGroup.include({
         return this._snakeNext();
     },
 
+
     _snakeNext: function () {
+
 
         if (this._snakingLayersDone >= this._snakingLayers.length) {
             this.fire('snakeend');
@@ -514,7 +528,7 @@ L.LayerGroup.include({
         this._snakingLayersDone++;
 
         this.addLayer(currentLayer);
-        if ('snakeIn' in currentLayer && currentLayer.isSnaking) {
+        if ('snakeIn' in currentLayer) {
             currentLayer.once('snakeend', function () {
                 setTimeout(this._snakeNext.bind(this), this.options.snakingPause);
             }, this);
@@ -522,10 +536,14 @@ L.LayerGroup.include({
         } else {
             setTimeout(this._snakeNext.bind(this), this.options.snakingPause);
         }
+
+
         this.fire('snake');
         return this;
     }
+
 });
+
 
 L.LayerGroup.mergeOptions({
     snakingPause: 200

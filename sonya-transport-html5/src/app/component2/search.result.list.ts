@@ -72,6 +72,7 @@ export class SearchResultList {
         setTimeout(function() {
             _flags.isDetailsOpen = true;
         }, 200);
+        this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(path);
     }
     closeDetails() {
         this.flags.isDetailsOpen = false;
