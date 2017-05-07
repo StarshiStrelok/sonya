@@ -41,3 +41,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .srl-details-h {
     flex: 1;
 }
+.srl-result-h {
+    text-align: center;
+}

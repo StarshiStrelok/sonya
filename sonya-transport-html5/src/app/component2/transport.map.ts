@@ -20,7 +20,8 @@ import {MdSidenav} from '@angular/material';
 import {NotificationsService} from 'angular2-notifications';
 
 import {slideAnimation, AnimatedSlide} from './../app.component';
-import {TransportProfile, ModelClass, SearchSettings, OptimalPath, Path} from '../model/abs.model';
+import {TransportProfile, ModelClass, SearchSettings, OptimalPath,
+        Path, BusStop} from '../model/abs.model';
 import {DataService} from '../service/data.service';
 import {CtxMenuItem} from '../model/ctx.menu.item';
 import {GeoCoder} from './geocoder';
@@ -38,6 +39,7 @@ declare var L: any;
     animations: [slideAnimation]
 })
 export class TransportMap extends AnimatedSlide implements OnInit {
+    MOCK_BS: string = 'mock';
     @ViewChild('map') mapElement: ElementRef;
     @ViewChild('sidenav') sideNav: MdSidenav;
     @ViewChild(GeoCoder) geocoder: GeoCoder;
@@ -255,10 +257,14 @@ export class EndpointLayer {
 }
 
 export class SearchRoute {
-    private layerRouting: any[];
+    private layerRoutingStatic = L.layerGroup([]);
+    private layerRoutingDynamic = L.layerGroup([]);
     parent: TransportMap
+    animateSpeed: number = 100; // px / sec
     init(parent: TransportMap) {
         this.parent = parent;
+        this.layerRoutingStatic.addTo(this.parent.map);
+        this.layerRoutingDynamic.addTo(this.parent.map);
     }
     search() {
         let settings: SearchSettings = this.parent.searchTabs.searchSettings.getSettings();
@@ -279,15 +285,15 @@ export class SearchRoute {
     }
     drawRoute(optimalPath: OptimalPath) {
         // clear previous route
-        if (this.layerRouting) {
-            this.layerRouting.forEach(layer => layer.clearLayers());
-        }
-        this.layerRouting = [L.layerGroup([]), L.layerGroup([]), L.layerGroup([])];
+        this.layerRoutingStatic.clearLayers();
+        this.layerRoutingDynamic.clearLayers();
+        // polyline
         let counter = 0;
         let max = optimalPath.path.length;
         let _comp = this;
-        let groups: any[] = [[], [], []];
-        let addPathLayer = function (path: Path, resp: OSRMResponse) {
+        let groupD: any[] = [];
+        let groupS: any[] = [];
+        let addPathLayer = function (path: Path, way: BusStop[], resp: OSRMResponse) {
             let lineColor = path.route.type.lineColor;
             var legs = resp.routes[0].legs;
             let reverseCoords: number[][] = [];
@@ -298,7 +304,7 @@ export class SearchRoute {
                     });
                 });
             });
-            var opts = [{
+            var opts: any = [{
                 color: 'black',
                 opacity: 0.15,
                 weight: 9
@@ -310,28 +316,70 @@ export class SearchRoute {
                 color: lineColor ? lineColor : 'red',
                 opacity: 1,
                 weight: 2,
+                snakingSpeed: _comp.animateSpeed,
                 snaking: true
             }];
             for (let i = 0; i < opts.length; i++) {
-                groups[i].push(L.polyline(reverseCoords, opts[i]));
+                if (opts[i].snaking) {
+                    groupD.push(L.polyline(reverseCoords, opts[i]));
+                } else {
+                    groupS.push(L.polyline(reverseCoords, opts[i]));
+                }
             }
+            way.forEach(bs => {
+                groupS.push(_comp.createMarker(bs));
+            });
         }
         let request = function () {
             let way = optimalPath.way[counter];
             let path = optimalPath.path[counter];
             _comp.parent.osrmService.requestPath(way, path.route.type.routingURL).then(resp => {
-                addPathLayer(path, resp);
+                addPathLayer(path, way, resp);
                 if (++counter < max) {
                     request();
                 } else {
-                    for (let i = 0; i < groups.length; i++) {
-                        groups[i].forEach((el: any) => {_comp.layerRouting[i].addLayer(el)});
-                    }
-                    _comp.layerRouting.forEach(layer => layer.addTo(_comp.parent.map).snakeIn());
+                    _comp.parent.map.removeLayer(_comp.layerRoutingDynamic);    // for fix animation bug
+                    _comp.layerRoutingDynamic = L.layerGroup([]);
+                    groupS.forEach(layer => _comp.layerRoutingStatic.addLayer(layer));
+                    groupD.forEach(layer => _comp.layerRoutingDynamic.addLayer(layer));
+                    _comp.layerRoutingDynamic.addTo(_comp.parent.map).snakeIn();
                 }
             });
         }
-        request();
+        request();  // draw polyline
+    }
+    private createMarker(bs: BusStop): any {
+        var marker = L.marker(new L.LatLng(bs.latitude, bs.longitude), {
+            icon: bs.name === this.parent.MOCK_BS
+                ? this.createIconMock() : this.createIcon('busstop'),
+            clickable: true,
+            draggable: false,
+            title: bs.name === this.parent.MOCK_BS ? '' : bs.name
+        });
+        marker.info = bs;
+        return marker;
+    }
+    private createIcon(icName: string) {
+        return L.icon({
+            iconUrl: '/assets/image/' + icName + '.png',
+            shadowUrl: '/assets/image/shadow.png',
+            iconSize: [24, 27],
+            shadowSize: [39, 27],
+            iconAnchor: [12, 27],
+            shadowAnchor: [12, 27],
+            popupAnchor: [0, 0]
+        });
+    }
+    private createIconMock() {
+        return L.icon({
+            iconUrl: '/assets/image/mock.png',
+            shadowUrl: null,
+            iconSize: [0, 0],
+            shadowSize: [0, 0],
+            iconAnchor: [0, 0],
+            shadowAnchor: [0, 0],
+            popupAnchor: [0, 0]
+        });
     }
 }
 
@@ -367,7 +415,6 @@ L.Polyline.include({
     /// TODO: accept a 'map' parameter, fall back to addTo() in case
     /// performance.now is not available.
     snakeIn: function () {
-
         if (this._snaking) {return;}
 
         if (!('performance' in window) ||

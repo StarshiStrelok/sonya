@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <div [hidden]="result.length < 1">
 
         <md-list *ngIf="!flags.isDetailsOpen">
-            <h3 md-subheader>Found results {{result.length}}</h3>
+            <h3 md-subheader class="srl-result-h">Found results {{result.length}}</h3>
             <md-list-item *ngFor="let op of result" class="srl-item" (click)="openDetails(op)"
                 [@flyInOut]="op.animationTrigger">
                 <md-icon md-list-icon mdTooltip="Open details"
