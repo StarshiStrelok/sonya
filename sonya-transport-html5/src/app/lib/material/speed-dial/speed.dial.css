@@ -1,0 +1,57 @@
+/*
+Copyright (C) 2017 ss
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/* 
+    Created on : May 9, 2017, 10:24:52 AM
+    Author     : ss
+*/
+.speed-dial-content {
+  position: relative;
+  display: flex;
+  align-items: center; }
+  .speed-dial-content.md-down {
+    flex-direction: column; }
+    .speed-dial-content.md-down md-fab-trigger {
+      order: 1; }
+    .speed-dial-content.md-down md-fab-actions {
+      flex-direction: column;
+      order: 2; }
+  .speed-dial-content.md-up {
+    flex-direction: column; }
+    .speed-dial-content.md-up md-fab-trigger {
+      order: 2; }
+    .speed-dial-content.md-up md-fab-actions {
+      flex-direction: column-reverse;
+      order: 1; }
+  .speed-dial-content.md-left {
+    flex-direction: row; }
+    .speed-dial-content.md-left md-fab-trigger {
+      order: 2; }
+    .speed-dial-content.md-left md-fab-actions {
+      flex-direction: row-reverse;
+      order: 1; }
+  .speed-dial-content.md-right {
+    flex-direction: row; }
+    .speed-dial-content.md-right md-fab-trigger {
+      order: 1; }
+    .speed-dial-content.md-right md-fab-actions {
+      flex-direction: row;
+      order: 2; }
+  .speed-dial-content md-fab-actions {
+    display: flex;
+    height: auto; }
+
+/*# sourceMappingURL=speed.dial.css.map */
