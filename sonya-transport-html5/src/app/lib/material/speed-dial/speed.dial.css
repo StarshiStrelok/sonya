@@ -25,33 +25,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   .speed-dial-content.md-down {
     flex-direction: column; }
     .speed-dial-content.md-down md-fab-trigger {
-      order: 1; }
+      order: 1;
+      margin-bottom: 7px; }
     .speed-dial-content.md-down md-fab-actions {
       flex-direction: column;
       order: 2; }
   .speed-dial-content.md-up {
     flex-direction: column; }
     .speed-dial-content.md-up md-fab-trigger {
-      order: 2; }
+      order: 2;
+      margin-top: 7px; }
     .speed-dial-content.md-up md-fab-actions {
       flex-direction: column-reverse;
       order: 1; }
   .speed-dial-content.md-left {
     flex-direction: row; }
     .speed-dial-content.md-left md-fab-trigger {
-      order: 2; }
+      order: 2;
+      margin-left: 7px; }
     .speed-dial-content.md-left md-fab-actions {
       flex-direction: row-reverse;
       order: 1; }
   .speed-dial-content.md-right {
     flex-direction: row; }
     .speed-dial-content.md-right md-fab-trigger {
-      order: 1; }
+      order: 1;
+      margin-right: 7px; }
     .speed-dial-content.md-right md-fab-actions {
       flex-direction: row;
       order: 2; }
   .speed-dial-content md-fab-actions {
     display: flex;
     height: auto; }
+    .speed-dial-content md-fab-actions button {
+      margin: 7px; }
 
 /*# sourceMappingURL=speed.dial.css.map */

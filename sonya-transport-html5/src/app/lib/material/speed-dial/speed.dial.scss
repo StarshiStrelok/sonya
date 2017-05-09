@@ -19,6 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     Author     : ss
 */
 
+$triggerMargin: 7px;
+
 .speed-dial-content {
     position: relative;
     display: flex;
@@ -29,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         md-fab-trigger {
             order: 1;
+            margin-bottom: $triggerMargin
         }
 
         md-fab-actions {
@@ -42,6 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         md-fab-trigger {
             order: 2;
+            margin-top: $triggerMargin
         }
 
         md-fab-actions {
@@ -55,6 +59,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         md-fab-trigger {
             order: 2;
+            margin-left: $triggerMargin
         }
 
         md-fab-actions {
@@ -68,6 +73,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         md-fab-trigger {
             order: 1;
+            margin-right: $triggerMargin
         }
 
         md-fab-actions {
@@ -80,5 +86,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         display: flex;
         // Set the height so that the z-index in the JS animation works
         height: auto;
+        & button {
+            margin: $triggerMargin;
+        }
     }
 }

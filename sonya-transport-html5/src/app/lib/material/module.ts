@@ -46,7 +46,7 @@ import {LongitudeField} from './longitude-field';
 import {ZoomField} from './zoom-field';
 import {ConfirmDialog} from './confirm.dialog';
 import {Waiting} from './waiting';
-import {MdFabSpeedDial, MdFabTrigger, MdFabActions} from './speed-dial/speed.dial';
+import {MdFabSpeedDial, MdFabTrigger, MdFabActions, MdFabActionButton} from './speed-dial/speed.dial';
 
 @NgModule({
     imports: [
@@ -95,11 +95,11 @@ import {MdFabSpeedDial, MdFabTrigger, MdFabActions} from './speed-dial/speed.dia
         MdSnackBarModule,
         MdTabsModule,
         LatitudeField, LongitudeField, ZoomField, ConfirmDialog, Waiting,
-        MdFabSpeedDial, MdFabTrigger, MdFabActions
+        MdFabSpeedDial, MdFabTrigger, MdFabActions, MdFabActionButton
     ],
     declarations: [
         LatitudeField, LongitudeField, ZoomField, ConfirmDialog, Waiting,
-        MdFabSpeedDial, MdFabTrigger, MdFabActions
+        MdFabSpeedDial, MdFabTrigger, MdFabActions, MdFabActionButton
     ],
     entryComponents: [
         ConfirmDialog
