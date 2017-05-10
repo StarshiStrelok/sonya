@@ -138,6 +138,7 @@
                                     mdTooltip="Upload bus stop marker image" mdTooltipPosition="above">
                                 <md-icon>place</md-icon>
                             </button>
+                            <img [src]="busStopMarkerLink(rp)" onerror="this.src='/assets/image/busstop.png'">
                         </md-grid-tile>
                         <md-grid-tile>
                             <button md-mini-fab color="accent" (click)="removeRouteProfileGroup(rp)"

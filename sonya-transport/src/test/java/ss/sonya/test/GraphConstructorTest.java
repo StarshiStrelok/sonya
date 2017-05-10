@@ -17,6 +17,7 @@
 package ss.sonya.test;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ss.sonya.transport.search.SearchEngine;
@@ -37,6 +38,7 @@ public class GraphConstructorTest extends TestConfig {
     @Autowired
     private SearchEngine searchEngine;
     @Test
+    @Ignore
     public void test() {
         SearchSettings s = new SearchSettings();
         s.setStartLat(52.08604636878005);
@@ -54,4 +56,20 @@ public class GraphConstructorTest extends TestConfig {
             ex.printStackTrace();
         }
     }
+//    @Test
+//    public void test2() throws Exception {
+//        URL url = new URL("http://localhost:4200/rest/data/transport-profile/route/marker/9");
+//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//        conn.setDoInput(true);
+//        conn.connect();
+//        InputStream is = conn.getInputStream();
+//        byte[] buff = new byte[1024];
+//        int len;
+//        StringBuilder sb = new StringBuilder();
+//        while((len = is.read(buff)) != -1) {
+//            sb.append(new String(buff, 0, len, "UTF-8"));
+//        }
+//        is.close();
+//        System.out.println(sb.toString());
+//    }
 }

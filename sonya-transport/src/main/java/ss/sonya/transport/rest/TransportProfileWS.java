@@ -17,6 +17,7 @@
 package ss.sonya.transport.rest;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -94,13 +95,14 @@ public class TransportProfileWS extends DataWS<TransportProfile> {
     /**
      * Get route type bus stop marker image.
      * @param id route profile ID.
-     * @return marker image.
+     * @param resp HTTP servlet response.
      * @throws Exception error.
      */
     @RequestMapping(value = "/route/marker/{id}", method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public byte[] getRouteTypeBusStopMarker(@PathVariable("id") Integer id)
-            throws Exception {
-        return transportService.getRouteTypeBusStopMarker(id);
+            produces = MediaType.IMAGE_PNG_VALUE)
+    public void getRouteTypeBusStopMarker(@PathVariable("id") Integer id,
+            HttpServletResponse resp) throws Exception {
+        byte[] data = transportService.getRouteTypeBusStopMarker(id);
+        resp.getOutputStream().write(data);
     }
 }

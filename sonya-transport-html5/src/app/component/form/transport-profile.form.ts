@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Params} from '@angular/router';
+import {NotificationsService} from 'angular2-notifications';
 
 import {minNumberValidator} from '../../lib/validator/min-number.directive';
 import {maxNumberValidator} from '../../lib/validator/max-number.directive';
@@ -24,11 +25,13 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         null, null, null, null, null, null, null, null, []);
     routeProfiles: FormGroup[];
     routeProfilesNames: string[];
+    private selectedRouteProfileId: number;
     constructor(
         private fb: FormBuilder,
         private dataService: DataService,
         private location: Location,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private notificationService: NotificationsService
     ) {super()}
     ngOnInit() {
         this.activatedRoute.params.subscribe((params: Params) => {
@@ -122,7 +125,13 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
                 .then(profile => this.goBack());
         }
     }
-    uploadBusStopMarkerImage() {
+    uploadBusStopMarkerImage(rp: FormGroup) {
+        this.selectedRouteProfileId = rp.get('id').value;
+        if (!this.selectedRouteProfileId) {
+            this.notificationService.info('Attention',
+                'Save new route profile before upload marker image')
+            return;
+        }
         document.getElementById('marker-image-upload').click();
     }
     selectFile(event: any) {
@@ -132,34 +141,14 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
             return;
         }
         binData.append('file', files[0]);
-        let inputFile: any = document.getElementById("import-data-upload");
+        let inputFile: any = document.getElementById("marker-image-upload");
         inputFile.value = "";
-//        this.dataService.importData(this.profileId, this.selectedType.id, binData, false)
-//            .then((events: ImportDataEvent[]) => {
-//                this.mapComponent.showProgress = false;
-//                if (events.length === 0) {
-//                    this.notificationService.info('Import details',
-//                        'Differences from current version not found');
-//                } else {
-//                    this.dialogService.openWindow('Confirm import', '', '50%', ConfirmImport, {
-//                        events: events,
-//                        persist: false
-//                    }).subscribe((res: boolean) => {
-//                        if (res) {
-//                            this.mapComponent.showProgress = true;
-//                            this.dataService.importData(this.profileId, this.selectedType.id, binData, true)
-//                                .then((events: ImportDataEvent[]) => {
-//                                    this.mapComponent.showProgress = false;
-//                                    this.dialogService.openWindow('Import completed', '', '50%', ConfirmImport, {
-//                                        events: events,
-//                                        persist: true
-//                                    }).subscribe((res: boolean) => {
-//                                        this.typeChanged();
-//                                    });
-//                                });
-//                        }
-//                    });
-//                }
-//            });
+        this.dataService.uploadBusStopMarker(this.selectedRouteProfileId, binData)
+            .then(res => {
+                
+            });
+    }
+    busStopMarkerLink(rp: FormGroup) {
+        return '/rest/data/transport-profile/route/marker/' + rp.get('id').value;
     }
 }

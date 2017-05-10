@@ -91,6 +91,12 @@ export class DataService {
         ).toPromise().then(res => res.json() as OptimalPath[]
         ).catch(err => this.handleSearchError(err, waiting));
     }
+    uploadBusStopMarker(id: number, file: any): Promise<any> {
+        return this.http.post(
+            this.dataUrl + ModelClass.TRANSPORT_PROFILE + '/route/marker/' + id, file, {}
+        ).toPromise().then(res => res)
+            .catch(err => this.handleErrorUI(err));
+    }
     private handleErrorUI(error: any): Promise<any> {
         console.error('An error occurred', error);
         let status = error.status;
