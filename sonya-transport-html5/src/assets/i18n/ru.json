@@ -1,0 +1,36 @@
+{
+    "transport-profiles": {
+        "title": "Transport profiles",
+        "new": "Create new transport profile"
+    },
+    "transport-map": {
+        "geocoder": {
+            "title": "Геокодер",
+            "subtitle": "поиск по географическому названию",
+            "departure-point": "Точка отправления",
+            "destination-point": "Точка назначения",
+            "clear": "Clear",
+            "notify": {
+                "not-found": {
+                    "header": "Geocoder report",
+                    "body": "Nothing not found, please change your request and try again"
+                },
+                "error": {
+                    "header": "Geocoder not working",
+                    "body": "Geocoder temporarily not working, please use map for search"
+                }
+            }
+        }
+    },
+    "common": {
+        "day": {
+            "monday": "Понедельник",
+            "tuesday": "Вторник",
+            "wednesday": "Среда",
+            "thursday": "Четверг",
+            "friday": "Пятница",
+            "saturday": "Суббота",
+            "sunday": "Воскресенье"
+        }
+    }
+}

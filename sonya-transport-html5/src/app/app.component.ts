@@ -13,7 +13,11 @@ import {Links} from './links';
                 height: 50px;
                 position: relative;
                 z-index: 1;
-            }`]
+            }
+            .lang-menu-icon {
+                vertical-align: middle;
+            }
+            `]
 })
 export class AppComponent {
     constructor(private translate: TranslateService, private router: Router) {
@@ -21,6 +25,7 @@ export class AppComponent {
         translate.setDefaultLang('en');
         // the lang to use, if the lang isn't available, it will use the current loader to get them
         translate.use('en');
+        console.log('browser language [' + this.translate.getBrowserLang() + ']');
     }
     options = {
         position: ["top", "right"],
@@ -32,6 +37,9 @@ export class AppComponent {
     }
     toMain() {
         this.router.navigate(['']);
+    }
+    changeLanguage(lang: string) {
+        this.translate.use(lang);
     }
 }
 

@@ -11,14 +11,15 @@
             <md-icon>vpn_key</md-icon>
             <span>Control</span>
         </button>
-<!--        <button md-menu-item disabled>
-            <md-icon>voicemail</md-icon>
-            <span>Check voicemail</span>
+        <hr/>
+        <button md-menu-item (click)="changeLanguage('en')">
+            <img src="/assets/image/flag/en_32.png" class="lang-menu-icon">
+            <span>English</span>
         </button>
-        <button md-menu-item>
-            <md-icon>notifications_off</md-icon>
-            <span>Disable alerts</span>
-        </button>-->
+        <button md-menu-item (click)="changeLanguage('ru')">
+            <img src="/assets/image/flag/ru_32.png" class="lang-menu-icon">
+            <span>Russian</span>
+        </button>
     </md-menu>
 </md-toolbar>
 <router-outlet></router-outlet>

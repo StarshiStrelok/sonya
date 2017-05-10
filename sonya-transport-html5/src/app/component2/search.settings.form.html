@@ -21,7 +21,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
         <md-grid-tile>
             <md-select placeholder="Day of trip" formControlName="day" class="full-width">
-                <md-option *ngFor="let d of daysOfWeek" [value]="d.id">{{ d.name }}</md-option>
+                <md-option [value]="2"><div [translate]="'common.day.monday'"></div></md-option>
+                <md-option [value]="3"><div [translate]="'common.day.tuesday'"></div></md-option>
+                <md-option [value]="4"><div [translate]="'common.day.wednesday'"></div></md-option>
+                <md-option [value]="5"><div [translate]="'common.day.thursday'"></div></md-option>
+                <md-option [value]="6"><div [translate]="'common.day.friday'"></div></md-option>
+                <md-option [value]="7"><div [translate]="'common.day.saturday'"></div></md-option>
+                <md-option [value]="1"><div [translate]="'common.day.sunday'"></div></md-option>
             </md-select>
         </md-grid-tile>
         

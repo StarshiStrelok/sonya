@@ -17,7 +17,6 @@
 
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {TranslateService} from '@ngx-translate/core';
 
 import {SearchSettings} from '../model/abs.model';
 import {minNumberValidator} from '../lib/validator/min-number.directive';
@@ -34,13 +33,10 @@ export class SearchSettingsForm implements OnInit {
     settingsForm: FormGroup;
     settings: SearchSettings = new SearchSettings(
         null, null, null, null, null, null, null, 10, 3);
-    daysOfWeek: any[] = [];
     constructor(
-        private fb: FormBuilder,
-        private translate: TranslateService
+        private fb: FormBuilder
     ) {}
     ngOnInit() {
-        this.initDayOfWeek();
         this.createForm();
     }
     createForm() {
@@ -54,23 +50,6 @@ export class SearchSettingsForm implements OnInit {
         this.settings.day = curDay;
         this.settings.time = new Date().getHours() + ':' + new Date().getMinutes();
         this.settingsForm.patchValue(this.settings);
-    }
-    initDayOfWeek() {
-        this.translate.get('common.day.monday').subscribe(val => {
-            this.daysOfWeek = [
-                {'id': 2, 'name': this.translate.instant('common.day.monday')},
-                {'id': 3, 'name': this.translate.instant('common.day.tuesday')},
-                {'id': 4, 'name': this.translate.instant('common.day.wednesday')},
-                {'id': 5, 'name': this.translate.instant('common.day.thursday')},
-                {'id': 6, 'name': this.translate.instant('common.day.friday')},
-                {'id': 7, 'name': this.translate.instant('common.day.saturday')},
-                {'id': 1, 'name': this.translate.instant('common.day.sunday')}
-            ];
-            if (this.settingsForm) {
-                this.settingsForm.patchValue(this.settings);
-            }
-        });
-
     }
     onSubmit() {
         if (!this.settingsForm.valid) {
