@@ -17,52 +17,53 @@
 
 import {
     Component, ContentChild, ContentChildren, QueryList, AfterContentInit,
-    Input, ViewEncapsulation
+    Input, ViewEncapsulation, EventEmitter, Output
 } from '@angular/core';
 import {trigger, state, style, animate, transition} from '@angular/animations';
-import {MdButton} from '@angular/material'
 
 const scaleAnim: any =
     trigger('scaleAnim', [
         state('show', style({opacity: 1, transform: `scale(1)`})),
         state('hide', style({opacity: 0, transform: `scale(0)`})),
         transition('show => hide', [
-            animate(`0.2s 100ms ease-in`)
+            animate(`0.1s ease-in`)
         ]),
         transition('hide => show', [
-            animate(`0.2s 100ms ease-in`)
+            animate(`0.2s ease-in`)
         ])
     ])
 
 @Component({
     selector: 'md-fab-trigger',
-    template: `<ng-content></ng-content>`,
+    template: ` <button md-fab color="primary" (click)="toggleSpeedDial()">
+                    <ng-content></ng-content>
+                </button>`,
     encapsulation: ViewEncapsulation.None
 })
 export class MdFabTrigger implements AfterContentInit {
-    @ContentChild(MdButton) triggerBtn: MdButton;
     private parent: MdFabSpeedDial;
     setParent(p: MdFabSpeedDial) {
         this.parent = p;
     }
     ngAfterContentInit() {
-        let _comp = this;
-        this.triggerBtn._getHostElement().onclick = function () {
-            _comp.parent.actions.toggle();
-        }
+        
+    }
+    toggleSpeedDial() {
+        this.parent.actions.toggle();
     }
 }
 
 @Component({
     selector: 'md-fab-action',
     template: `<button md-mini-fab color="warn" [@scaleAnim]="state"
-                    (@scaleAnim.start)="startAnimation($event)">
+                    (@scaleAnim.start)="startAnimation($event)" (click)="select()">
                 <ng-content></ng-content>
             </button>`,
     encapsulation: ViewEncapsulation.None,
     animations: [scaleAnim]
 })
 export class MdFabActionButton implements AfterContentInit {
+    private parent: MdFabActions;
     private state: string = 'hide';
     private items: QueryList<MdFabActionButton>;
     private curIndex: number;
@@ -77,6 +78,13 @@ export class MdFabActionButton implements AfterContentInit {
         this.curIndex = index;
         this.isOpen = isOpen;
         this.delay = delay;
+    }
+    select() {
+        this.parent.toggle();
+        this.parent.parent.selectAction.emit(this.curIndex);
+    }
+    setParent(p: MdFabActions) {
+        this.parent = p;
     }
     startAnimation() {
         let _comp = this;
@@ -102,17 +110,21 @@ export class MdFabActionButton implements AfterContentInit {
 })
 export class MdFabActions implements AfterContentInit {
     @ContentChildren(MdFabActionButton) items: QueryList<MdFabActionButton>;
+    parent: MdFabSpeedDial;
     private isOpen: boolean = false;
     ngAfterContentInit() {
-
+        this.items.forEach(item => item.setParent(this));
     }
     toggle() {
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
             this.items.first.fireToggle(this.isOpen, this.items, 0, 200);
         } else {
-            this.items.last.fireToggle(this.isOpen, this.items, this.items.length - 1, 200);
+            this.items.last.fireToggle(this.isOpen, this.items, this.items.length - 1, 100);
         }
+    }
+    setParent(p: MdFabSpeedDial) {
+        this.parent = p;
     }
 }
 
@@ -127,6 +139,7 @@ export class MdFabActions implements AfterContentInit {
 export class MdFabSpeedDial implements AfterContentInit {
     @ContentChild(MdFabActions) actions: MdFabActions;
     @ContentChild(MdFabTrigger) trigger: MdFabTrigger;
+    @Output() selectAction: EventEmitter<any> = new EventEmitter();
     private directionClass = 'md-up';
     @Input()
     get direction() {
@@ -137,6 +150,7 @@ export class MdFabSpeedDial implements AfterContentInit {
     }
     ngAfterContentInit() {
         this.trigger.setParent(this);
+        this.actions.setParent(this);
     }
 }
 

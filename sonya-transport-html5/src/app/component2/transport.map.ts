@@ -100,6 +100,9 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     isMobile(): boolean {
         return window.innerWidth <= 600;
     }
+    changeLanguage(e: any) {
+        console.log('change language: ' + e);
+    }
     private createMap(profile: TransportProfile) {
         var map = L.map.Sonya(this.mapElement.nativeElement, {
             southWest: L.latLng(profile.southWestLat, profile.southWestLon),

@@ -44,22 +44,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <md-icon>widgets</md-icon></button>
 
     <md-fab-speed-dial class="tm-map-control" style="top: 25px; right: 25px;"
-                       direction="left">
+                       direction="left" (selectAction)="changeLanguage($event)">
         <md-fab-trigger>
-            <button md-fab color="primary">
-                <md-icon>close</md-icon>
-            </button>
+            <md-icon>close</md-icon>
         </md-fab-trigger>
 
         <md-fab-actions>
             <md-fab-action>
                 <md-icon>settings</md-icon>
-            </md-fab-action>
-            <md-fab-action>
-                <md-icon>edit</md-icon>
-            </md-fab-action>
-            <md-fab-action>
-                <md-icon>map</md-icon>
             </md-fab-action>
         </md-fab-actions>
     </md-fab-speed-dial>
