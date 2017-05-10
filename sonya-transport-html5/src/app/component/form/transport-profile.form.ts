@@ -3,12 +3,12 @@ import {Location} from '@angular/common';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Params} from '@angular/router';
 
-import {minNumberValidator} from '../lib/validator/min-number.directive';
-import {maxNumberValidator} from '../lib/validator/max-number.directive';
-import {TransportProfile} from '../model/abs.model';
-import {DataService} from '../service/data.service';
-import {ModelClass} from '../model/abs.model';
-import {slideAnimation, AnimatedSlide} from './../app.component';
+import {minNumberValidator} from '../../lib/validator/min-number.directive';
+import {maxNumberValidator} from '../../lib/validator/max-number.directive';
+import {TransportProfile} from '../../model/abs.model';
+import {DataService} from '../../service/data.service';
+import {ModelClass} from '../../model/abs.model';
+import {slideAnimation, AnimatedSlide} from './../../app.component';
 
 @Component({
     selector: 'transport-profile-form',
@@ -121,5 +121,45 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
             this.dataService.create<TransportProfile>(this.profile, ModelClass.TRANSPORT_PROFILE)
                 .then(profile => this.goBack());
         }
+    }
+    uploadBusStopMarkerImage() {
+        document.getElementById('marker-image-upload').click();
+    }
+    selectFile(event: any) {
+        let files = event.target.files;
+        var binData = new FormData();
+        if (!files[0]) {
+            return;
+        }
+        binData.append('file', files[0]);
+        let inputFile: any = document.getElementById("import-data-upload");
+        inputFile.value = "";
+//        this.dataService.importData(this.profileId, this.selectedType.id, binData, false)
+//            .then((events: ImportDataEvent[]) => {
+//                this.mapComponent.showProgress = false;
+//                if (events.length === 0) {
+//                    this.notificationService.info('Import details',
+//                        'Differences from current version not found');
+//                } else {
+//                    this.dialogService.openWindow('Confirm import', '', '50%', ConfirmImport, {
+//                        events: events,
+//                        persist: false
+//                    }).subscribe((res: boolean) => {
+//                        if (res) {
+//                            this.mapComponent.showProgress = true;
+//                            this.dataService.importData(this.profileId, this.selectedType.id, binData, true)
+//                                .then((events: ImportDataEvent[]) => {
+//                                    this.mapComponent.showProgress = false;
+//                                    this.dialogService.openWindow('Import completed', '', '50%', ConfirmImport, {
+//                                        events: events,
+//                                        persist: true
+//                                    }).subscribe((res: boolean) => {
+//                                        this.typeChanged();
+//                                    });
+//                                });
+//                        }
+//                    });
+//                }
+//            });
     }
 }

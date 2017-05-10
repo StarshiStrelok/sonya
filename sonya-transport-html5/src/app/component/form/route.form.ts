@@ -19,9 +19,9 @@ import {Component, OnInit, Input} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MdDialogRef} from '@angular/material';
 
-import {ModelClass, Route, RouteProfile, TransportProfile} from '../model/abs.model';
-import {DataService} from '../service/data.service';
-import {Window, DialogContent} from '../component/window';
+import {ModelClass, Route, RouteProfile, TransportProfile} from '../../model/abs.model';
+import {DataService} from '../../service/data.service';
+import {Window, DialogContent} from '../window';
 
 @Component({
     selector: 'route-form',

@@ -13,16 +13,16 @@ import {SSValidatorModule} from './lib/validator/module';
 
 import {AppComponent} from './app.component';
 // ---------------------- Admin components ------------------------------------
-import {TransportProfileForm} from './form/transport-profile.form';
+import {TransportProfileForm} from './component/form/transport-profile.form';
 import {TransportProfileList} from './component/transport-profile.list';
 import {TransportProfileMap, SideNavContentDirective} from './component/transport-profile.map';
-import {BusStopForm} from './form/bus-stop.form';
-import {RouteForm} from './form/route.form';
+import {BusStopForm} from './component/form/bus-stop.form';
+import {RouteForm} from './component/form/route.form';
 import {RoutesGrid} from './component/routes.grid';
 import {PathsGrid} from './component/paths.grid';
 import {BusStopGrid} from './component/busstop.grid';
 import {ConfirmImport} from './component/confirm.import.dialog';
-import {PathForm} from './form/path.form';
+import {PathForm} from './component/form/path.form';
 import {Window, WindowDirective} from './component/window';
 // ---------------------- UI components ---------------------------------------
 import {TransportMap} from './component2/transport.map';

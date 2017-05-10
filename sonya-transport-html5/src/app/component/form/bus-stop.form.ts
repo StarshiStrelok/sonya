@@ -19,19 +19,21 @@ import {Component, OnInit, Input} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MdDialogRef} from '@angular/material';
 
-import {ModelClass, Route, RouteProfile, TransportProfile, Path} from '../model/abs.model';
-import {DataService} from '../service/data.service';
-import {Window, DialogContent} from '../component/window';
+import {BusStop} from '../../model/abs.model';
+import {ModelClass} from '../../model/abs.model';
+import {DataService} from '../../service/data.service';
+import {minNumberValidator} from '../../lib/validator/min-number.directive';
+import {maxNumberValidator} from '../../lib/validator/max-number.directive';
+import {Window, DialogContent} from '../window';
 
 @Component({
-    selector: 'path-form',
-    templateUrl: './path.form.html',
+    selector: 'bus-stop-form',
+    templateUrl: './bus-stop.form.html',
 })
-export class PathForm extends DialogContent implements OnInit {
+export class BusStopForm extends DialogContent implements OnInit {
     private profileId: number;
-    private routeId: number;
-    pathForm: FormGroup;
-    path: Path = new Path(null, null, null, null, null, null);
+    busStopForm: FormGroup;
+    busStop: BusStop = new BusStop(null, null, null, null, null);
     constructor(
         private fb: FormBuilder,
         private dataService: DataService,
@@ -40,35 +42,35 @@ export class PathForm extends DialogContent implements OnInit {
         this.createForm();
     }
     createForm() {
-        this.pathForm = this.fb.group({
+        this.busStopForm = this.fb.group({
             id: [''],
-            description: ['', [Validators.required, Validators.maxLength(100)]],
+            name: ['', [Validators.required, Validators.maxLength(100)]],
+            latitude: ['', [Validators.required, minNumberValidator(-90), maxNumberValidator(90)]],
+            longitude: ['', [Validators.required, minNumberValidator(-180), maxNumberValidator(180)]],
             externalId: ['']
         });
-        this.pathForm.patchValue(this.path);
+        this.busStopForm.setValue(this.busStop);
     }
     onSubmit() {
-        if (!this.pathForm.valid) {
+        if (!this.busStopForm.valid) {
             return;
         }
-        let values = this.pathForm.value;
+        let values = this.busStopForm.value;
         Object.getOwnPropertyNames(values).map(
             (key: string) => {
-                this.path[key] = values[key];
+                this.busStop[key] = values[key];
             }
         );
-        this.path.transportProfile = new TransportProfile(this.profileId, null,
-            null, null, null, null, null, null, null, null, null, null, null);
-        this.path.route = new Route(this.routeId, null, null, null, null);
-        console.log(JSON.stringify(this.path));
-        if (this.path.id) {
-            this.dataService.update<Path>(this.path, ModelClass.PATH)
-                .then(() => {
+        this.busStop['transportProfile'] = {id: this.profileId};
+        console.log(JSON.stringify(this.busStop));
+        if (this.busStop.id) {
+            this.dataService.update<BusStop>(this.busStop, ModelClass.BUS_STOP)
+                .then((bs: BusStop) => {
                     this.dialogRef.close(true);
                 });
         } else {
-            this.dataService.create<Path>(this.path, ModelClass.PATH)
-                .then(() => {
+            this.dataService.create<BusStop>(this.busStop, ModelClass.BUS_STOP)
+                .then((bs: BusStop) => {
                     this.dialogRef.close(true);
                 });
         }
@@ -79,8 +81,7 @@ export class PathForm extends DialogContent implements OnInit {
     }
     setData(data: any): void {
         this.profileId = data.profileId;
-        this.routeId = data.routeId;
-        console.log('#path form# profile ID [' + this.profileId + '], route ID [' + this.routeId + ']');
-        this.path = data.model;
+        console.log('#bus stop form# profile id [' + this.profileId + ']');
+        this.busStop = data.model;
     }
 }

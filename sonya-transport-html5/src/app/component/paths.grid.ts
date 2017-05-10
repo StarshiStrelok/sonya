@@ -20,7 +20,7 @@ import {Component, OnInit, AfterViewInit} from '@angular/core';
 import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
 import {DialogService} from './../service/dialog.service';
-import {PathForm} from './../form/path.form';
+import {PathForm} from './form/path.form';
 import {RoutesGrid} from './../component/routes.grid';
 import {BusStopGrid} from './../component/busstop.grid';
 import {ModelClass, Route, Path} from './../model/abs.model';

@@ -17,7 +17,7 @@
 
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {TransportProfileForm} from './form/transport-profile.form';
+import {TransportProfileForm} from './component/form/transport-profile.form';
 import {TransportProfileList} from './component/transport-profile.list';
 import {TransportProfileMap} from './component/transport-profile.map';
 import {TransportMap} from './component2/transport.map'

@@ -27,7 +27,7 @@ import {DataService} from '../service/data.service';
 import {DialogService} from '../service/dialog.service';
 
 import {TransportProfile, BusStop, ModelClass, RouteProfile} from '../model/abs.model';
-import {BusStopForm} from './../form/bus-stop.form';
+import {BusStopForm} from './form/bus-stop.form';
 import {RoutesGrid} from './routes.grid';
 import {BusStopGrid} from './busstop.grid';
 import {OSRMService} from '../service/osrm.service';

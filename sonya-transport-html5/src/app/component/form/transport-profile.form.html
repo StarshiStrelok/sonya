@@ -83,10 +83,10 @@
                     </md-card-subtitle>
                 </md-card-header>
                 <md-card-content>
-                    <md-grid-list cols="5" rowHeight="56px;" *ngFor="let rp of routeProfiles"
+                    <md-grid-list cols="12" rowHeight="56px;" *ngFor="let rp of routeProfiles"
                                   [formGroup]="rp">
                                   <input type="number" hidden="true" formControlName="id"/>
-                        <md-grid-tile>
+                        <md-grid-tile colspan="2">
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Route type name" formControlName="name">
                                 <md-error *ngIf="rp.get('name').hasError('required')">
@@ -97,7 +97,7 @@
                                 </md-error>
                             </md-input-container>
                         </md-grid-tile>
-                        <md-grid-tile>
+                        <md-grid-tile colspan="2">
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Average speed, km/h"
                                        formControlName="avgSpeed">
@@ -112,7 +112,7 @@
                                 </md-error>
                             </md-input-container>
                         </md-grid-tile>
-                        <md-grid-tile>
+                        <md-grid-tile colspan="4">
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Routing service URL"
                                        formControlName="routingURL" type="url">
@@ -124,7 +124,7 @@
                                 </md-error>
                             </md-input-container>
                         </md-grid-tile>
-                        <md-grid-tile>
+                        <md-grid-tile colspan="2">
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Line color (CSS-format)"
                                        formControlName="lineColor">
@@ -132,6 +132,12 @@
                                     Very long string, 10 characters maximum
                                 </md-error>
                             </md-input-container>
+                        </md-grid-tile>
+                        <md-grid-tile>
+                            <button md-mini-fab color="accent" (click)="uploadBusStopMarkerImage(rp)"
+                                    mdTooltip="Upload bus stop marker image" mdTooltipPosition="above">
+                                <md-icon>place</md-icon>
+                            </button>
                         </md-grid-tile>
                         <md-grid-tile>
                             <button md-mini-fab color="accent" (click)="removeRouteProfileGroup(rp)"
@@ -204,3 +210,5 @@
         </md-card-actions>
     </form>
 </md-card>
+<input type="file" hidden="true" id="marker-image-upload"
+       (change)="selectFile($event)">

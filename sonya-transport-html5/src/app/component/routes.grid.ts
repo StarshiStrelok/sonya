@@ -22,7 +22,7 @@ import {NotificationsService} from 'angular2-notifications';
 import {TransportProfileMap, SwitchedContent} from './transport-profile.map';
 import {DataService} from './../service/data.service';
 import {DialogService} from './../service/dialog.service';
-import {RouteForm} from './../form/route.form';
+import {RouteForm} from './form/route.form';
 import {PathsGrid} from './paths.grid';
 import {ConfirmImport} from './confirm.import.dialog';
 import {ModelClass, TransportProfile, RouteProfile, Route, ImportDataEvent} from './../model/abs.model';
