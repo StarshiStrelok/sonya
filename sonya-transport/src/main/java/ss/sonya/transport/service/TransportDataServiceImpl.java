@@ -21,9 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
+import ss.sonya.entity.RouteProfile;
 import ss.sonya.entity.Trip;
+import ss.sonya.inject.CommonDAO;
 import ss.sonya.transport.api.TransportDataDAO;
 import ss.sonya.transport.api.TransportDataService;
 
@@ -37,6 +40,9 @@ class TransportDataServiceImpl implements TransportDataService {
     /** Bus stop DAO. */
     @Autowired
     private TransportDataDAO transportDAO;
+    /** Common DAO. */
+    @Autowired
+    private CommonDAO commonDAO;
     @Override
     public <T> List<T> getFromProfile(Integer id, Class<T> cl)
             throws Exception {
@@ -53,5 +59,16 @@ class TransportDataServiceImpl implements TransportDataService {
     @Override
     public List<Trip> getSchedule(Integer id) throws Exception {
         return transportDAO.getSchedule(id);
+    }
+    @Override
+    public byte[] getRouteTypeBusStopMarker(Integer id) throws Exception {
+        return transportDAO.getRouteTypeBusStopMarker(id);
+    }
+    @Override
+    public void uploadRouteTypeBusStopMarker(
+            Integer id, MultipartFile file) throws Exception {
+        RouteProfile profile = commonDAO.findById(id, RouteProfile.class);
+        profile.setBusStopMarker(file.getBytes());
+        commonDAO.update(profile);
     }
 }

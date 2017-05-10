@@ -17,6 +17,7 @@
 package ss.sonya.transport.api;
 
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
 import ss.sonya.entity.Trip;
@@ -56,4 +57,19 @@ public interface TransportDataService {
      * @throws Exception error.
      */
     List<Trip> getSchedule(Integer id) throws Exception;
+    /**
+     * Get route type bus stop marker.
+     * @param id route profile ID.
+     * @return image.
+     * @throws Exception error.
+     */
+    byte[] getRouteTypeBusStopMarker(Integer id) throws Exception;
+    /**
+     * Upload bus stop marker image for route type.
+     * @param id route type ID.
+     * @param file uploaded image.
+     * @throws Exception error.
+     */
+    void uploadRouteTypeBusStopMarker(Integer id,
+            MultipartFile file) throws Exception;
 }

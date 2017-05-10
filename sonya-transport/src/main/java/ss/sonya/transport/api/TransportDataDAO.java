@@ -52,4 +52,10 @@ public interface TransportDataDAO {
      * @return schedule.
      */
     List<Trip> getSchedule(Integer id);
+    /**
+     * Get route type bus stop marker.
+     * @param id route profile ID.
+     * @return image.
+     */
+    byte[] getRouteTypeBusStopMarker(Integer id);
 }

@@ -19,6 +19,7 @@ package ss.sonya.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,6 +27,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -77,6 +79,12 @@ public class RouteProfile implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transport_profile_id")
     private TransportProfile transportProfile;
+    /** Bus stop marker. */
+    @JsonIgnore
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name="REPORT")
+    private byte[] busStopMarker;
 // ============================= SET & GET ====================================
     /**
      * @return the id
@@ -161,6 +169,18 @@ public class RouteProfile implements Serializable {
      */
     public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+    /**
+     * @return the busStopMarker
+     */
+    public byte[] getBusStopMarker() {
+        return busStopMarker;
+    }
+    /**
+     * @param busStopMarker the busStopMarker to set
+     */
+    public void setBusStopMarker(byte[] busStopMarker) {
+        this.busStopMarker = busStopMarker;
     }
 // ============================================================================
     @Override

@@ -17,14 +17,17 @@
 package ss.sonya.transport.rest;
 
 import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import ss.sonya.entity.RouteProfile;
+import org.springframework.web.multipart.MultipartFile;
 import ss.sonya.entity.TransportProfile;
 import ss.sonya.inject.rest.DataWS;
+import ss.sonya.transport.api.TransportDataService;
 
 /**
  * Transport profile web-service.
@@ -33,6 +36,9 @@ import ss.sonya.inject.rest.DataWS;
 @RestController
 @RequestMapping("/rest/data/transport-profile")
 public class TransportProfileWS extends DataWS<TransportProfile> {
+    /** Transport data service. */
+    @Autowired
+    private TransportDataService transportService;
     /**
      * Initialize controller.
      */
@@ -51,9 +57,9 @@ public class TransportProfileWS extends DataWS<TransportProfile> {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TransportProfile update(
             @RequestBody TransportProfile profile) throws Exception {
-        for (RouteProfile rp : profile.getRouteProfiles()) {
+        profile.getRouteProfiles().forEach((rp) -> {
             rp.setTransportProfile(profile);
-        }
+        });
         return dataService.update(profile);
     }
     /**
@@ -67,9 +73,34 @@ public class TransportProfileWS extends DataWS<TransportProfile> {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TransportProfile create(@RequestBody TransportProfile profile)
             throws Exception {
-        for (RouteProfile rp : profile.getRouteProfiles()) {
+        profile.getRouteProfiles().forEach((rp) -> {
             rp.setTransportProfile(profile);
-        }
+        });
         return dataService.create(profile);
+    }
+    /**
+     * Upload bus stop marker image for route type.
+     * @param id route type ID.
+     * @param file uploaded image.
+     * @throws Exception error.
+     */
+    @RequestMapping(value = "/route/marker/{id}", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public void uploadRouteTypeBusStopMarker(
+            @PathVariable("id") Integer id,
+            @RequestBody MultipartFile file) throws Exception {
+        transportService.uploadRouteTypeBusStopMarker(id, file);
+    }
+    /**
+     * Get route type bus stop marker image.
+     * @param id route profile ID.
+     * @return marker image.
+     * @throws Exception error.
+     */
+    @RequestMapping(value = "/route/marker/{id}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public byte[] getRouteTypeBusStopMarker(@PathVariable("id") Integer id)
+            throws Exception {
+        return transportService.getRouteTypeBusStopMarker(id);
     }
 }

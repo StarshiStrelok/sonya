@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
+import ss.sonya.entity.RouteProfile;
 import ss.sonya.entity.Trip;
 import ss.sonya.transport.api.TransportDataDAO;
 
@@ -87,5 +88,9 @@ class TransportDataDAOImpl implements TransportDataDAO {
         );
         Query query = em.createQuery(criteria);
         return query.getResultList();
+    }
+    @Override
+    public byte[] getRouteTypeBusStopMarker(final Integer id) {
+        return em.find(RouteProfile.class, id).getBusStopMarker();
     }
 }
