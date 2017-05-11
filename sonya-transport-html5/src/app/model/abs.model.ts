@@ -59,7 +59,17 @@ export class TransportProfile implements AbsModel {
         public name: string,
         public busStopAccessZoneRadius: number,
         public searchLimitForPoints: number,
-        public routeProfiles: RouteProfile[]
+        public routeProfiles: RouteProfile[],
+        public mapLayers: MapLayer[],
+        public mapboxKey: string
+    ) {}
+}
+
+export class MapLayer implements AbsModel {
+    constructor(
+        public id: number,
+        public name: string,
+        public url: string
     ) {}
 }
 

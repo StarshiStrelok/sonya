@@ -80,7 +80,8 @@ public class ImportDataTest extends TestConfig {
         byte[] binData = serializer.serialize(data);
         MultipartFile file = new MockMultipartFile("file", binData);
         List<ImportDataEvent> events = importDataService.importData(
-                file, tp.getId(), tp.getRouteProfiles().get(0).getId(), false);
+                file, tp.getId(),
+                tp.getRouteProfiles().iterator().next().getId(), false);
         Assert.assertTrue(!events.isEmpty());
     }
 }

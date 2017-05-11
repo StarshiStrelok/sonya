@@ -91,45 +91,47 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
             LOG.info("#-bfs-# straight paths [" + straight.size() + "]");
             result.addAll(straight);
         }
-        // exclude vertices which belong to both criteria (straight vertices)
-        endVertices.keySet().forEach(v -> {
-            if (startVertices.keySet().contains(v)) {
-                LOG.debug("#-bfs-# exclude vertex from start criteria ["
-                        + v + "], it exist in end criteria");
-                startVertices.remove(v);
+        if (settings.getMaxTransfers() > 0) {
+            // exclude vertices which belong to both criteria (straight vert.)
+            endVertices.keySet().forEach(v -> {
+                if (startVertices.keySet().contains(v)) {
+                    LOG.debug("#-bfs-# exclude vertex from start criteria ["
+                            + v + "], it exist in end criteria");
+                    startVertices.remove(v);
+                }
+            });
+            // multi-threading, using [physical processors]
+            // or [physical processors] + [hyper-threading]
+            int cores = Runtime.getRuntime().availableProcessors();
+            ExecutorService ex = Executors.newFixedThreadPool(cores);
+            // increase search depth
+            long startBfs = System.currentTimeMillis();
+            List<Future<List<OptimalPath>>> futures = new ArrayList<>();
+            // break for threads
+            List<Integer>[] portions = new ArrayList[cores];
+            for (int i = 0; i < cores; i++) {
+                portions[i] = new ArrayList<>();
             }
-        });
-        // multi-threading, using [physical processors] or [physical processors]
-        // + [hyper-threading]
-        int cores = Runtime.getRuntime().availableProcessors();
-        ExecutorService ex = Executors.newFixedThreadPool(cores);
-        // increase search depth
-        long startBfs = System.currentTimeMillis();
-        List<Future<List<OptimalPath>>> futures = new ArrayList<>();
-        // break for threads
-        List<Integer>[] portions = new ArrayList[cores];
-        for (int i = 0; i < cores; i++) {
-            portions[i] = new ArrayList<>();
+            Iterator<Integer> itr = startVertices.keySet().iterator();
+            int counter = 0;
+            while (itr.hasNext()) {
+                portions[counter % cores].add(itr.next());
+                counter++;
+            }
+            for (List<Integer> portion : portions) {
+                futures.add(ex.submit(
+                        new BFSTask(portion, endVertices, startVertices, graph,
+                                settings.getMaxTransfers())
+                ));
+            }
+            // getting results
+            for (Future<List<OptimalPath>> f : futures) {
+                result.addAll(f.get());
+            }
+            LOG.info("#-bfs-# total number of decisions ["
+                    + (result.size() - straight.size()) + "], BFS time ["
+                    + (System.currentTimeMillis() - startBfs) + "] ms");
         }
-        Iterator<Integer> itr = startVertices.keySet().iterator();
-        int counter = 0;
-        while (itr.hasNext()) {
-            portions[counter % cores].add(itr.next());
-            counter++;
-        }
-        for (List<Integer> portion : portions) {
-            futures.add(ex.submit(
-                    new BFSTask(portion, endVertices, startVertices, graph,
-                            settings.getMaxTransfers())
-            ));
-        }
-        // getting results
-        for (Future<List<OptimalPath>> f : futures) {
-            result.addAll(f.get());
-        }
-        LOG.info("#-bfs-# total number of decisions ["
-                + (result.size() - straight.size()) + "], BFS time ["
-                + (System.currentTimeMillis() - startBfs) + "] ms");
         // at this moment result not thread safe
         result = clearUnrealResults(result, startBs);
         List<OptimalPath>[] grouping = groupingResult(result, settings);

@@ -58,7 +58,8 @@ export class PathForm extends DialogContent implements OnInit {
             }
         );
         this.path.transportProfile = new TransportProfile(this.profileId, null,
-            null, null, null, null, null, null, null, null, null, null, null);
+            null, null, null, null, null, null, null, null, null, null,
+            null, null, null);
         this.path.route = new Route(this.routeId, null, null, null, null);
         console.log(JSON.stringify(this.path));
         if (this.path.id) {

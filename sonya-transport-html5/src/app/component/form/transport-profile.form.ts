@@ -25,10 +25,13 @@ import {slideAnimation, AnimatedSlide} from './../../app.component';
 export class TransportProfileForm extends AnimatedSlide implements OnInit {
     transportProfileForm: FormGroup;
     profile: TransportProfile = new TransportProfile(null, null, null, null,
-        null, null, null, null, null, null, null, null, []);
+        null, null, null, null, null, null, null, null, [], [], null);
     routeProfiles: FormGroup[];
+    mapLayers: FormGroup[];
     routeProfilesNames: string[];
+    mapLayersNames: string[];
     private selectedRouteProfileId: number;
+    private selectedMapLayerId: number;
     private imgPostfix = '';
     constructor(
         private fb: FormBuilder,
@@ -45,6 +48,7 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
                     id, ModelClass.TRANSPORT_PROFILE).then(profile => {
                         this.profile = profile;
                         this.createForm();
+                        this.imgPostfix = '?' + new Date().getTime();
                     });
             }
             this.createForm();
@@ -52,7 +56,9 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
     }
     createForm() {
         this.routeProfiles = [];
+        this.mapLayers = [];
         this.routeProfilesNames = [];
+        this.mapLayersNames = [];
         this.transportProfileForm = this.fb.group({
             id: [''],
             name: ['', [Validators.required, Validators.maxLength(100)]],
@@ -69,16 +75,21 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         });
         let _routeProfiles = this.profile.routeProfiles;
         delete this.profile.routeProfiles;
-        this.transportProfileForm.setValue(this.profile);
+        let _mapLayers = this.profile.mapLayers;
+        delete this.profile.mapLayers;
+        this.transportProfileForm.patchValue(this.profile);
         _routeProfiles.forEach((profile) => {
             delete profile.lastUpdate;
             let rpGroup = this.addRouteProfileGroup();
             rpGroup.setValue(profile);
         });
+        _mapLayers.forEach((layer) => {
+            let layerGroup = this.addMapLayerGroup();
+            layerGroup.patchValue(layer);
+        });
     }
     addRouteProfileGroup(): FormGroup {
         let groupName = 'routeProfile' + this.routeProfiles.length;
-        console.log('add route profile [' + groupName + ']');
         let routeGroup: FormGroup = this.fb.group({
             id: [''],
             name: ['', [Validators.required, Validators.maxLength(30)]],
@@ -92,6 +103,18 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         this.routeProfilesNames.push(groupName);
         return routeGroup;
     }
+    addMapLayerGroup(): FormGroup {
+        let groupName = 'mapLayer' + this.routeProfiles.length;
+        let mapLayerGroup: FormGroup = this.fb.group({
+            id: [''],
+            name: ['', [Validators.required, Validators.maxLength(50)]],
+            url: ['', [Validators.maxLength(200)]]
+        });
+        this.transportProfileForm.addControl(groupName, mapLayerGroup);
+        this.mapLayers.push(mapLayerGroup);
+        this.mapLayersNames.push(groupName);
+        return mapLayerGroup;
+    }
     removeRouteProfileGroup(group: FormGroup) {
         var index = this.routeProfiles.indexOf(group, 0);
         if (index > -1) {
@@ -99,6 +122,15 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
             this.transportProfileForm.removeControl(groupName);
             this.routeProfiles.splice(index, 1);
             this.routeProfilesNames.slice(index, 1);
+        }
+    }
+    removeMapLayerGroup(group: FormGroup) {
+        var index = this.mapLayers.indexOf(group, 0);
+        if (index > -1) {
+            let groupName = this.mapLayersNames[index];
+            this.transportProfileForm.removeControl(groupName);
+            this.mapLayers.splice(index, 1);
+            this.mapLayersNames.slice(index, 1);
         }
     }
     goBack() {
@@ -110,16 +142,20 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         }
         let values = this.transportProfileForm.value;
         let _routeProfiles: any[] = [];
+        let _mapLayers: any[] = [];
         Object.getOwnPropertyNames(values).map(
             (key: string) => {
                 if (key.indexOf('routeProfile') != -1) {
                     _routeProfiles.push(values[key]);
+                } else if (key.indexOf('mapLayer') != -1) {
+                    _mapLayers.push(values[key]);
                 } else {
                     this.profile[key] = values[key];
                 }
             }
         );
         this.profile.routeProfiles = _routeProfiles;
+        this.profile.mapLayers = _mapLayers;
         console.log(JSON.stringify(this.profile));
         if (this.profile.id) {
             this.dataService.update<TransportProfile>(this.profile, ModelClass.TRANSPORT_PROFILE)
@@ -131,11 +167,6 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
     }
     uploadBusStopMarkerImage(rp: FormGroup) {
         this.selectedRouteProfileId = rp.get('id').value;
-        if (!this.selectedRouteProfileId) {
-            this.notificationService.info('Attention',
-                'Save new route profile before upload marker image')
-            return;
-        }
         document.getElementById('marker-image-upload').click();
     }
     selectFile(event: any) {
@@ -150,7 +181,27 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         this.dataService.uploadBusStopMarker(this.selectedRouteProfileId, binData)
             .then(res => {
                 this.notificationService.info('Success',
-                    'Bus stop marker saved, refresh the page to see the changes');
+                    'Bus stop marker saved');
+                this.imgPostfix = '?' + new Date().getTime();
+            });
+    }
+    uploadMapLayerImage(ml: FormGroup) {
+        this.selectedMapLayerId = ml.get('id').value;
+        document.getElementById('layer-icon-upload').click();
+    }
+    selectFile2(event: any) {
+        let files = event.target.files;
+        var binData = new FormData();
+        if (!files[0]) {
+            return;
+        }
+        binData.append('file', files[0]);
+        let inputFile: any = document.getElementById("layer-icon-upload");
+        inputFile.value = "";
+        this.dataService.uploadMapLayerImage(this.selectedMapLayerId, binData)
+            .then(res => {
+                this.notificationService.info('Success',
+                    'Layer icon saved');
                 this.imgPostfix = '?' + new Date().getTime();
             });
     }

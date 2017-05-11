@@ -17,7 +17,7 @@
 package ss.sonya.entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,6 +26,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -114,9 +115,19 @@ public class TransportProfile implements Serializable {
     @Min(1)
     private Integer searchLimitForPoints;
     /** Route profiles. */
+    @OrderColumn(name = "order")
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true, mappedBy = "transportProfile")
-    private List<RouteProfile> routeProfiles;
+    private Set<RouteProfile> routeProfiles;
+    /** Map layers. */
+    @OrderColumn(name = "order")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+            orphanRemoval = true, mappedBy = "transportProfile")
+    private Set<MapLayer> mapLayers;
+    /** Mapbox service private key. */
+    @Size(max = 100)
+    @Column(name = "mapbox_key", length = 100)
+    private String mapboxKey;
 // ================================= SET & GET ================================
     /**
      * @return the id
@@ -241,13 +252,13 @@ public class TransportProfile implements Serializable {
     /**
      * @return the routeProfiles
      */
-    public List<RouteProfile> getRouteProfiles() {
+    public Set<RouteProfile> getRouteProfiles() {
         return routeProfiles;
     }
     /**
      * @param routeProfiles the routeProfiles to set
      */
-    public void setRouteProfiles(List<RouteProfile> routeProfiles) {
+    public void setRouteProfiles(Set<RouteProfile> routeProfiles) {
         this.routeProfiles = routeProfiles;
     }
     /**
@@ -273,6 +284,30 @@ public class TransportProfile implements Serializable {
      */
     public void setSearchLimitForPoints(Integer searchLimitForPoints) {
         this.searchLimitForPoints = searchLimitForPoints;
+    }
+    /**
+     * @return the mapboxKey
+     */
+    public String getMapboxKey() {
+        return mapboxKey;
+    }
+    /**
+     * @param mapboxKey the mapboxKey to set
+     */
+    public void setMapboxKey(String mapboxKey) {
+        this.mapboxKey = mapboxKey;
+    }
+    /**
+     * @return the mapLayers
+     */
+    public Set<MapLayer> getMapLayers() {
+        return mapLayers;
+    }
+    /**
+     * @param mapLayers the mapLayers to set
+     */
+    public void setMapLayers(Set<MapLayer> mapLayers) {
+        this.mapLayers = mapLayers;
     }
 // ============================================================================
     @Override

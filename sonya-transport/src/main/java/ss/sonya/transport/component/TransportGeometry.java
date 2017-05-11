@@ -198,8 +198,10 @@ public class TransportGeometry {
             prevSubWay = subWay;
             cur++;
         }
-        double totalTime = transferDist
-                / TransportConst.HUMAN_SPEED + transportTime;
+        double totalTime = transferDist / TransportConst.HUMAN_SPEED
+                + transportTime
+                + TransportConst.TRANSFER_TIME_PAYMENT
+                    * (op.getPath().size() - 1);
         return totalTime;
     }
 //    /**

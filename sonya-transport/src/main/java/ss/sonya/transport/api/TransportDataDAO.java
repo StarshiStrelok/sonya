@@ -58,4 +58,10 @@ public interface TransportDataDAO {
      * @return image.
      */
     byte[] getRouteTypeBusStopMarker(Integer id);
+    /**
+     * Get map layer icon.
+     * @param id map layer ID.
+     * @return map layer icon.
+     */
+    byte[] getMapLayerIcon(Integer id);
 }

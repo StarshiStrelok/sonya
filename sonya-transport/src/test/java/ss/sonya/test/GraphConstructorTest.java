@@ -17,7 +17,6 @@
 package ss.sonya.test;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ss.sonya.transport.search.SearchEngine;
@@ -38,38 +37,17 @@ public class GraphConstructorTest extends TestConfig {
     @Autowired
     private SearchEngine searchEngine;
     @Test
-    @Ignore
-    public void test() {
+    public void test() throws Exception {
         SearchSettings s = new SearchSettings();
-        s.setStartLat(52.08604636878005);
-        s.setStartLon(23.695449829101566);
-        s.setEndLat(52.099862375250574);
-        s.setEndLon(23.765830993652347);
+        s.setStartLat(52.09901877232382);
+        s.setStartLon(23.680429458618168);
+        s.setEndLat(52.067161091112524);
+        s.setEndLon(23.73879432678223);
         s.setProfileId(1);
-        s.setMaxTransfers(2);
-        s.setMaxResults(10);
-        try {
-            for (OptimalPath op : searchEngine.search(s)) {
-                System.out.println(op.toString());
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        s.setMaxTransfers(1);
+        s.setMaxResults(5);
+        for (OptimalPath op : searchEngine.search(s)) {
+            System.out.println(op.toString());
         }
     }
-//    @Test
-//    public void test2() throws Exception {
-//        URL url = new URL("http://localhost:4200/rest/data/transport-profile/route/marker/9");
-//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//        conn.setDoInput(true);
-//        conn.connect();
-//        InputStream is = conn.getInputStream();
-//        byte[] buff = new byte[1024];
-//        int len;
-//        StringBuilder sb = new StringBuilder();
-//        while((len = is.read(buff)) != -1) {
-//            sb.append(new String(buff, 0, len, "UTF-8"));
-//        }
-//        is.close();
-//        System.out.println(sb.toString());
-//    }
 }

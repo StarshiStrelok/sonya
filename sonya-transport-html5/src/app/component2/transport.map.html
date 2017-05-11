@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <md-sidenav #sidenav opened="true" mode="side"
         [ngClass]="{'tm-sidenav': !isMobile(), 'tm-sidenav-mobile': isMobile(), 'ss-shadow': true}">
 
-        <geocoder [profile]="activeProfile" [layerEndpoint]="layerEndpoint"></geocoder>
+        <geocoder [parent]="this"></geocoder>
 
         <search-tab [mapComponent]="component"></search-tab>
 

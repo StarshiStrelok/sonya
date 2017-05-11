@@ -83,7 +83,7 @@ public class RouteProfile implements Serializable {
     @JsonIgnore
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name="REPORT")
+    @Column(name="bs_marker")
     private byte[] busStopMarker;
 // ============================= SET & GET ====================================
     /**

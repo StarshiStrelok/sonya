@@ -21,7 +21,7 @@ import {NotificationsService} from 'angular2-notifications';
 import {TranslateService} from '@ngx-translate/core';
 
 import {TransportProfile} from '../model/abs.model';
-import {EndpointLayer} from '../component2/transport.map';
+import {TransportMap} from './transport.map';
 
 @Component({
     selector: 'geocoder',
@@ -35,8 +35,7 @@ export class GeoCoder implements OnInit {
     end: string;
     startPositions: Response[] = [];
     endPositions: Response[] = [];
-    @Input() profile: TransportProfile;
-    @Input() layerEndpoint: EndpointLayer;
+    @Input() parent: TransportMap;
     constructor(
         private http: Http,
         private notificationService: NotificationsService,
@@ -56,34 +55,38 @@ export class GeoCoder implements OnInit {
         }
     }
     selectStart(position: Response) {
-        this.layerEndpoint.showStartMarker(position.lat, position.lon, true);
+        this.parent.layerEndpoint.showStartMarker(position.lat, position.lon, true);
     }
     selectEnd(position: Response) {
-        this.layerEndpoint.showEndMarker(position.lat, position.lon, true);
+        this.parent.layerEndpoint.showEndMarker(position.lat, position.lon, true);
     }
     selectStartAlt(event: any) {
         let filter: Response[] = this.startPositions.filter(pos => pos.display_name === this.start);
         if (filter.length === 1) {
             let pos = filter[0];
-            this.layerEndpoint.showStartMarker(pos.lat, pos.lon, true);
+            this.parent.layerEndpoint.showStartMarker(pos.lat, pos.lon, true);
         }
     }
     selectEndAlt(event: any) {
         let filter: Response[] = this.endPositions.filter(pos => pos.display_name === this.end);
         if (filter.length === 1) {
             let pos = filter[0];
-            this.layerEndpoint.showEndMarker(pos.lat, pos.lon, true);
+            this.parent.layerEndpoint.showEndMarker(pos.lat, pos.lon, true);
         }
     }
     clearStart() {
         this.start = '';
         this.startPositions = [];
-        this.layerEndpoint.hideStartMarker();
+        this.parent.layerEndpoint.hideStartMarker();
+        this.parent.layerEndpoint.searchRouteCtrl.clearRoutes();
+        this.parent.searchTabs.searchResult.result = [];
     }
     clearEnd() {
         this.end = '';
         this.endPositions = [];
-        this.layerEndpoint.hideEndMarker();
+        this.parent.layerEndpoint.hideEndMarker();
+        this.parent.layerEndpoint.searchRouteCtrl.clearRoutes();
+        this.parent.searchTabs.searchResult.result = [];
     }
     search(isStart: boolean) {
         let text;
@@ -133,8 +136,10 @@ export class GeoCoder implements OnInit {
     }
     private geocoderStraightSearch(text: string): Promise<Response[]> {
         let params = '?q=' + text + '&limit=10&format=json&addressdetails=1&bounded=1'
-            + '&viewbox=' + this.profile.southWestLon + ',' + this.profile.southWestLat
-            + ',' + this.profile.northEastLon + ',' + this.profile.northEastLat;
+            + '&viewbox=' + this.parent.activeProfile.southWestLon
+            + ',' + this.parent.activeProfile.southWestLat
+            + ',' + this.parent.activeProfile.northEastLon
+            + ',' + this.parent.activeProfile.northEastLat;
         return this.http.get(this.GEOCODER_STRAIGHT_URL + params)
             .toPromise().then(res => res.json() as Response[])
             .catch(err => this.handleError(err));

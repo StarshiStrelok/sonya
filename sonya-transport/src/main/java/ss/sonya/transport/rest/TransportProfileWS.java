@@ -61,6 +61,9 @@ public class TransportProfileWS extends DataWS<TransportProfile> {
         profile.getRouteProfiles().forEach((rp) -> {
             rp.setTransportProfile(profile);
         });
+        profile.getMapLayers().forEach((ml) -> {
+            ml.setTransportProfile(profile);
+        });
         return dataService.update(profile);
     }
     /**
@@ -76,6 +79,9 @@ public class TransportProfileWS extends DataWS<TransportProfile> {
             throws Exception {
         profile.getRouteProfiles().forEach((rp) -> {
             rp.setTransportProfile(profile);
+        });
+        profile.getMapLayers().forEach((ml) -> {
+            ml.setTransportProfile(profile);
         });
         return dataService.create(profile);
     }
@@ -103,6 +109,34 @@ public class TransportProfileWS extends DataWS<TransportProfile> {
     public void getRouteTypeBusStopMarker(@PathVariable("id") Integer id,
             HttpServletResponse resp) throws Exception {
         byte[] data = transportService.getRouteTypeBusStopMarker(id);
+        if (data != null && data.length > 0) {
+            resp.getOutputStream().write(data);
+        }
+    }
+    /**
+     * Upload map layer icon.
+     * @param id map layer ID.
+     * @param file icon.
+     * @throws Exception error.
+     */
+    @RequestMapping(value = "/map-layer/icon/{id}", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public void uploadMapLayerIcon(
+            @PathVariable("id") Integer id,
+            @RequestBody MultipartFile file) throws Exception {
+        transportService.uploadMapLayerIcon(id, file);
+    }
+    /**
+     * Get map layer icon.
+     * @param id map layer ID.
+     * @param resp HTTP response.
+     * @throws Exception error.
+     */
+    @RequestMapping(value = "/map-layer/icon/{id}", method = RequestMethod.GET,
+            produces = MediaType.IMAGE_PNG_VALUE)
+    public void getMapLayerIcon(@PathVariable("id") Integer id,
+            HttpServletResponse resp) throws Exception {
+        byte[] data = transportService.getMapLayerIcon(id);
         if (data != null && data.length > 0) {
             resp.getOutputStream().write(data);
         }

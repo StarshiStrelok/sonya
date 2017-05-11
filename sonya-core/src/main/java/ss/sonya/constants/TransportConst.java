@@ -29,6 +29,8 @@ public final class TransportConst {
     public static final long TRANSPORT_MIDNIGHT = TimeUnit.HOURS.toMillis(3);
     /** Average human speed, km/h. */
     public static final double HUMAN_SPEED = 4;
+    /** Transfer time payment. In hours. */
+    public static final double TRANSFER_TIME_PAYMENT = 10 / 60;
     /**
      * Private constructor.
      */

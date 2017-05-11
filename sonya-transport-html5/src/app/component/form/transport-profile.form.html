@@ -16,7 +16,7 @@
                     Very long string, 100 characters maximum
                 </md-error>
             </md-input-container>
-            
+
             <md-card>
                 <md-card-header>
                     <md-card-title><b>Map settings</b></md-card-title>
@@ -70,6 +70,58 @@
                     </md-grid-list>
                 </md-card-content>
             </md-card>
+            <!-- MAP LAYERS -->
+            <md-card>
+                <md-card-header>
+                    <md-card-title><b>Map layers</b></md-card-title>
+                    <md-card-subtitle>
+                        This section allows to define different layers for the map
+                    </md-card-subtitle>
+                </md-card-header>
+                <md-card-content>
+                    <md-grid-list cols="10" rowHeight="56px;" *ngFor="let ml of mapLayers"
+                                  [formGroup]="ml">
+                                  <input type="number" hidden="true" formControlName="id"/>
+                        <md-grid-tile colspan="4">
+                            <md-input-container class="full-width">
+                                <input mdInput placeholder="Layer name" formControlName="name">
+                                <md-error *ngIf="ml.get('name').hasError('required')">
+                                    Required
+                                </md-error>
+                                <md-error *ngIf="ml.get('name').hasError('maxlength')">
+                                    Very long string, 50 characters maximum
+                                </md-error>
+                            </md-input-container>
+                        </md-grid-tile>
+                        <md-grid-tile colspan="4">
+                            <md-input-container class="full-width">
+                                <input mdInput placeholder="Layer tiles URL"
+                                       formControlName="url" type="url">
+                                <md-error *ngIf="ml.get('url').hasError('maxlength')">
+                                    Very long string, 200 characters maximum
+                                </md-error>
+                            </md-input-container>
+                        </md-grid-tile>
+                        <md-grid-tile>
+                            <img [src]="'/rest/data/transport-profile/map-layer/icon/' + ml.get('id').value + imgPostfix"
+                                onerror="this.src='/assets/image/osm.png'" width="32px"
+                                (click)="uploadMapLayerImage(ml)" mdTooltip="Upload map layer icon"
+                                mdTooltipPosition="above" class="bsm-img"
+                                *ngIf="ml.get('id').value">
+                        </md-grid-tile>
+                        <md-grid-tile>
+                            <button md-mini-fab color="accent" (click)="removeMapLayerGroup(ml)"
+                                    mdTooltip="Remove" mdTooltipPosition="above">
+                                <md-icon>close</md-icon></button>
+                        </md-grid-tile>
+                    </md-grid-list>
+                </md-card-content>
+                <md-card-actions>
+                    <button md-mini-fab color="accent" (click)="addMapLayerGroup()"
+                            mdTooltip="Add map layer" mdTooltipPosition="above">
+                        <md-icon>add</md-icon></button>
+                </md-card-actions>
+            </md-card>
             <!-- ROUTES -->
             <md-card>
                 <md-card-header>
@@ -79,7 +131,7 @@
                         * Line color - route line color, define as CSS color<br/>
                         * OSRM service URL - see more info on <a href="http://project-osrm.org">OSRM project</a> page<br/>
                         * Average speed (in km/h) - average speed for transport,
-                            affects search algorithms and relevance of results, faster transportation rises<br/>
+                        affects search algorithms and relevance of results, faster transportation rises<br/>
                         * Bus stop marker image required! Upload own marker image, default image only for example
                     </md-card-subtitle>
                 </md-card-header>
@@ -138,7 +190,8 @@
                             <img [src]="'/rest/data/transport-profile/route/marker/' + rp.get('id').value + imgPostfix"
                                 onerror="this.src='/assets/image/busstop.png'"
                                 (click)="uploadBusStopMarkerImage(rp)" mdTooltip="Upload bus stop marker image"
-                                mdTooltipPosition="above" class="bsm-img">
+                                mdTooltipPosition="above" class="bsm-img"
+                                *ngIf="rp.get('id').value">
                         </md-grid-tile>
                         <md-grid-tile>
                             <button md-mini-fab color="accent" (click)="removeRouteProfileGroup(rp)"
@@ -160,18 +213,18 @@
                     <md-card-subtitle>
                         Search engine controls<br/>
                         * Access zone radius (km) - the radius inside which 
-                            is looking for bus stops for transfer to another route.
-                            Recommend using 0.1-0.5 km. Affects search accuracy and search routes time,
-                            high value - slower search and high accuracy, low value - faster search,
-                            low accuracy<br/>
+                        is looking for bus stops for transfer to another route.
+                        Recommend using 0.1-0.5 km. Affects search accuracy and search routes time,
+                        high value - slower search and high accuracy, low value - faster search,
+                        low accuracy<br/>
                         * Bus stop limit near point (integer) - mean how many bus stops use for search
-                            near start and destination point. Recommend use 4. 
-                            The higher the slower but more accurate
+                        near start and destination point. Recommend use 4. 
+                        The higher the slower but more accurate
                     </md-card-subtitle>
                 </md-card-header>
                 <md-card-content>
                     <md-grid-list cols="4" rowHeight="56px;">
-                        
+
                         <md-grid-tile>
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Transfer access zone radius, km"
@@ -184,7 +237,7 @@
                                 </md-error>
                             </md-input-container>
                         </md-grid-tile>
-                        
+
                         <md-grid-tile>
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Bus stop limit near point"
@@ -197,7 +250,7 @@
                                 </md-error>
                             </md-input-container>
                         </md-grid-tile>
-                        
+
                     </md-grid-list>
                 </md-card-content>
             </md-card>
@@ -213,3 +266,5 @@
 </md-card>
 <input type="file" hidden="true" id="marker-image-upload"
        (change)="selectFile($event)">
+<input type="file" hidden="true" id="layer-icon-upload"
+       (change)="selectFile2($event)">

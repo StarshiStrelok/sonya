@@ -283,6 +283,10 @@ export class SearchRoute {
                 console.log(res);
             });
     }
+    clearRoutes() {
+        this.layerRoutingStatic.clearLayers();
+        this.layerRoutingDynamic.clearLayers();
+    }
     drawRoute(optimalPath: OptimalPath) {
         // clear previous route
         this.layerRoutingStatic.clearLayers();

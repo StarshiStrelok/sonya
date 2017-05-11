@@ -97,6 +97,12 @@ export class DataService {
         ).toPromise().then(res => res)
             .catch(err => this.handleErrorUI(err));
     }
+    uploadMapLayerImage(id: number, file: any): Promise<any> {
+        return this.http.post(
+            this.dataUrl + ModelClass.TRANSPORT_PROFILE + '/map-layer/icon/' + id, file, {}
+        ).toPromise().then(res => res)
+            .catch(err => this.handleErrorUI(err));
+    }
     private handleErrorUI(error: any): Promise<any> {
         console.error('An error occurred', error);
         let status = error.status;

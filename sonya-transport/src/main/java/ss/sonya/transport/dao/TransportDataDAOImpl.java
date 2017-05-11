@@ -26,6 +26,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ss.sonya.entity.MapLayer;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
 import ss.sonya.entity.RouteProfile;
@@ -90,7 +91,13 @@ class TransportDataDAOImpl implements TransportDataDAO {
         return query.getResultList();
     }
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public byte[] getRouteTypeBusStopMarker(final Integer id) {
         return em.find(RouteProfile.class, id).getBusStopMarker();
+    }
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public byte[] getMapLayerIcon(Integer id) {
+        return em.find(MapLayer.class, id).getIcon();
     }
 }

@@ -72,4 +72,18 @@ public interface TransportDataService {
      */
     void uploadRouteTypeBusStopMarker(Integer id,
             MultipartFile file) throws Exception;
+    /**
+     * Get map layer icon.
+     * @param id map layer ID.
+     * @return map layer icon.
+     * @throws Exception error.
+     */
+    byte[] getMapLayerIcon(Integer id) throws Exception;
+    /**
+     * Upload map layer icon.
+     * @param id map layer ID.
+     * @param file icon.
+     * @throws Exception error.
+     */
+    void uploadMapLayerIcon(Integer id, MultipartFile file) throws Exception;
 }
