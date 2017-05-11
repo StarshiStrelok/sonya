@@ -16,6 +16,9 @@ import {slideAnimation, AnimatedSlide} from './../../app.component';
     templateUrl: './transport-profile.form.html',
     styles: [`.vr {
                 width: 10px;
+            }
+            .bsm-img:hover {
+                cursor:pointer;
             }`],
     animations: [slideAnimation]
 })
@@ -26,6 +29,7 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
     routeProfiles: FormGroup[];
     routeProfilesNames: string[];
     private selectedRouteProfileId: number;
+    private imgPostfix = '';
     constructor(
         private fb: FormBuilder,
         private dataService: DataService,
@@ -145,10 +149,9 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         inputFile.value = "";
         this.dataService.uploadBusStopMarker(this.selectedRouteProfileId, binData)
             .then(res => {
-                
+                this.notificationService.info('Success',
+                    'Bus stop marker saved, refresh the page to see the changes');
+                this.imgPostfix = '?' + new Date().getTime();
             });
-    }
-    busStopMarkerLink(rp: FormGroup) {
-        return '/rest/data/transport-profile/route/marker/' + rp.get('id').value;
     }
 }

@@ -79,7 +79,8 @@
                         * Line color - route line color, define as CSS color<br/>
                         * OSRM service URL - see more info on <a href="http://project-osrm.org">OSRM project</a> page<br/>
                         * Average speed (in km/h) - average speed for transport,
-                            affects search algorithms and relevance of results, faster transportation rises
+                            affects search algorithms and relevance of results, faster transportation rises<br/>
+                        * Bus stop marker image required! Upload own marker image, default image only for example
                     </md-card-subtitle>
                 </md-card-header>
                 <md-card-content>
@@ -134,11 +135,10 @@
                             </md-input-container>
                         </md-grid-tile>
                         <md-grid-tile>
-                            <button md-mini-fab color="accent" (click)="uploadBusStopMarkerImage(rp)"
-                                    mdTooltip="Upload bus stop marker image" mdTooltipPosition="above">
-                                <md-icon>place</md-icon>
-                            </button>
-                            <img [src]="busStopMarkerLink(rp)" onerror="this.src='/assets/image/busstop.png'">
+                            <img [src]="'/rest/data/transport-profile/route/marker/' + rp.get('id').value + imgPostfix"
+                                onerror="this.src='/assets/image/busstop.png'"
+                                (click)="uploadBusStopMarkerImage(rp)" mdTooltip="Upload bus stop marker image"
+                                mdTooltipPosition="above" class="bsm-img">
                         </md-grid-tile>
                         <md-grid-tile>
                             <button md-mini-fab color="accent" (click)="removeRouteProfileGroup(rp)"

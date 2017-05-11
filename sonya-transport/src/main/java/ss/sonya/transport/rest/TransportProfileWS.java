@@ -103,6 +103,8 @@ public class TransportProfileWS extends DataWS<TransportProfile> {
     public void getRouteTypeBusStopMarker(@PathVariable("id") Integer id,
             HttpServletResponse resp) throws Exception {
         byte[] data = transportService.getRouteTypeBusStopMarker(id);
-        resp.getOutputStream().write(data);
+        if (data != null && data.length > 0) {
+            resp.getOutputStream().write(data);
+        }
     }
 }

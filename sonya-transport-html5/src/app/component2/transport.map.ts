@@ -21,7 +21,7 @@ import {NotificationsService} from 'angular2-notifications';
 
 import {slideAnimation, AnimatedSlide} from './../app.component';
 import {TransportProfile, ModelClass, SearchSettings, OptimalPath,
-        Path, BusStop} from '../model/abs.model';
+    Path, BusStop, RouteProfile} from '../model/abs.model';
 import {DataService} from '../service/data.service';
 import {CtxMenuItem} from '../model/ctx.menu.item';
 import {GeoCoder} from './geocoder';
@@ -260,7 +260,7 @@ export class SearchRoute {
     private layerRoutingStatic = L.layerGroup([]);
     private layerRoutingDynamic = L.layerGroup([]);
     parent: TransportMap
-    animateSpeed: number = 100; // px / sec
+    animateSpeed: number = 500; // px / sec
     init(parent: TransportMap) {
         this.parent = parent;
         this.layerRoutingStatic.addTo(this.parent.map);
@@ -327,7 +327,7 @@ export class SearchRoute {
                 }
             }
             way.forEach(bs => {
-                groupS.push(_comp.createMarker(bs));
+                groupS.push(_comp.createMarker(bs, path.route.type));
             });
         }
         let request = function () {
@@ -348,10 +348,10 @@ export class SearchRoute {
         }
         request();  // draw polyline
     }
-    private createMarker(bs: BusStop): any {
+    private createMarker(bs: BusStop, routeType: RouteProfile): any {
         var marker = L.marker(new L.LatLng(bs.latitude, bs.longitude), {
             icon: bs.name === this.parent.MOCK_BS
-                ? this.createIconMock() : this.createIcon('busstop'),
+                ? this.createIconMock() : this.createIcon('busstop', routeType.id),
             clickable: true,
             draggable: false,
             title: bs.name === this.parent.MOCK_BS ? '' : bs.name
@@ -359,9 +359,9 @@ export class SearchRoute {
         marker.info = bs;
         return marker;
     }
-    private createIcon(icName: string) {
+    private createIcon(icName: string, typeId: number) {
         return L.icon({
-            iconUrl: '/assets/image/' + icName + '.png',
+            iconUrl: '/rest/data/transport-profile/route/marker/' + typeId,
             shadowUrl: '/assets/image/shadow.png',
             iconSize: [24, 27],
             shadowSize: [39, 27],
@@ -391,27 +391,19 @@ export class SearchRoute {
 ///// FIXME: Panic if this._map doesn't exist when called.
 ///// FIXME: Implement snakeOut()
 ///// FIXME: Implement layerGroup.snakeIn() / Out()
-
-
 L.Polyline.include({
-
     // Hi-res timestamp indicating when the last calculations for vertices and
     // distance took place.
     _snakingTimestamp: 0,
-
     // How many rings and vertices we've already visited
     // Yeah, yeah, "rings" semantically only apply to polygons, but L.Polyline
     // internally uses that nomenclature.
     _snakingRings: 0,
     _snakingVertices: 0,
-
     // Distance to draw (in screen pixels) since the last vertex
     _snakingDistance: 0,
-
     // Flag
     _snaking: false,
-
-
     /// TODO: accept a 'map' parameter, fall back to addTo() in case
     /// performance.now is not available.
     snakeIn: function () {
@@ -422,7 +414,6 @@ L.Polyline.include({
             !this._map) {
             return;
         }
-
         this._snaking = true;
         this._snakingTime = performance.now();
         this._snakingVertices = this._snakingRings = this._snakingDistance = 0;
@@ -432,7 +423,6 @@ L.Polyline.include({
                 [this._latlngs] :
                 this._latlngs;
         }
-
         // Init with just the first (0th) vertex in a new ring
         // Twice because the first thing that this._snake is is chop the head.
         this._latlngs = [[this._snakeLatLngs[0][0], this._snakeLatLngs[0][0]]];
@@ -442,8 +432,6 @@ L.Polyline.include({
         this.fire('snakestart');
         return this;
     },
-
-
     _snake: function () {
 
         var now = performance.now();
@@ -456,9 +444,7 @@ L.Polyline.include({
 
         return this._snakeForward(forward);
     },
-
     _snakeForward: function (forward) {
-
         // Calculate distance from current vertex to next vertex
         try {
             var currPoint = this._map.latLngToContainerPoint(
@@ -468,7 +454,6 @@ L.Polyline.include({
         }
         var nextPoint = this._map.latLngToContainerPoint(
             this._snakeLatLngs[this._snakingRings][this._snakingVertices + 1]);
-
         var distance = currPoint.distanceTo(nextPoint);
 
         // 		console.log('Distance to next point:', distance, '; Now at: ', this._snakingDistance, '; Must travel forward:', forward);
@@ -494,15 +479,11 @@ L.Polyline.include({
             this._snakingDistance -= distance;
             return this._snakeForward(forward);
         }
-
         this._snakingDistance += forward;
-
         var percent = this._snakingDistance / distance;
-
         var headPoint = nextPoint.multiplyBy(percent).add(
             currPoint.multiplyBy(1 - percent)
         );
-
         // Put a new head in place.
         var headLatLng = this._map.containerPointToLatLng(headPoint);
         this._latlngs[this._snakingRings].push(headLatLng);
@@ -522,20 +503,13 @@ L.Polyline.include({
 
 });
 
-
 L.Polyline.mergeOptions({
     snakingSpeed: 200	// In pixels/sec
 });
 
-
-
-
-
 L.LayerGroup.include({
-
     _snakingLayers: [],
     _snakingLayersDone: 0,
-
     snakeIn: function () {
 
         if (!('performance' in window) ||
@@ -544,8 +518,6 @@ L.LayerGroup.include({
             this._snaking) {
             return;
         }
-
-
         this._snaking = true;
         this._snakingLayers = [];
         this._snakingLayersDone = 0;
@@ -559,21 +531,14 @@ L.LayerGroup.include({
         this.fire('snakestart');
         return this._snakeNext();
     },
-
-
     _snakeNext: function () {
-
-
         if (this._snakingLayersDone >= this._snakingLayers.length) {
             this.fire('snakeend');
             this._snaking = false;
             return;
         }
-
         var currentLayer = this._snakingLayers[this._snakingLayersDone];
-
         this._snakingLayersDone++;
-
         this.addLayer(currentLayer);
         if ('snakeIn' in currentLayer) {
             currentLayer.once('snakeend', function () {
@@ -583,14 +548,11 @@ L.LayerGroup.include({
         } else {
             setTimeout(this._snakeNext.bind(this), this.options.snakingPause);
         }
-
-
         this.fire('snake');
         return this;
     }
 
 });
-
 
 L.LayerGroup.mergeOptions({
     snakingPause: 200
