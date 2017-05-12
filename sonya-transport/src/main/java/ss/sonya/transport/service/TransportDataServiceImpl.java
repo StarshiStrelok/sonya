@@ -26,6 +26,7 @@ import ss.sonya.entity.MapLayer;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
 import ss.sonya.entity.RouteProfile;
+import ss.sonya.entity.RouteProfileMarkerImage;
 import ss.sonya.entity.Trip;
 import ss.sonya.inject.CommonDAO;
 import ss.sonya.transport.api.TransportDataDAO;
@@ -63,14 +64,24 @@ class TransportDataServiceImpl implements TransportDataService {
     }
     @Override
     public byte[] getRouteTypeBusStopMarker(Integer id) throws Exception {
-        return transportDAO.getRouteTypeBusStopMarker(id);
+        RouteProfileMarkerImage image = transportDAO
+                .getRouteTypeBusStopMarker(id);
+        return image == null ? null : image.getData();
     }
     @Override
     public void uploadRouteTypeBusStopMarker(
             Integer id, MultipartFile file) throws Exception {
-        RouteProfile profile = commonDAO.findById(id, RouteProfile.class);
-        profile.setBusStopMarker(file.getBytes());
-        commonDAO.update(profile);
+        RouteProfileMarkerImage image = transportDAO
+                .getRouteTypeBusStopMarker(id);
+        if (image == null) {
+            image = new RouteProfileMarkerImage();
+            image.setData(file.getBytes());
+            image.setProfile(commonDAO.findById(id, RouteProfile.class));
+            commonDAO.create(image);
+        } else {
+            image.setData(file.getBytes());
+            commonDAO.update(image);
+        }
     }
     @Override
     public byte[] getMapLayerIcon(Integer id) throws Exception {

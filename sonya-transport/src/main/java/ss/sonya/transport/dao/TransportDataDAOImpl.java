@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ss.sonya.entity.MapLayer;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
-import ss.sonya.entity.RouteProfile;
+import ss.sonya.entity.RouteProfileMarkerImage;
 import ss.sonya.entity.Trip;
 import ss.sonya.transport.api.TransportDataDAO;
 
@@ -92,8 +92,16 @@ class TransportDataDAOImpl implements TransportDataDAO {
     }
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public byte[] getRouteTypeBusStopMarker(final Integer id) {
-        return em.find(RouteProfile.class, id).getBusStopMarker();
+    public RouteProfileMarkerImage getRouteTypeBusStopMarker(final Integer id) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<RouteProfileMarkerImage> criteria = builder
+                .createQuery(RouteProfileMarkerImage.class);
+        Root<RouteProfileMarkerImage> c = criteria
+                .from(RouteProfileMarkerImage.class);
+        criteria.select(c).where(builder.equal(c.get("profile").get("id"), id));
+        Query query = em.createQuery(criteria);
+        List<RouteProfileMarkerImage> list = query.getResultList();
+        return list.isEmpty() ? null : list.get(0);
     }
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
