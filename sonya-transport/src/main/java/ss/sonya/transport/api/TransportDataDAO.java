@@ -17,7 +17,6 @@
 package ss.sonya.transport.api;
 
 import java.util.List;
-import ss.sonya.entity.MapLayerIcon;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
 import ss.sonya.entity.RouteProfileMarkerImage;
@@ -60,10 +59,4 @@ public interface TransportDataDAO {
      * @return image.
      */
     RouteProfileMarkerImage getRouteTypeBusStopMarker(Integer id);
-    /**
-     * Get map layer icon.
-     * @param id map layer ID.
-     * @return map layer icon.
-     */
-    MapLayerIcon getMapLayerIcon(Integer id);
 }

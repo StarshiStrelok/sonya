@@ -113,32 +113,4 @@ public class TransportProfileWS extends DataWS<TransportProfile> {
             resp.getOutputStream().write(data);
         }
     }
-    /**
-     * Upload map layer icon.
-     * @param id map layer ID.
-     * @param file icon.
-     * @throws Exception error.
-     */
-    @RequestMapping(value = "/map-layer/icon/{id}", method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public void uploadMapLayerIcon(
-            @PathVariable("id") Integer id,
-            @RequestBody MultipartFile file) throws Exception {
-        transportService.uploadMapLayerIcon(id, file);
-    }
-    /**
-     * Get map layer icon.
-     * @param id map layer ID.
-     * @param resp HTTP response.
-     * @throws Exception error.
-     */
-    @RequestMapping(value = "/map-layer/icon/{id}", method = RequestMethod.GET,
-            produces = MediaType.IMAGE_PNG_VALUE)
-    public void getMapLayerIcon(@PathVariable("id") Integer id,
-            HttpServletResponse resp) throws Exception {
-        byte[] data = transportService.getMapLayerIcon(id);
-        if (data != null && data.length > 0) {
-            resp.getOutputStream().write(data);
-        }
-    }
 }

@@ -26,7 +26,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -106,6 +106,7 @@ public class TransportProfile implements Serializable {
      */
     @NotNull
     @Min(0)
+    @Column(name = "zone_radius")
     private Double busStopAccessZoneRadius;
     /**
      * Limits the number of bus stops to search near
@@ -113,16 +114,16 @@ public class TransportProfile implements Serializable {
      */
     @NotNull
     @Min(1)
+    @Column(name = "points_limit")
     private Integer searchLimitForPoints;
     /** Route profiles. */
-    @OrderColumn(name = "order")
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true, mappedBy = "transportProfile")
     private Set<RouteProfile> routeProfiles;
     /** Map layers. */
-    @OrderColumn(name = "order")
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true, mappedBy = "transportProfile")
+    @OrderBy("id")
     private Set<MapLayer> mapLayers;
     /** Mapbox service private key. */
     @Size(max = 100)

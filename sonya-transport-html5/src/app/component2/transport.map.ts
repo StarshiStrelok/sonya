@@ -130,7 +130,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
             }
         });
         this.map = map;
-        this.activeMapLayer = this.activeProfile.mapLayers[0];        // TODO set from cookie
+        this.activeMapLayer = this.getStartMapLayer();
         this.setMapLayer();
         this.layerEndpoint.init(this.map, this);
     }
@@ -175,5 +175,12 @@ export class TransportMap extends AnimatedSlide implements OnInit {
             + item.icon + '</span>'
             + '<span class> ' + item.label + '</span>';
         return btn;
+    }
+    private getStartMapLayer(): MapLayer {
+        if (this.activeProfile.mapLayers) {
+            return this.activeProfile.mapLayers[0];
+        } else {
+            return new MapLayer(-1, 'OSM', 'http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+        }
     }
 }

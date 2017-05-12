@@ -22,8 +22,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ss.sonya.entity.MapLayer;
-import ss.sonya.entity.MapLayerIcon;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
 import ss.sonya.entity.RouteProfile;
@@ -82,25 +80,6 @@ class TransportDataServiceImpl implements TransportDataService {
         } else {
             image.setData(file.getBytes());
             commonDAO.update(image);
-        }
-    }
-    @Override
-    public byte[] getMapLayerIcon(Integer id) throws Exception {
-        MapLayerIcon icon = transportDAO.getMapLayerIcon(id);
-        return icon == null ? null : icon.getData();
-    }
-    @Override
-    public void uploadMapLayerIcon(Integer id, MultipartFile file)
-            throws Exception {
-        MapLayerIcon icon = transportDAO.getMapLayerIcon(id);
-        if (icon == null) {
-            icon = new MapLayerIcon();
-            icon.setData(file.getBytes());
-            icon.setLayer(commonDAO.findById(id, MapLayer.class));
-            commonDAO.create(icon);
-        } else {
-            icon.setData(file.getBytes());
-            commonDAO.update(icon);
         }
     }
 }

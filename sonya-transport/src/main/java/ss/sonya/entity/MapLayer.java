@@ -26,7 +26,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -55,10 +54,6 @@ public class MapLayer implements Serializable {
     @Size(max = 200)
     @Column(name = "url", length = 200)
     private String url;
-    /** Layer icon. */
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "layer")
-    private MapLayerIcon icon;
     /** Transport profile. */
     @JsonIgnore
     @NotNull
@@ -113,18 +108,6 @@ public class MapLayer implements Serializable {
      */
     public void setTransportProfile(TransportProfile transportProfile) {
         this.transportProfile = transportProfile;
-    }
-    /**
-     * @return the icon
-     */
-    public MapLayerIcon getIcon() {
-        return icon;
-    }
-    /**
-     * @param icon the icon to set
-     */
-    public void setIcon(MapLayerIcon icon) {
-        this.icon = icon;
     }
 // ============================================================================
     @Override

@@ -103,7 +103,7 @@
                                 </md-error>
                             </md-input-container>
                         </md-grid-tile>
-                        <md-grid-tile colspan="4">
+                        <md-grid-tile colspan="5">
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Layer tiles URL"
                                        formControlName="url" type="url">
@@ -111,13 +111,6 @@
                                     Very long string, 200 characters maximum
                                 </md-error>
                             </md-input-container>
-                        </md-grid-tile>
-                        <md-grid-tile>
-                            <img [src]="'/rest/data/transport-profile/map-layer/icon/' + ml.get('id').value + imgPostfix"
-                                onerror="this.src='/assets/image/osm.png'" width="32px"
-                                (click)="uploadMapLayerImage(ml)" mdTooltip="Upload map layer icon"
-                                mdTooltipPosition="above" class="bsm-img"
-                                *ngIf="ml.get('id').value">
                         </md-grid-tile>
                         <md-grid-tile>
                             <button md-mini-fab color="accent" (click)="removeMapLayerGroup(ml)"
@@ -276,5 +269,3 @@
 </md-card>
 <input type="file" hidden="true" id="marker-image-upload"
        (change)="selectFile($event)">
-<input type="file" hidden="true" id="layer-icon-upload"
-       (change)="selectFile2($event)">

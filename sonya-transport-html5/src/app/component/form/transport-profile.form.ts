@@ -187,24 +187,4 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
                 this.imgPostfix = '?' + new Date().getTime();
             });
     }
-    uploadMapLayerImage(ml: FormGroup) {
-        this.selectedMapLayerId = ml.get('id').value;
-        document.getElementById('layer-icon-upload').click();
-    }
-    selectFile2(event: any) {
-        let files = event.target.files;
-        var binData = new FormData();
-        if (!files[0]) {
-            return;
-        }
-        binData.append('file', files[0]);
-        let inputFile: any = document.getElementById("layer-icon-upload");
-        inputFile.value = "";
-        this.dataService.uploadMapLayerImage(this.selectedMapLayerId, binData)
-            .then(res => {
-                this.notificationService.info('Success',
-                    'Layer icon saved');
-                this.imgPostfix = '?' + new Date().getTime();
-            });
-    }
 }

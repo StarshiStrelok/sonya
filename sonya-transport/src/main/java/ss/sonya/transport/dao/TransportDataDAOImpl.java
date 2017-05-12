@@ -26,7 +26,6 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ss.sonya.entity.MapLayerIcon;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
 import ss.sonya.entity.RouteProfileMarkerImage;
@@ -101,19 +100,6 @@ class TransportDataDAOImpl implements TransportDataDAO {
         criteria.select(c).where(builder.equal(c.get("profile").get("id"), id));
         Query query = em.createQuery(criteria);
         List<RouteProfileMarkerImage> list = query.getResultList();
-        return list.isEmpty() ? null : list.get(0);
-    }
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public MapLayerIcon getMapLayerIcon(Integer id) {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<MapLayerIcon> criteria = builder
-                .createQuery(MapLayerIcon.class);
-        Root<MapLayerIcon> c = criteria
-                .from(MapLayerIcon.class);
-        criteria.select(c).where(builder.equal(c.get("layer").get("id"), id));
-        Query query = em.createQuery(criteria);
-        List<MapLayerIcon> list = query.getResultList();
         return list.isEmpty() ? null : list.get(0);
     }
 }
