@@ -44,14 +44,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <md-icon>widgets</md-icon></button>
 
     <md-fab-speed-dial class="tm-map-control" style="top: 25px; right: 25px;"
-                       direction="left">
-        <md-fab-trigger>
-            <md-icon>settings</md-icon>
+                       direction="left" *ngIf="activeProfile && activeProfile.mapLayers"
+                       (selectAction)="changeMapLayer($event)">
+        <md-fab-trigger mdTooltip="Map layers, click for change" mdTooltipPosition="below">
+            <md-icon *ngIf="!activeMapLayer">layers</md-icon>
+            <span *ngIf="activeMapLayer">{{activeMapLayer.name}}</span>
         </md-fab-trigger>
 
         <md-fab-actions>
-            <md-fab-action>
-                <md-icon>settings</md-icon>
+            <md-fab-action *ngFor="let layer of activeProfile.mapLayers">
+                <p class="tm-fab-lbl">{{layer.name}}</p>
+<!--                    <img [src]="'/rest/data/transport-profile/map-layer/icon/' + layer.id"
+                    onerror="this.src='/assets/image/osm.png'" width="28px"
+                    class="tm-fab-img">-->
             </md-fab-action>
         </md-fab-actions>
     </md-fab-speed-dial>

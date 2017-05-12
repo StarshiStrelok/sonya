@@ -32,3 +32,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     position: absolute;
     z-index: 1000;
 }
+.tm-fab-img {
+    vertical-align: middle;
+}
+.tm-fab-lbl {
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+    font-size: 10px;
+}

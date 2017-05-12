@@ -71,7 +71,8 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
             centerLat: ['', [Validators.required, minNumberValidator(-90), maxNumberValidator(90)]],
             centerLon: ['', [Validators.required, minNumberValidator(-180), maxNumberValidator(180)]],
             busStopAccessZoneRadius: ['', [Validators.required, minNumberValidator(0)]],
-            searchLimitForPoints: ['', [Validators.required, minNumberValidator(1)]]
+            searchLimitForPoints: ['', [Validators.required, minNumberValidator(1)]],
+            mapboxKey: ['', [Validators.maxLength(100)]]
         });
         let _routeProfiles = this.profile.routeProfiles;
         delete this.profile.routeProfiles;
@@ -104,7 +105,7 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         return routeGroup;
     }
     addMapLayerGroup(): FormGroup {
-        let groupName = 'mapLayer' + this.routeProfiles.length;
+        let groupName = 'mapLayer' + this.mapLayers.length;
         let mapLayerGroup: FormGroup = this.fb.group({
             id: [''],
             name: ['', [Validators.required, Validators.maxLength(50)]],
@@ -141,6 +142,7 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
             return;
         }
         let values = this.transportProfileForm.value;
+        console.log(values);
         let _routeProfiles: any[] = [];
         let _mapLayers: any[] = [];
         Object.getOwnPropertyNames(values).map(
