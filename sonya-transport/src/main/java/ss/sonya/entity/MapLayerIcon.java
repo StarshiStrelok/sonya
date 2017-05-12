@@ -18,6 +18,7 @@ package ss.sonya.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,47 +26,38 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
- * OSM map layer settings.
+ * Map layer icon.
  * @author ss
  */
 @Entity
-@Table(name = "map_layer")
-public class MapLayer implements Serializable {
+@Table(name = "map_layer_icon")
+public class MapLayerIcon implements Serializable {
     /** Default UID. */
     private static final long serialVersionUID = 1L;
-// =============================== FIELDS =====================================
+// ============================== FIELDS ======================================
     /** Primary key. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    /** Name. */
-    @NotNull
-    @Size(max = 50)
-    @Column(name = "name", length = 50)
-    private String name;
-    /** Layer URL. */
-    @NotNull
-    @Size(max = 200)
-    @Column(name = "url", length = 200)
-    private String url;
-    /** Layer icon. */
+    /** Bus stop marker. */
     @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "layer")
-    private MapLayerIcon icon;
-    /** Transport profile. */
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(name = "image_data")
+    private byte[] data;
+    /** Map layer. */
     @JsonIgnore
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transport_profile_id")
-    private TransportProfile transportProfile;
-// =============================== SET & GET ==================================
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "map_layer_id")
+    private MapLayer layer;
+// ============================== SET & GET ===================================
     /**
      * @return the id
      */
@@ -79,52 +71,28 @@ public class MapLayer implements Serializable {
         this.id = id;
     }
     /**
-     * @return the name
+     * @return the data
      */
-    public String getName() {
-        return name;
+    public byte[] getData() {
+        return data;
     }
     /**
-     * @param name the name to set
+     * @param data the data to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setData(byte[] data) {
+        this.data = data;
     }
     /**
-     * @return the url
+     * @return the layer
      */
-    public String getUrl() {
-        return url;
+    public MapLayer getLayer() {
+        return layer;
     }
     /**
-     * @param url the url to set
+     * @param layer the layer to set
      */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    /**
-     * @return the transportProfile
-     */
-    public TransportProfile getTransportProfile() {
-        return transportProfile;
-    }
-    /**
-     * @param transportProfile the transportProfile to set
-     */
-    public void setTransportProfile(TransportProfile transportProfile) {
-        this.transportProfile = transportProfile;
-    }
-    /**
-     * @return the icon
-     */
-    public MapLayerIcon getIcon() {
-        return icon;
-    }
-    /**
-     * @param icon the icon to set
-     */
-    public void setIcon(MapLayerIcon icon) {
-        this.icon = icon;
+    public void setLayer(MapLayer layer) {
+        this.layer = layer;
     }
 // ============================================================================
     @Override
@@ -135,15 +103,15 @@ public class MapLayer implements Serializable {
     }
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof MapLayer)) {
+        if (!(object instanceof MapLayerIcon)) {
             return false;
         }
-        MapLayer other = (MapLayer) object;
+        MapLayerIcon other = (MapLayerIcon) object;
         return !((this.id == null && other.id != null)
                 || (this.id != null && !this.id.equals(other.id)));
     }
     @Override
     public String toString() {
-        return "ss.sonya.entity.MapLayer[ id=" + getId() + " ]";
+        return "ss.sonya.entity.MapLayerIcon[ id=" + getId() + " ]";
     }
 }
