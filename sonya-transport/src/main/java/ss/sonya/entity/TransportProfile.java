@@ -17,7 +17,7 @@
 package ss.sonya.entity;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,12 +26,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  * Transport profile, include locality & search settings.
@@ -119,12 +120,13 @@ public class TransportProfile implements Serializable {
     /** Route profiles. */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true, mappedBy = "transportProfile")
-    private Set<RouteProfile> routeProfiles;
+    @Fetch(FetchMode.SUBSELECT)
+    private List<RouteProfile> routeProfiles;
     /** Map layers. */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             orphanRemoval = true, mappedBy = "transportProfile")
-    @OrderBy("id")
-    private Set<MapLayer> mapLayers;
+    @Fetch(FetchMode.SUBSELECT)
+    private List<MapLayer> mapLayers;
     /** Mapbox service private key. */
     @Size(max = 100)
     @Column(name = "mapbox_key", length = 100)
@@ -253,13 +255,13 @@ public class TransportProfile implements Serializable {
     /**
      * @return the routeProfiles
      */
-    public Set<RouteProfile> getRouteProfiles() {
+    public List<RouteProfile> getRouteProfiles() {
         return routeProfiles;
     }
     /**
      * @param routeProfiles the routeProfiles to set
      */
-    public void setRouteProfiles(Set<RouteProfile> routeProfiles) {
+    public void setRouteProfiles(List<RouteProfile> routeProfiles) {
         this.routeProfiles = routeProfiles;
     }
     /**
@@ -301,13 +303,13 @@ public class TransportProfile implements Serializable {
     /**
      * @return the mapLayers
      */
-    public Set<MapLayer> getMapLayers() {
+    public List<MapLayer> getMapLayers() {
         return mapLayers;
     }
     /**
      * @param mapLayers the mapLayers to set
      */
-    public void setMapLayers(Set<MapLayer> mapLayers) {
+    public void setMapLayers(List<MapLayer> mapLayers) {
         this.mapLayers = mapLayers;
     }
 // ============================================================================

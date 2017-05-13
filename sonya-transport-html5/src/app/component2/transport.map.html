@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <md-icon>widgets</md-icon></button>
 
     <md-fab-speed-dial class="tm-map-control" style="top: 25px; right: 25px;"
-                       direction="left" *ngIf="activeProfile && activeProfile.mapLayers"
+                       direction="left" *ngIf="activeProfile && activeProfile.mapLayers && activeMapLayer.id != -1"
                        (selectAction)="changeMapLayer($event)">
         <md-fab-trigger mdTooltip="Map layers, click for change" mdTooltipPosition="below">
             <md-icon *ngIf="!activeMapLayer">layers</md-icon>

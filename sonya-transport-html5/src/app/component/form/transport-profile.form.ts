@@ -147,6 +147,7 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         let _mapLayers: any[] = [];
         Object.getOwnPropertyNames(values).map(
             (key: string) => {
+                console.log(key);
                 if (key.indexOf('routeProfile') != -1) {
                     _routeProfiles.push(values[key]);
                 } else if (key.indexOf('mapLayer') != -1) {
@@ -158,7 +159,6 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         );
         this.profile.routeProfiles = _routeProfiles;
         this.profile.mapLayers = _mapLayers;
-        console.log(JSON.stringify(this.profile));
         if (this.profile.id) {
             this.dataService.update<TransportProfile>(this.profile, ModelClass.TRANSPORT_PROFILE)
                 .then(profile => this.goBack());

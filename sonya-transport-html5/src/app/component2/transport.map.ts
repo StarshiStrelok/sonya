@@ -22,6 +22,7 @@ import {NotificationsService} from 'angular2-notifications';
 import {slideAnimation, AnimatedSlide} from './../app.component';
 import {TransportProfile, ModelClass, MapLayer} from '../model/abs.model';
 import {DataService} from '../service/data.service';
+import {CookieService, CookieKey} from '../service/cookie.service';
 import {CtxMenuItem} from '../model/ctx.menu.item';
 import {GeoCoder} from './geocoder';
 import {SearchTab} from './search.tab';
@@ -56,7 +57,8 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     constructor(
         public dataService: DataService,
         public notificationService: NotificationsService,
-        public osrmService: OSRMService
+        public osrmService: OSRMService,
+        private cookieService: CookieService
     ) {
         super();
     }
@@ -104,6 +106,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         console.log('new map layer index [' + event + ']');
         this.activeMapLayer = this.activeProfile.mapLayers[event];
         this.setMapLayer();
+        this.cookieService.setCookie(CookieKey.MAP, event);
     }
     private createMap(profile: TransportProfile) {
         var map = L.map.Sonya(this.mapElement.nativeElement, {
@@ -177,8 +180,13 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         return btn;
     }
     private getStartMapLayer(): MapLayer {
-        if (this.activeProfile.mapLayers) {
-            return this.activeProfile.mapLayers[0];
+        if (this.activeProfile.mapLayers && this.activeProfile.mapLayers.length > 0) {
+            let layerVal = Number(this.cookieService.getCookie(CookieKey.MAP));
+            if (layerVal > -1) {
+                return this.activeProfile.mapLayers[layerVal];
+            } else {
+                return this.activeProfile.mapLayers[0];
+            }
         } else {
             return new MapLayer(-1, 'OSM', 'http://{s}.tile.osm.org/{z}/{x}/{y}.png');
         }

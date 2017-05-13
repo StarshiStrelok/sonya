@@ -34,6 +34,7 @@ import {SearchResultList} from './component2/search.result.list';
 import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
 import {OSRMService} from './service/osrm.service'
+import {CookieService} from './service/cookie.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
@@ -84,7 +85,7 @@ export function HttpLoaderFactory(http: Http) {
     entryComponents: [
         Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm, BusStopGrid, ConfirmImport
     ],
-    providers: [DataService, DialogService, OSRMService],
+    providers: [DataService, DialogService, OSRMService, CookieService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

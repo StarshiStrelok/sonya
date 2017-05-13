@@ -17,7 +17,6 @@
 package ss.sonya.test;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public abstract class TestConfig {
         rp.setName("test route type");
         rp.setTransportProfile(tp);
         rp.setRoutingURL("http://example.com");
-        tp.setRouteProfiles(new HashSet<>(Arrays.asList(new RouteProfile[] {rp})));
+        tp.setRouteProfiles(Arrays.asList(new RouteProfile[] {rp}));
         return tp;
     }
 }

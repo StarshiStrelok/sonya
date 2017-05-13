@@ -69,7 +69,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         LOG.info("#-bfs-# total bus stops [" + all.size() + "]");
         // find fixed count closer bus stops near start point
         List<BusStop> startBs = transportGeometry.findNearestBusStops(
-                profile.getSearchLimitForPoints(),all, sLat, sLng);
+                profile.getSearchLimitForPoints(), all, sLat, sLng);
         // find fixed count closer bus stops near end point
         List<BusStop> endBs = transportGeometry.findNearestBusStops(
                 profile.getSearchLimitForPoints(), all, eLat, eLng);
@@ -137,7 +137,9 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         List<OptimalPath>[] grouping = groupingResult(result, settings);
         result = grouping[0];
         sortResults(result);
-        result = result.subList(0, settings.getMaxResults());
+        if (result.size() > settings.getMaxResults()) {
+            result = result.subList(0, settings.getMaxResults());
+        }
         LOG.info("#-bfs-# total number of optimal paths ["
                 + result.size() + "]");
         LOG.info("#-bfs-# elapsed time [" + (System.currentTimeMillis() - st)
