@@ -25,7 +25,7 @@ import {slideAnimation, AnimatedSlide} from './../../app.component';
 export class TransportProfileForm extends AnimatedSlide implements OnInit {
     transportProfileForm: FormGroup;
     profile: TransportProfile = new TransportProfile(null, null, null, null,
-        null, null, null, null, null, null, null, null, [], [], null);
+        null, null, null, null, null, null, null, null, [], [], null, false);
     routeProfiles: FormGroup[];
     mapLayers: FormGroup[];
     routeProfilesNames: string[];
@@ -72,7 +72,8 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
             centerLon: ['', [Validators.required, minNumberValidator(-180), maxNumberValidator(180)]],
             busStopAccessZoneRadius: ['', [Validators.required, minNumberValidator(0)]],
             searchLimitForPoints: ['', [Validators.required, minNumberValidator(1)]],
-            mapboxKey: ['', [Validators.maxLength(100)]]
+            mapboxKey: ['', [Validators.maxLength(100)]],
+            hasSchedule: [false, []]
         });
         let _routeProfiles = this.profile.routeProfiles;
         delete this.profile.routeProfiles;

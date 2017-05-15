@@ -74,10 +74,11 @@ public abstract class BFS implements SearchEngine {
     /**
      * Sort result.
      * @param result result.
+     * @param hasSchedule is profile has schedule?
      * @throws Exception error.
      */
-    protected abstract void sortResults(List<OptimalPath> result)
-            throws Exception;
+    protected abstract void sortResults(List<OptimalPath> result,
+            boolean hasSchedule) throws Exception;
     /**
      * Clear unreal results.
      * @param dirty dirty optimal paths.

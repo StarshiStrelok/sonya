@@ -61,7 +61,8 @@ export class TransportProfile implements AbsModel {
         public searchLimitForPoints: number,
         public routeProfiles: RouteProfile[],
         public mapLayers: MapLayer[],
-        public mapboxKey: string
+        public mapboxKey: string,
+        public hasSchedule: boolean
     ) {}
 }
 

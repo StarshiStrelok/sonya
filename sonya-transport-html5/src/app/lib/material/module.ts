@@ -38,7 +38,8 @@ import {
     MdProgressBarModule,
     MdAutocompleteModule,
     MdSnackBarModule,
-    MdTabsModule
+    MdTabsModule,
+    MdSlideToggleModule
 } from '@angular/material';
 
 import {LatitudeField} from './latitude-field';
@@ -69,6 +70,7 @@ import {MdFabSpeedDial, MdFabTrigger, MdFabActions, MdFabActionButton} from './s
         MdAutocompleteModule,
         MdSnackBarModule,
         MdTabsModule,
+        MdSlideToggleModule,
         FormsModule,
         ReactiveFormsModule,
         BrowserModule,
@@ -94,6 +96,7 @@ import {MdFabSpeedDial, MdFabTrigger, MdFabActions, MdFabActionButton} from './s
         MdAutocompleteModule,
         MdSnackBarModule,
         MdTabsModule,
+        MdSlideToggleModule,
         LatitudeField, LongitudeField, ZoomField, ConfirmDialog, Waiting,
         MdFabSpeedDial, MdFabTrigger, MdFabActions, MdFabActionButton
     ],

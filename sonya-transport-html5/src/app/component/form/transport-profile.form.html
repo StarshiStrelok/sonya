@@ -215,6 +215,9 @@
                     <md-card-title><b>Search settings</b></md-card-title>
                     <md-card-subtitle>
                         Search engine controls<br/>
+                        * Search using the schedule - to enable only if the schedule 
+                        for all types of transport is loaded. Affects search relevance, if disable 
+                        - the shortest paths will be at the top, else, if enable - the fastest in time<br/>
                         * Access zone radius (km) - the radius inside which 
                         is looking for bus stops for transfer to another route.
                         Recommend using 0.1-0.5 km. Affects search accuracy and search routes time,
@@ -227,7 +230,12 @@
                 </md-card-header>
                 <md-card-content>
                     <md-grid-list cols="4" rowHeight="56px;">
-
+                        
+                        <md-grid-tile>
+                            <md-checkbox formControlName="hasSchedule"
+                                >Search using the schedule</md-checkbox>
+                        </md-grid-tile>
+                        
                         <md-grid-tile>
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Transfer access zone radius, km"

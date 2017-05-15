@@ -136,7 +136,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         result = clearUnrealResults(result, startBs);
         List<OptimalPath>[] grouping = groupingResult(result, settings);
         result = grouping[0];
-        sortResults(result);
+        sortResults(result, profile.isHasSchedule());
         if (result.size() > settings.getMaxResults()) {
             result = result.subList(0, settings.getMaxResults());
         }
@@ -234,17 +234,27 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         return list;
     }
     @Override
-    protected void sortResults(final List<OptimalPath> result)
-            throws Exception {
-        Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
-            if (o1.getTime() > o2.getTime()) {
-                return 1;
-            } else if (o1.getTime() < o2.getTime()) {
-                return -1;
-            } else {
-                return 0;
-            }
-        });
+    protected void sortResults(final List<OptimalPath> result,
+            final boolean hasSchedule) throws Exception {
+        if (hasSchedule) {
+            // TODO
+        } else {
+            Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
+                if (o1.getPath().size() > o2.getPath().size()) {
+                    return 1;
+                } else if (o1.getPath().size() < o2.getPath().size()) {
+                    return -1;
+                } else {
+                    if (o1.getTime() > o2.getTime()) {
+                        return 1;
+                    } else if (o1.getTime() < o2.getTime()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+        }
     }
     /**
      * Grouping result by time and distance.

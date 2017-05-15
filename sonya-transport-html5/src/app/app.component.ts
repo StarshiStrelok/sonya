@@ -4,6 +4,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {TranslateService} from '@ngx-translate/core';
 
 import {Links} from './links';
+import {CookieService, CookieKey} from './service/cookie.service';
 
 @Component({
     selector: 'app-root',
@@ -20,12 +21,18 @@ import {Links} from './links';
             `]
 })
 export class AppComponent {
-    constructor(private translate: TranslateService, private router: Router) {
+    constructor(
+        private translate: TranslateService,
+        private router: Router,
+        private cookieService: CookieService
+    ) {
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.setDefaultLang('en');
         // the lang to use, if the lang isn't available, it will use the current loader to get them
-        translate.use('en');
-        console.log('browser language [' + this.translate.getBrowserLang() + ']');
+        let lang = this.cookieService.getCookie(CookieKey.LANG);
+        lang = lang ? lang : this.translate.getBrowserLang();
+        console.log('language [' + lang + ']');
+        translate.use(lang);
     }
     options = {
         position: ["top", "right"],
@@ -40,6 +47,7 @@ export class AppComponent {
     }
     changeLanguage(lang: string) {
         this.translate.use(lang);
+        this.cookieService.setCookie(CookieKey.LANG, lang);
     }
 }
 

@@ -131,6 +131,9 @@ public class TransportProfile implements Serializable {
     @Size(max = 100)
     @Column(name = "mapbox_key", length = 100)
     private String mapboxKey;
+    /** Has schedule. */
+    @Column(name = "has_schedule")
+    private boolean hasSchedule;
 // ================================= SET & GET ================================
     /**
      * @return the id
@@ -311,6 +314,18 @@ public class TransportProfile implements Serializable {
      */
     public void setMapLayers(List<MapLayer> mapLayers) {
         this.mapLayers = mapLayers;
+    }
+    /**
+     * @return the hasSchedule
+     */
+    public boolean isHasSchedule() {
+        return hasSchedule;
+    }
+    /**
+     * @param hasSchedule the hasSchedule to set
+     */
+    public void setHasSchedule(boolean hasSchedule) {
+        this.hasSchedule = hasSchedule;
     }
 // ============================================================================
     @Override
