@@ -44,3 +44,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .srl-result-h {
     text-align: center;
 }
+.srl-d-bs-lbl {
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    margin-left: 5px;
+    padding: 0;
+}

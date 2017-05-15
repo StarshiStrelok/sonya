@@ -50,13 +50,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </button>
                 </md-grid-tile>
             </md-grid-list>
+            
             <hr/>
-            <md-grid-list cols="2" rowHeight="50px" >
-                <md-grid-tile>1</md-grid-tile>
-                <md-grid-tile>2</md-grid-tile>
-                <md-grid-tile>3</md-grid-tile>
-                <md-grid-tile>4</md-grid-tile>
-            </md-grid-list>
+            
+            <div *ngFor="let p of activePath.path; let i = index;">
+                <md-grid-list cols="8" rowHeight="50px">
+                    
+                    <md-grid-tile>
+                        <img [src]="'/rest/data/transport-profile/route/marker/' + p.route.type.id">
+                    </md-grid-tile>
+                    <md-grid-tile colspan="5">
+                        <p class="srl-d-bs-lbl">{{activePath.way[i][0].name}}</p>
+                    </md-grid-tile>
+                    <md-grid-tile colspan="2">TIME</md-grid-tile>
+                    
+                    <md-grid-tile>
+                        <span class="srl-route-label"
+                            [style.background-color]="p.route.type.lineColor">{{p.route.namePrefix}}{{p.route.namePostfix}}</span>
+                    </md-grid-tile>
+                    <md-grid-tile colspan="5">
+                        <p class="srl-d-bs-lbl">{{p.description}}</p>
+                    </md-grid-tile>
+                    <md-grid-tile colspan="2">DURATION</md-grid-tile>
+                    
+                    <md-grid-tile>
+                        <img [src]="'/rest/data/transport-profile/route/marker/' + p.route.type.id">
+                    </md-grid-tile>
+                    <md-grid-tile colspan="5">
+                        <p class="srl-d-bs-lbl">{{activePath.way[i][activePath.way[i].length - 1].name}}</p>
+                    </md-grid-tile>
+                    <md-grid-tile colspan="2">TIME</md-grid-tile>
+                    
+                </md-grid-list>
+                <hr/>
+            </div>
         </div>
 
     </div>

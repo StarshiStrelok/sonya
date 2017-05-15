@@ -78,4 +78,7 @@ export class SearchResultList {
         this.flags.isDetailsOpen = false;
         this.activePath['animationTrigger'] = 'in';
     }
+    detailsBusStop(index: number) {
+        console.log('index: ' + index);
+    }
 }

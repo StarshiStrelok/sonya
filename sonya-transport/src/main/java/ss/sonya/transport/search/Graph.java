@@ -22,7 +22,30 @@ import java.util.List;
 import ss.sonya.entity.Path;
 
 /**
- * Abstract path graph.
+ * Transport path graph.
+ *
+ * Graph structure.
+ * One graph vertex - one path, all metro paths wrap to 0 vertex, because
+ * it reduce size of the main graph, and metro regarded as independent
+ * underground transport type.
+ * Graph edge is 5-elements array: first element - vertex number of transfer
+ * path, second element - end bus stop order of vertex way (or ID if vertex path
+ * is metro), third element - transfer path start bus stop order (or bus stop
+ * ID if vertex path is metro).
+ *
+ *  V - current vertex
+ *  E[] - array transfer vertices
+ * 
+ *  V   E   E   E
+ * [0] [1] [4] [4]  Vertex number of transfer path
+ *     [5] [2] [3]  Bus stop order in way for V-path (first transfer).
+ *     [8] [5] [1]  Bus stop order in way for E-path (first transfer).
+ *     [1] [3] [6]  Bus stop order in way for V-path (second transfer).
+ *     [1] [3] [6]  Bus stop order in way for E-path (second transfer).
+ *
+ * Path (exclude metro) can has no more then 2 transfers for
+ * same transfer path: first and last crossing, middle crossing missing.
+ *
  * @author ss
  */
 public class Graph {
