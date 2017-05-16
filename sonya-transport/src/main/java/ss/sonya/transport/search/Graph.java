@@ -66,7 +66,7 @@ public class Graph {
     /** Lists of adjacency. */
     private final List<Integer[]>[] adj;
     /** Metro graph. */
-    private MetroGraph metroGraph;
+    private Graph metroGraph;
     /**
      * Constructor.
      * @param sortedPaths sorted paths.
@@ -184,14 +184,14 @@ public class Graph {
      * Set metro graph.
      * @param graph graph.
      */
-    public void setMetroGraph(final MetroGraph graph) {
+    public void setMetroGraph(final Graph graph) {
         this.metroGraph = graph;
     }
     /**
      * Get metro graph.
      * @return graph.
      */
-    public MetroGraph getMetroGraph() {
+    public Graph getMetroGraph() {
         return metroGraph;
     }
     /**
