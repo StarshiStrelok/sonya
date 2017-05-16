@@ -14,28 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.constants;
+package ss.sonya.transport.search;
 
-import java.util.concurrent.TimeUnit;
+import java.util.LinkedList;
+import java.util.List;
+import ss.sonya.entity.Path;
 
 /**
- * Transport constants.
+ * Metro graph.
  * @author ss
  */
-public final class TransportConst {
-    /** Mock bus stop. */
-    public static final String MOCK_BS = "mock";
-    /** Specific route profile name, means subway. */
-    public static final String METRO = "Metro";
-    /** Transport midnight, for example 3:00. */
-    public static final long TRANSPORT_MIDNIGHT = TimeUnit.HOURS.toMillis(3);
-    /** Average human speed, km/h. */
-    public static final double HUMAN_SPEED = 4;
-    /** Transfer time payment. In hours. */
-    public static final double TRANSFER_TIME_PAYMENT = 10 / 60;
+public class MetroGraph {
+    /** Path in vertex order. */
+    private final List<Path> paths;
+    /** Lists of adjacency. */
+    private final List<Integer[]>[] adj;
+    /** Edges count. */
+    private int edges;
     /**
-     * Private constructor.
+     * Constructor.
+     * @param sortedPaths sorted paths.
      */
-    private TransportConst() {
+    public MetroGraph(final List<Path> sortedPaths) {
+        adj = new List[sortedPaths.size()];
+        paths = sortedPaths;
+        edges = 0;
+        for (int i = 0; i < adj.length; i++) {
+            adj[i] = new LinkedList<>();
+        }
     }
 }

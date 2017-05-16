@@ -65,6 +65,8 @@ public class Graph {
     private int edges;
     /** Lists of adjacency. */
     private final List<Integer[]>[] adj;
+    /** Metro graph. */
+    private MetroGraph metroGraph;
     /**
      * Constructor.
      * @param sortedPaths sorted paths.
@@ -177,6 +179,20 @@ public class Graph {
             }
         }
         return max;
+    }
+    /**
+     * Set metro graph.
+     * @param graph graph.
+     */
+    public void setMetroGraph(final MetroGraph graph) {
+        this.metroGraph = graph;
+    }
+    /**
+     * Get metro graph.
+     * @return graph.
+     */
+    public MetroGraph getMetroGraph() {
+        return metroGraph;
     }
     /**
      * Print vertex.

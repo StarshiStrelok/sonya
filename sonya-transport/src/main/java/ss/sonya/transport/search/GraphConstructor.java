@@ -16,6 +16,7 @@
  */
 package ss.sonya.transport.search;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -45,6 +46,10 @@ import ss.sonya.transport.component.TransportGeometry;
 public class GraphConstructor {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(GraphConstructor.class);
+    /** For all metro paths create single with such ID. */
+    private static final int FAKE_METRO_PATH_ID = -1;
+    /** Metro vertex number. */
+    private static final int METRO_VERTEX = 0;
     /** First path transfer, from bus stop (path#1). */
     private static final int TRANSFER_1_FROM = 0;
     /** First path transfer, to bus stop (path#2). */
@@ -129,19 +134,36 @@ public class GraphConstructor {
     private Graph buildGraph(final TransportProfile profile) throws Exception {
         LOG.info("--------------- GRAPH (" + profile + ") -------------------");
         long start = System.currentTimeMillis();
-        List<Path> paths = transportService
+        List<Path> allpaths = transportService
                 .getFromProfile(profile.getId(), Path.class);
+        List<Path> paths = new ArrayList<>();
+        List<Path> metropaths = new ArrayList<>();
+        allpaths.forEach(p -> {
+            if (TransportConst.METRO.equals(p.getRoute().getType().getName())) {
+                metropaths.add(p);
+            } else {
+                paths.add(p);
+            }
+        });
+        boolean hasMetro = !metropaths.isEmpty();
+        LOG.info("has metro [" + hasMetro + "]");
+        if (hasMetro) {
+            LOG.info("paths count [" + metropaths.size() + "]");
+            Path fakeMetroPath = new Path();
+            fakeMetroPath.setId(FAKE_METRO_PATH_ID);
+            paths.add(fakeMetroPath);
+        }
+        LOG.info("paths count [" + paths.size() + "]");
         // sort very important, path vertex number will
         // correspond path in sorted array
         Collections.sort(paths,
                 (Path o1, Path o2) -> o1.getId() > o2.getId() ? 1 : -1);
-        LOG.info("paths count [" + paths.size() + "]");
         List<BusStop> all = transportService
                 .getFromProfile(profile.getId(), BusStop.class);
         LOG.info("bus stops count [" + all.size() + "]");
         Graph graph = new Graph(paths);
         Map<BusStop, List<Path>> bsPaths = new HashMap<>();
-        paths.stream().forEach(path -> {
+        allpaths.stream().forEach(path -> {
             path.getBusstops().stream().forEach(bs -> {
                 if (bsPaths.containsKey(bs)) {
                     bsPaths.get(bs).add(path);
@@ -163,6 +185,10 @@ public class GraphConstructor {
         BusStop transferBs2;
         List<BusStop> way;
         for (Path path : paths) {
+            if (path.getId().equals(FAKE_METRO_PATH_ID)) {
+                // metro handle later
+                continue;
+            }
             int vertex = paths.indexOf(path);
             way = path.getBusstops();
             // getting transfer paths for current path
@@ -171,27 +197,43 @@ public class GraphConstructor {
             // for every transfer path create edge
             // and add it to current path vertex
             for (Path transferPath : tMap.keySet()) {
-                // getting [path] - [transfer path] transfer bus stops
-                BusStop[] pairs = tMap.get(transferPath);
-                bs = pairs[TRANSFER_1_FROM];      // [path] bus stop
-                transferBs = pairs[TRANSFER_1_TO];  // [transfer path] bus stop
-                bs2 = pairs[TRANSFER_2_FROM];      // [path] bus stop
-                transferBs2 = pairs[TRANSFER_2_TO];  // [transfer path] bus stop
-                // transfer from path to path
-                int tPathVertex = paths.indexOf(transferPath);
-                int pathBsOrder = way.indexOf(bs);
-                int tPathBsOrder = transferPath.getBusstops()
-                        .indexOf(transferBs);
-                int pathBsOrder2 = bs2 == null ? -1 : way.indexOf(bs2);
-                int tPathBsOrder2 = transferBs2 == null ? -1
-                        : transferPath.getBusstops().indexOf(transferBs2);
-                graph.addEdge(vertex, tPathVertex, pathBsOrder,
-                        tPathBsOrder, pathBsOrder2, tPathBsOrder2);
+                if (transferPath.getId().equals(FAKE_METRO_PATH_ID)) {
+                    // transfer to metro save without details
+                    graph.addEdge(vertex, METRO_VERTEX, -1, -1, -1, -1);
+                } else {
+                    // getting [path] - [transfer path] transfer bus stops
+                    BusStop[] pairs = tMap.get(transferPath);
+                    bs = pairs[TRANSFER_1_FROM];      // [path] bus stop
+                    transferBs = pairs[TRANSFER_1_TO];  // [transfer path] bs
+                    bs2 = pairs[TRANSFER_2_FROM];      // [path] bus stop
+                    transferBs2 = pairs[TRANSFER_2_TO];  // [transfer path] bs
+                    // transfer from path to path
+                    int tPathVertex = paths.indexOf(transferPath);
+                    int pathBsOrder = way.indexOf(bs);
+                    int tPathBsOrder = transferPath.getBusstops()
+                            .indexOf(transferBs);
+                    int pathBsOrder2 = bs2 == null ? -1 : way.indexOf(bs2);
+                    int tPathBsOrder2 = transferBs2 == null ? -1
+                            : transferPath.getBusstops().indexOf(transferBs2);
+                    graph.addEdge(vertex, tPathVertex, pathBsOrder,
+                            tPathBsOrder, pathBsOrder2, tPathBsOrder2);
+                }
             }
+        }
+        if (hasMetro) {
+            graph.setMetroGraph(buildMetroGraph(metropaths));
         }
         LOG.info("--- " + graph.toString());       // output graph
         LOG.info("--- build path graph end... Elapsed time ["
                 + (System.currentTimeMillis() - start) + "] ms");
+        return graph;
+    }
+    private MetroGraph buildMetroGraph(final List<Path> paths) {
+        LOG.info("build metro graph");
+        Collections.sort(paths,
+                (Path o1, Path o2) -> o1.getId() > o2.getId() ? 1 : -1);
+        MetroGraph graph = new MetroGraph(paths);
+        
         return graph;
     }
     /**
@@ -211,6 +253,7 @@ public class GraphConstructor {
         Map<Path, BusStop[]> transferMap = new HashMap<>();
         int total = 0;
         List<BusStop> way = path.getBusstops();
+        boolean transferToMetro = false;
         for (int i = 0; i < way.size(); i++) {
             if (i == 0) {
                 continue;
@@ -234,6 +277,11 @@ public class GraphConstructor {
                     // same route skip always
                     Route transferRoute = transferPath.getRoute();
                     if (path.getRoute().getId().equals(transferRoute.getId())) {
+                        continue;
+                    }
+                    if (TransportConst.METRO
+                            .equals(transferRoute.getType().getName())) {
+                        transferToMetro = true;
                         continue;
                     }
                     // insert in result
@@ -341,6 +389,11 @@ public class GraphConstructor {
                     pairs[TRANSFER_2_TO] = null;
                 }
             }
+        }
+        if (transferToMetro) {
+            Path fakeMetroPath = new Path();
+            fakeMetroPath.setId(FAKE_METRO_PATH_ID);
+            transferMap.put(fakeMetroPath, new BusStop[0]);
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(total + " * " + path);
