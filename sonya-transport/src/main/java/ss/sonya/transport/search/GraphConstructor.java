@@ -19,9 +19,11 @@ package ss.sonya.transport.search;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 import org.apache.log4j.Logger;
@@ -87,47 +89,7 @@ public class GraphConstructor {
                     .getAll(TransportProfile.class);
             profiles.stream().forEach(profile -> {
                 try {
-                    List<Path> allpaths = transportService
-                            .getFromProfile(profile.getId(), Path.class);
-                    List<Path> paths = new ArrayList<>();
-                    List<Path> metropaths = new ArrayList<>();
-                    allpaths.forEach(p -> {
-                        if (TransportConst.METRO
-                                .equals(p.getRoute().getType().getName())) {
-                            metropaths.add(p);
-                        } else {
-                            paths.add(p);
-                        }
-                    });
-                    boolean hasMetro = !metropaths.isEmpty();
-                    LOG.info("has metro [" + hasMetro + "]");
-                    if (hasMetro) {
-                        LOG.info("paths count [" + metropaths.size() + "]");
-                        Path fakeMetroPath = new Path();
-                        fakeMetroPath.setId(FAKE_METRO_PATH_ID);
-                        paths.add(fakeMetroPath);
-                    }
-                    Map<BusStop, List<Path>> bsPaths = new HashMap<>();
-                    allpaths.stream().forEach(path -> {
-                        path.getBusstops().stream().forEach(bs -> {
-                            if (bsPaths.containsKey(bs)) {
-                                bsPaths.get(bs).add(path);
-                            } else {
-                                List<Path> l = new LinkedList<>();
-                                l.add(path);
-                                bsPaths.put(bs, l);
-                            }
-                        });
-                    });
-                    BUS_STOP_PATHS.put(profile.getId(), bsPaths);
-                    Graph g = buildGraph(profile, paths);
-                    if (hasMetro) {
-                        g.setMetroGraph(buildGraph(profile, metropaths));
-                    }
-                    GRAPHS.put(profile.getId(), g);
-                    PROFILES.put(profile.getId(), profile);
-                    LOG.info("================================================"
-                            + "===========");
+                    handleProfile(profile);
                 } catch (Exception ex) {
                     LOG.fatal("build graph error! " + profile, ex);
                 }
@@ -163,15 +125,61 @@ public class GraphConstructor {
         return BUS_STOP_PATHS.get(profileId);
     }
     /**
+     * Handle one profile.
+     * @param profile transport profile.
+     * @throws Exception error.
+     */
+    private void handleProfile(final TransportProfile profile)
+            throws Exception {
+        Graph g = buildGraph(profile);
+        GRAPHS.put(profile.getId(), g);
+        PROFILES.put(profile.getId(), profile);
+        LOG.info("================================================"
+                + "===========");
+    }
+    /**
      * Build graph for one transport profile.
      * @param profile transport profile.
      * @return graph.
      * @throws Exception error.
      */
-    private Graph buildGraph(final TransportProfile profile,
-            final List<Path> paths) throws Exception {
+    private Graph buildGraph(final TransportProfile profile) throws Exception {
         LOG.info("--------------- GRAPH (" + profile + ") -------------------");
         long start = System.currentTimeMillis();
+        // prepare data -------------------------------------------------------
+        List<Path> allpaths = transportService
+                .getFromProfile(profile.getId(), Path.class);
+        List<Path> paths = new ArrayList<>();
+        List<Path> metropaths = new ArrayList<>();
+        allpaths.forEach(p -> {
+            if (TransportConst.METRO
+                    .equals(p.getRoute().getType().getName())) {
+                metropaths.add(p);
+            } else {
+                paths.add(p);
+            }
+        });
+        boolean hasMetro = !metropaths.isEmpty();
+        LOG.info("has metro [" + hasMetro + "]");
+        if (hasMetro) {
+            Path fakeMetroPath = new Path();
+            fakeMetroPath.setId(FAKE_METRO_PATH_ID);
+            paths.add(fakeMetroPath);
+        }
+        Map<BusStop, List<Path>> bsPaths = new HashMap<>();
+        allpaths.stream().forEach(path -> {
+            path.getBusstops().stream().forEach(bs -> {
+                if (bsPaths.containsKey(bs)) {
+                    bsPaths.get(bs).add(path);
+                } else {
+                    List<Path> l = new LinkedList<>();
+                    l.add(path);
+                    bsPaths.put(bs, l);
+                }
+            });
+        });
+        BUS_STOP_PATHS.put(profile.getId(), bsPaths);
+        // --------------------------------------------------------------------
         LOG.info("paths count [" + paths.size() + "]");
         // sort very important, path vertex number will
         // correspond path in sorted array
@@ -181,10 +189,44 @@ public class GraphConstructor {
                 .getFromProfile(profile.getId(), BusStop.class);
         LOG.info("bus stops count [" + all.size() + "]");
         Graph graph = new Graph(paths);
-        Map<BusStop, List<Path>> bsPaths = BUS_STOP_PATHS.get(profile.getId());
         // for search transfer paths required found closest bus stops for
         // every bus stop in path way, cache using for speed up
         Map<BusStop, List<BusStop>> nearBsCache = new HashMap<>();
+        fillGraph(paths, bsPaths, all, nearBsCache, profile, graph);
+        if (hasMetro) {
+            long mStart = System.currentTimeMillis();
+            createTransfersFromMetro(metropaths, graph,
+                    profile.getBusStopAccessZoneRadius(),
+                    nearBsCache, bsPaths, all);
+            Collections.sort(metropaths,
+                    (Path o1, Path o2) -> o1.getId() > o2.getId() ? 1 : -1);
+            Graph metroGraph = new Graph(metropaths);
+            fillGraph(metropaths, bsPaths, all,
+                    nearBsCache, profile, metroGraph);
+            graph.setMetroGraph(metroGraph);
+            LOG.info("metro graph [" + (System.currentTimeMillis() - mStart)
+                    + "] ms => " + metroGraph.toString());
+        }
+        LOG.info("--- " + graph.toString());       // output graph
+        LOG.info("--- build path graph end... Elapsed time ["
+                + (System.currentTimeMillis() - start) + "] ms");
+        return graph;
+    }
+    /**
+     * Fill graph.
+     * @param paths graph paths.
+     * @param bsPaths bus stop paths cache.
+     * @param all all bus stops.
+     * @param accessZoneBsCache transfer access zone cache.
+     * @param profile transport profile.
+     * @param graph graph.
+     * @throws Exception error.
+     */
+    private void fillGraph(final List<Path> paths,
+            final Map<BusStop, List<Path>> bsPaths, final List<BusStop> all,
+            final Map<BusStop, List<BusStop>> accessZoneBsCache,
+            final TransportProfile profile, final Graph graph)
+            throws Exception {
         // For every path search transfer paths and create edges
         BusStop bs;
         BusStop transferBs;
@@ -199,14 +241,16 @@ public class GraphConstructor {
             int vertex = paths.indexOf(path);
             way = path.getBusstops();
             // getting transfer paths for current path
-            Map<Path, BusStop[]> tMap = analyzePath(path, nearBsCache, bsPaths,
+            Map<Path, BusStop[]> tMap = analyzePath(path,
+                    accessZoneBsCache, bsPaths,
                     all, profile.getBusStopAccessZoneRadius());
             // for every transfer path create edge
             // and add it to current path vertex
             for (Path transferPath : tMap.keySet()) {
                 if (transferPath.getId().equals(FAKE_METRO_PATH_ID)) {
                     // transfer to metro save without details
-                    graph.addEdge(vertex, METRO_VERTEX, -1, -1, -1, -1);
+                    graph.addEdge(vertex, METRO_VERTEX, Graph.IDX_NULL,
+                            Graph.IDX_NULL, Graph.IDX_NULL, Graph.IDX_NULL);
                 } else {
                     // getting [path] - [transfer path] transfer bus stops
                     BusStop[] pairs = tMap.get(transferPath);
@@ -216,6 +260,16 @@ public class GraphConstructor {
                     transferBs2 = pairs[TRANSFER_2_TO];  // [transfer path] bs
                     // transfer from path to path
                     int tPathVertex = paths.indexOf(transferPath);
+                    if (tPathVertex == Graph.IDX_NULL) {
+                        if (TransportConst.METRO
+                                .equals(path.getRoute().getType().getName())) {
+                            // filter non-metro paths for metro graph build
+                            continue;
+                        }
+                        // algorithm error
+                        throw new IllegalArgumentException(
+                                "transfer path not found! " + transferPath);
+                    }
                     int pathBsOrder = way.indexOf(bs);
                     int tPathBsOrder = transferPath.getBusstops()
                             .indexOf(transferBs);
@@ -227,10 +281,6 @@ public class GraphConstructor {
                 }
             }
         }
-        LOG.info("--- " + graph.toString());       // output graph
-        LOG.info("--- build path graph end... Elapsed time ["
-                + (System.currentTimeMillis() - start) + "] ms");
-        return graph;
     }
     /**
      * Analyze path.
@@ -442,6 +492,49 @@ public class GraphConstructor {
                 bs.getLongitude(),
                 newT.getLatitude(), newT.getLongitude());
         return dist1 > dist2;
+    }
+    private void createTransfersFromMetro(final List<Path> metropaths,
+            final Graph graph, final double radius,
+            final Map<BusStop, List<BusStop>> accessZoneBsCache,
+            final Map<BusStop, List<Path>> bsPaths, final List<BusStop> all)
+            throws Exception {
+        Set<BusStop> metroStations = new HashSet<>();
+        metropaths.forEach(p -> {
+            metroStations.addAll(p.getBusstops());
+        });
+        LOG.info("metro stations [" + metroStations.size() + "]");
+        LOG.info("metro paths [" + metropaths.size() + "]");
+        for (BusStop station : metroStations) {
+            if (TransportConst.MOCK_BS.equals(station.getName())) {
+                continue;
+            }
+            // getting bus stops in access zone
+            List<BusStop> nears = accessZoneBusstops(
+                    station, all, accessZoneBsCache, radius);
+            for (BusStop transferBs : nears) {
+                // skip transfer to another metro station
+                if (metroStations.contains(transferBs)) {
+                    continue;
+                }
+                // for every from transfer paths
+                List<Path> transferPaths = bsPaths.get(transferBs);
+                if (transferPaths == null) {
+                    continue;
+                }
+                for (Path transferPath : transferPaths) {
+                    // insert in result
+                    int tOrder = transferPath.getBusstops().indexOf(transferBs);
+                    if (tOrder == Graph.IDX_NULL) {
+                        throw new IllegalArgumentException(
+                                "bus stop order not found! "
+                                        + transferPath + " | " + transferBs);
+                    }
+                    graph.addEdge(METRO_VERTEX, graph.indexOfPath(transferPath),
+                            station.getId(), tOrder,
+                            Graph.IDX_NULL, Graph.IDX_NULL);
+                }
+            }
+        }
     }
 }
 

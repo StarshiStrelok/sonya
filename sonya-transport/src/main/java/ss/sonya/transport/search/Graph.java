@@ -49,6 +49,8 @@ import ss.sonya.entity.Path;
  * @author ss
  */
 public class Graph {
+    /** Adjacency array NULL value. */
+    public static final int IDX_NULL = -1;
     /** Adjacency vertex index. Everywhere is denoted as 'w'. */
     public static final int IDX_W = 0;
     /** Vertex transfer bus stop order (index) in way. */
