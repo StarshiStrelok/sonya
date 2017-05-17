@@ -49,8 +49,6 @@ import ss.sonya.entity.Path;
  * @author ss
  */
 public class Graph {
-    /** Adjacency array NULL value. */
-    public static final int IDX_NULL = -1;
     /** Adjacency vertex index. Everywhere is denoted as 'w'. */
     public static final int IDX_W = 0;
     /** Vertex transfer bus stop order (index) in way. */
@@ -67,9 +65,6 @@ public class Graph {
     private int edges;
     /** Lists of adjacency. */
     private final List<Integer[]>[] adj;
-    /** Metro graph. */
-    private Graph metroGraph;
-    private List<Integer[]>[] metroTransfers;
     /**
      * Constructor.
      * @param sortedPaths sorted paths.
@@ -182,20 +177,6 @@ public class Graph {
             }
         }
         return max;
-    }
-    /**
-     * Set metro graph.
-     * @param graph graph.
-     */
-    public void setMetroGraph(final Graph graph) {
-        this.metroGraph = graph;
-    }
-    /**
-     * Get metro graph.
-     * @return graph.
-     */
-    public Graph getMetroGraph() {
-        return metroGraph;
     }
     /**
      * Print vertex.

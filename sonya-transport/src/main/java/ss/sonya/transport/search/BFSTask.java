@@ -166,15 +166,15 @@ public class BFSTask implements Callable<List<OptimalPath>> {
             boolean isRight = true;
             queue.add(idxS);
             for (int k = 0; k < way.length; k++) {
-                int v = way[k];
-                if (way.length - 1 == k) {
+                int v = way[k];             // current vertex
+                if (way.length - 1 == k) {  // end vertex
                     if (idxT != -1 && idxT >= idxE) {
                         idxT = -1;
                     } else {
                         queue.add(idxE);
                     }
-                } else {
-                    int w = way[k + 1];
+                } else {                    // start and middle vertices
+                    int w = way[k + 1];     // next vertex
                     Integer[] adjW = null;
                     for (Integer[] adj : graph.adj(v)) {
                         if (adj[Graph.IDX_W] == w) {
