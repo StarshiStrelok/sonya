@@ -16,6 +16,8 @@
  */
 package ss.sonya.transport.search;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -159,8 +161,6 @@ public class GraphConstructor {
         // For every path search transfer paths and create edges
         BusStop bs;
         BusStop transferBs;
-        BusStop bs2;
-        BusStop transferBs2;
         List<BusStop> way;
         for (Path path : paths) {
             int vertex = paths.indexOf(path);
@@ -173,20 +173,20 @@ public class GraphConstructor {
             for (Path transferPath : tMap.keySet()) {
                 // getting [path] - [transfer path] transfer bus stops
                 BusStop[] pairs = tMap.get(transferPath);
-                bs = pairs[TRANSFER_1_FROM];      // [path] bus stop
-                transferBs = pairs[TRANSFER_1_TO];  // [transfer path] bus stop
-                bs2 = pairs[TRANSFER_2_FROM];      // [path] bus stop
-                transferBs2 = pairs[TRANSFER_2_TO];  // [transfer path] bus stop
+                int[] tInfo = new int[pairs.length];
                 // transfer from path to path
                 int tPathVertex = paths.indexOf(transferPath);
-                int pathBsOrder = way.indexOf(bs);
-                int tPathBsOrder = transferPath.getBusstops()
-                        .indexOf(transferBs);
-                int pathBsOrder2 = bs2 == null ? -1 : way.indexOf(bs2);
-                int tPathBsOrder2 = transferBs2 == null ? -1
-                        : transferPath.getBusstops().indexOf(transferBs2);
-                graph.addEdge(vertex, tPathVertex, pathBsOrder,
-                        tPathBsOrder, pathBsOrder2, tPathBsOrder2);
+                for (int i = 0; i < pairs.length; i += 2) {
+                    bs = pairs[i];
+                    transferBs = pairs[i + 1];
+                    
+                    int pathBsOrder = way.indexOf(bs);
+                    int tPathBsOrder = transferPath.getBusstops()
+                            .indexOf(transferBs);
+                    tInfo[i] = pathBsOrder;
+                    tInfo[i + 1] = tPathBsOrder;
+                }
+                graph.addEdge(vertex, tPathVertex, tInfo);
             }
         }
         LOG.info("--- " + graph.toString());       // output graph
@@ -239,6 +239,21 @@ public class GraphConstructor {
                     // insert in result
                     if (transferMap.containsKey(transferPath)) {
                         BusStop[] pairs = transferMap.get(transferPath);
+                        // always add all transfers if one of paths is metro
+                        if (TransportConst.METRO.equals(transferPath.getRoute()
+                                .getType().getName())
+                                || TransportConst.METRO.equals(
+                                        path.getRoute().getType().getName())) {                            
+                            List<BusStop> tmpList = new ArrayList<>(
+                                    Arrays.asList(pairs));
+                            tmpList.add(bs);
+                            tmpList.add(transferBs);
+                            pairs = tmpList.toArray(new BusStop[0]);
+                            transferMap.put(transferPath, pairs);
+                            total++;
+                            continue;
+                        }
+                        // else add 2 transfers max for other transport types
                         if (bs.equals(pairs[TRANSFER_1_FROM])) {
                             // find closest transfer bus stop
                             // for first transfer
@@ -268,6 +283,10 @@ public class GraphConstructor {
                                 pairs[TRANSFER_1_TO] = transferBs;
                             }
                         } else {                    // last transfer
+                            if (pairs.length == 2) {
+                                pairs = new BusStop[] {pairs[0], pairs[1],
+                                    null, null};
+                            }
                             if (pairs[TRANSFER_2_FROM] == null) {
                                 pairs[TRANSFER_2_FROM] = bs;
                                 pairs[TRANSFER_2_TO] = transferBs;
@@ -307,7 +326,7 @@ public class GraphConstructor {
                         // 3-element: current path bus stop
                         // 4-element: last transfer bus stop
                         transferMap.put(transferPath, new BusStop[] {
-                            bs, transferBs, null, null
+                            bs, transferBs
                         });
                     }
                     total++;
@@ -316,6 +335,10 @@ public class GraphConstructor {
         }
         // if start & end transfer follow each other - select best
         for (Path tPath : transferMap.keySet()) {
+            if (TransportConst.METRO.equals(
+                    tPath.getRoute().getType().getName())) {
+                continue;
+            }
             BusStop[] pairs = transferMap.get(tPath);
             if (pairs.length > 2 && pairs[TRANSFER_1_FROM] != null
                     && pairs[TRANSFER_2_FROM] != null) {

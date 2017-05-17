@@ -183,25 +183,26 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                         }
                     }
                     if (idxT != -1) {
-                        int vt1 = adjW[Graph.IDX_V_TRANSFER_1];
-                        int vt2 = adjW[Graph.IDX_V_TRANSFER_2];
-                        int diff1 = vt1 - idxT;
-                        int diff2 = vt2 - idxT;
-                        if (diff1 <= 0 && diff2 <= 0) {
-                            idxT = -1;
-                        } else if (vt1 > idxT
-                                && (vt2 > idxT && vt2 > vt1) || vt2 <= idxT) {
-                            queue.add(adjW[Graph.IDX_V_TRANSFER_1]);
-                            queue.add(adjW[Graph.IDX_W_TRANSFER_1]);
-                            idxT = adjW[Graph.IDX_W_TRANSFER_1];
-                        } else if (vt2 > idxT
-                                && (vt1 > idxT && vt1 > vt1) || vt1 <= idxT) {
-                            queue.add(adjW[Graph.IDX_V_TRANSFER_2]);
-                            queue.add(adjW[Graph.IDX_W_TRANSFER_2]);
-                            idxT = adjW[Graph.IDX_W_TRANSFER_2];
+                        int v1 = -1;
+                        int w1 = -1;
+                        for (int j = 1; j < adjW.length; j += 2) {
+                            int vt = adjW[j];
+                            if (idxT < vt) {
+                                if (v1 == -1) {
+                                    v1 = vt;
+                                    w1 = adjW[j + 1];
+                                } else if (v1 > vt) {
+                                    v1 = vt;
+                                    w1 = adjW[j + 1];
+                                }
+                            }
+                        }
+                        if (v1 != -1) {
+                            queue.add(v1);
+                            queue.add(w1);
+                            idxT = w1;
                         } else {
-                            throw new RuntimeException(
-                                    "unreachable code, check your algorithm");
+                            idxT = -1;
                         }
                     }
                 }

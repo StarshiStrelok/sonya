@@ -49,6 +49,8 @@ import ss.sonya.entity.Path;
  * @author ss
  */
 public class Graph {
+    /** Adjacency array empty value. */
+    public static final int IDX_NULL = -1;
     /** Adjacency vertex index. Everywhere is denoted as 'w'. */
     public static final int IDX_W = 0;
     /** Vertex transfer bus stop order (index) in way. */
@@ -81,13 +83,18 @@ public class Graph {
      * Add new edge.
      * @param v vertex 1 (path 1).
      * @param w vertex 2 (path 2).
-     * @param vb1 vertex 1: path #1 bus stop (first transfer).
-     * @param wb1 vertex 2: path #2 bus stop (first transfer).
-     * @param vb2 vertex 1: path #1 bus stop (second transfer).
-     * @param wb2 vertex 2: path #2 bus stop (second transfer).
+     * @param tInfo[0] vertex 1: path #1 bus stop (first transfer).
+     *        tInfo[1] vertex 2: path #2 bus stop (first transfer).
+     *        tInfo[2] vertex 1: path #1 bus stop (second transfer).
+     *        tInfo[3] vertex 2: path #2 bus stop (second transfer)...
      */
-    public void addEdge(int v, int w, int vb1, int wb1, int vb2, int wb2) {
-        adj[v].add(new Integer[] {w, vb1, wb1, vb2, wb2});
+    public void addEdge(int v, int w, int[] tInfo) {
+        Integer[] e = new Integer[tInfo.length + 1];
+        e[IDX_W] = w;
+        for (int i = 0; i < tInfo.length; i++) {
+            e[i + 1] = tInfo[i];
+        }
+        adj[v].add(e);
         edges++;
     }
     /**
@@ -213,16 +220,12 @@ public class Graph {
 //     * For diagnostic.
 //     * @param v - vertex.
 //     * @param w - other vertex.
-//     * @param vb1 - vertex bus stop.
-//     * @param wb1 - other vertex bus stop.
 //     * @return - true if exist.
 //     */
 //    private boolean isEdgeExist(
-//            int v, int w, int vb1, int wb1, int vb2, int wb2) {
+//            int v, int w) {
 //        for (Integer[] e : adj(v)) {
-//            if (e[IDX_W] == w && e[IDX_V_TRANSFER_1] == vb1
-//                    && e[IDX_W_TRANSFER_1] == wb1 && e[IDX_V_TRANSFER_2] == vb2
-//                    && e[IDX_W_TRANSFER_2] == wb2) {
+//            if (e[IDX_W] == w) {
 //                System.out.println("duplicate found");
 //                return true;
 //            }
