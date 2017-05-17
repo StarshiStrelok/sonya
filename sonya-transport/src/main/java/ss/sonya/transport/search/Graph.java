@@ -69,6 +69,7 @@ public class Graph {
     private final List<Integer[]>[] adj;
     /** Metro graph. */
     private Graph metroGraph;
+    private List<Integer[]>[] metroTransfers;
     /**
      * Constructor.
      * @param sortedPaths sorted paths.

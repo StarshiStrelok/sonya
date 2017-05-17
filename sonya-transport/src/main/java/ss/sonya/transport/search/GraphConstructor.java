@@ -192,17 +192,17 @@ public class GraphConstructor {
         // for search transfer paths required found closest bus stops for
         // every bus stop in path way, cache using for speed up
         Map<BusStop, List<BusStop>> nearBsCache = new HashMap<>();
-        fillGraph(paths, bsPaths, all, nearBsCache, profile, graph);
+        fillGraph(paths, bsPaths, all, nearBsCache, profile, graph, false);
         if (hasMetro) {
             long mStart = System.currentTimeMillis();
-            createTransfersFromMetro(metropaths, graph,
+            createMetroTransfers(metropaths, graph,
                     profile.getBusStopAccessZoneRadius(),
                     nearBsCache, bsPaths, all);
             Collections.sort(metropaths,
                     (Path o1, Path o2) -> o1.getId() > o2.getId() ? 1 : -1);
             Graph metroGraph = new Graph(metropaths);
             fillGraph(metropaths, bsPaths, all,
-                    nearBsCache, profile, metroGraph);
+                    nearBsCache, profile, metroGraph, true);
             graph.setMetroGraph(metroGraph);
             LOG.info("metro graph [" + (System.currentTimeMillis() - mStart)
                     + "] ms => " + metroGraph.toString());
@@ -225,7 +225,8 @@ public class GraphConstructor {
     private void fillGraph(final List<Path> paths,
             final Map<BusStop, List<Path>> bsPaths, final List<BusStop> all,
             final Map<BusStop, List<BusStop>> accessZoneBsCache,
-            final TransportProfile profile, final Graph graph)
+            final TransportProfile profile, final Graph graph,
+            final boolean isMetroGraph)
             throws Exception {
         // For every path search transfer paths and create edges
         BusStop bs;
@@ -243,7 +244,8 @@ public class GraphConstructor {
             // getting transfer paths for current path
             Map<Path, BusStop[]> tMap = analyzePath(path,
                     accessZoneBsCache, bsPaths,
-                    all, profile.getBusStopAccessZoneRadius());
+                    all, profile.getBusStopAccessZoneRadius(),
+                    isMetroGraph);
             // for every transfer path create edge
             // and add it to current path vertex
             for (Path transferPath : tMap.keySet()) {
@@ -261,8 +263,7 @@ public class GraphConstructor {
                     // transfer from path to path
                     int tPathVertex = paths.indexOf(transferPath);
                     if (tPathVertex == Graph.IDX_NULL) {
-                        if (TransportConst.METRO
-                                .equals(path.getRoute().getType().getName())) {
+                        if (isMetroGraph) {
                             // filter non-metro paths for metro graph build
                             continue;
                         }
@@ -295,7 +296,8 @@ public class GraphConstructor {
     private Map<Path, BusStop[]> analyzePath(final Path path,
             final Map<BusStop, List<BusStop>> accessZoneBsCache,
             final Map<BusStop, List<Path>> bsPaths,
-            final List<BusStop> all, final double radius) throws Exception {
+            final List<BusStop> all, final double radius,
+            final boolean isMetroGraph) throws Exception {
         Map<Path, BusStop[]> transferMap = new HashMap<>();
         int total = 0;
         List<BusStop> way = path.getBusstops();
@@ -325,7 +327,7 @@ public class GraphConstructor {
                     if (path.getRoute().getId().equals(transferRoute.getId())) {
                         continue;
                     }
-                    if (TransportConst.METRO
+                    if (!isMetroGraph && TransportConst.METRO
                             .equals(transferRoute.getType().getName())) {
                         transferToMetro = true;
                         continue;
@@ -493,11 +495,12 @@ public class GraphConstructor {
                 newT.getLatitude(), newT.getLongitude());
         return dist1 > dist2;
     }
-    private void createTransfersFromMetro(final List<Path> metropaths,
+    private void createMetroTransfers(final List<Path> metropaths,
             final Graph graph, final double radius,
             final Map<BusStop, List<BusStop>> accessZoneBsCache,
             final Map<BusStop, List<Path>> bsPaths, final List<BusStop> all)
             throws Exception {
+        long start = System.currentTimeMillis();
         Set<BusStop> metroStations = new HashSet<>();
         metropaths.forEach(p -> {
             metroStations.addAll(p.getBusstops());
@@ -535,6 +538,8 @@ public class GraphConstructor {
                 }
             }
         }
+        LOG.info("create metro transfers for ["
+                + (System.currentTimeMillis() - start) + "]");
     }
 }
 
