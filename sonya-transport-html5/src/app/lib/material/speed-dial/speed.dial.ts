@@ -23,8 +23,8 @@ import {trigger, state, style, animate, transition} from '@angular/animations';
 
 const scaleAnim: any =
     trigger('scaleAnim', [
-        state('show', style({opacity: 1, transform: `scale(1)`})),
-        state('hide', style({opacity: 0, transform: `scale(0)`})),
+        state('show', style({opacity: 1, transform: `scale(1)`, display: `inherit`})),
+        state('hide', style({opacity: 0, transform: `scale(0)`, display: `none`})),
         transition('show => hide', [
             animate(`0.1s ease-in`)
         ]),

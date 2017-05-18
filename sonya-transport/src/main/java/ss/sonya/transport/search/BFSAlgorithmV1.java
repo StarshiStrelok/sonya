@@ -64,6 +64,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         Graph graph = graphConstructor.findGraph(settings.getProfileId());
         TransportProfile profile = graphConstructor
                 .findProfile(settings.getProfileId());
+        LOG.info("#-bfs-# profile [" + profile + "]");
         Set<BusStop> all = graphConstructor
                 .findBusStopPathsMap(profile.getId()).keySet();
         LOG.info("#-bfs-# total bus stops [" + all.size() + "]");
@@ -95,8 +96,10 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
             // exclude vertices which belong to both criteria (straight vert.)
             endVertices.keySet().forEach(v -> {
                 if (startVertices.keySet().contains(v)) {
-                    LOG.debug("#-bfs-# exclude vertex from start criteria ["
-                            + v + "], it exist in end criteria");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("#-bfs-# exclude vertex from start criteria ["
+                                + v + "], it exist in end criteria");
+                    }
                     startVertices.remove(v);
                 }
             });

@@ -44,7 +44,7 @@ public class GraphConstructorTest extends TestConfig {
         s.setEndLat(53.9382);
         s.setEndLon(27.6291);
         s.setProfileId(4);
-        s.setMaxTransfers(2);
+        s.setMaxTransfers(3);
         s.setMaxResults(5);
         for (OptimalPath op : searchEngine.search(s)) {
             System.out.println(op.toString());
