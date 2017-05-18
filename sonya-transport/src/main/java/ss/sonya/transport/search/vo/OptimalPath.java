@@ -33,8 +33,10 @@ public class OptimalPath {
     private List<Path> path;
     /** Path ways. */
     private List<List<BusStop>> way;
-    /** Way time. */
+    /** Duration of trip. */
     private Double time;
+    /** Distance, km. */
+    private Double distance;
     /** Optimal Schedule. */
     private OptimalSchedule schedule;
     /**
@@ -84,6 +86,18 @@ public class OptimalPath {
      */
     public void setWay(List<List<BusStop>> way) {
         this.way = way;
+    }
+    /**
+     * @return the distance
+     */
+    public Double getDistance() {
+        return distance;
+    }
+    /**
+     * @param distance the distance to set
+     */
+    public void setDistance(Double distance) {
+        this.distance = distance;
     }
     @Override
     public String toString() {

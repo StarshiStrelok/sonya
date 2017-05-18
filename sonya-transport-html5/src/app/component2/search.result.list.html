@@ -19,19 +19,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <h4 [hidden]="result.length > 0" style="text-align: center;">
         No results, make search in first
     </h4>
+    <h5 [hidden]="result.length > 0">
+        Click right mouse button on map and set start and end of the route, or use geocoder
+    </h5>
     <div [hidden]="result.length < 1">
 
         <md-list *ngIf="!flags.isDetailsOpen">
             <h3 md-subheader class="srl-result-h">Found results {{result.length}}</h3>
-            <md-list-item *ngFor="let op of result" class="srl-item" (click)="openDetails(op)"
+            <md-list-item *ngFor="let op of result" class="srl-item" (click)="showPath(op)"
                 [@flyInOut]="op.animationTrigger">
-                <md-icon md-list-icon mdTooltip="Open details"
-                     mdTooltipPosition="above">chevron_right</md-icon>
+                <md-icon md-list-icon [ngClass]="{'srl-selected-path': op === activePath}">chevron_right</md-icon>
                 <p md-line style="line-height: 30px;">
                     <span *ngFor="let path of op.path" class="srl-route-label"
                         [style.background-color]="path.route.type.lineColor"
                         mdTooltip="{{path.description}}" mdTooltipPosition="above">{{path.route.namePrefix}}{{path.route.namePostfix}}</span>
                 </p>
+                <md-icon mdTooltip="Open details"
+                     mdTooltipPosition="above" (click)="openDetails(op)"
+                     [ngClass]="{'srl-selected-path': op === activePath}">access_time</md-icon>
             </md-list-item>
         </md-list>
 
@@ -62,7 +67,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <md-grid-tile colspan="5">
                         <p class="srl-d-bs-lbl">{{activePath.way[i][0].name}}</p>
                     </md-grid-tile>
-                    <md-grid-tile colspan="2">TIME</md-grid-tile>
+                    <md-grid-tile colspan="2">{{getBusStopTime(i, 'start')}}</md-grid-tile>
                     
                     <md-grid-tile>
                         <span class="srl-route-label"
@@ -71,7 +76,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <md-grid-tile colspan="5">
                         <p class="srl-d-bs-lbl">{{p.description}}</p>
                     </md-grid-tile>
-                    <md-grid-tile colspan="2">DURATION</md-grid-tile>
+                    <md-grid-tile colspan="2">{{p.distance}} km</md-grid-tile>
                     
                     <md-grid-tile>
                         <img [src]="'/rest/data/transport-profile/route/marker/' + p.route.type.id">
@@ -79,11 +84,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <md-grid-tile colspan="5">
                         <p class="srl-d-bs-lbl">{{activePath.way[i][activePath.way[i].length - 1].name}}</p>
                     </md-grid-tile>
-                    <md-grid-tile colspan="2">TIME</md-grid-tile>
+                    <md-grid-tile colspan="2">{{getBusStopTime(i, 'end')}}</md-grid-tile>
                     
                 </md-grid-list>
                 <hr/>
             </div>
+            <!-- Summary -->
+            <md-grid-list cols="8" rowHeight="50px">
+
+                <md-grid-tile colspan="6">
+
+                </md-grid-tile>
+
+                <md-grid-tile colspan="2">
+                    {{summaryDistance()}} km
+                </md-grid-tile>
+
+            </md-grid-list>
         </div>
 
     </div>

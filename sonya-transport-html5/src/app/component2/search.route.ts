@@ -46,6 +46,7 @@ export class SearchRoute {
             .then((res: OptimalPath[]) => {
                 this.parent.waiting.close();
                 this.parent.searchTabs.searchResult.setResult(res);
+                this.parent.searchTabs.searchResult.closeDetails();
                 console.log(res);
             });
     }
@@ -65,7 +66,9 @@ export class SearchRoute {
         let groupS: any[] = [];
         let addPathLayer = function (path: Path, way: BusStop[], resp: OSRMResponse) {
             let lineColor = path.route.type.lineColor;
-            var legs = resp.routes[0].legs;
+            let legs = resp.routes[0].legs;
+            path['distance'] = (resp.routes[0].distance / 1000).toFixed(1);
+            path['duration'] = resp.routes[0].duration;
             let reverseCoords: number[][] = [];
             legs.forEach(leg => {
                 leg.steps.forEach(step => {

@@ -364,6 +364,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
             final double eLng) throws Exception {
         OptimalPath best = null;
         for (OptimalPath op : ops) {
+            transportGeometry.calcOptimalPathTime(op);
             BusStop firstBs = op.getWay().get(0).get(0);
             List<BusStop> lastSubWay = op.getWay()
                     .get(op.getWay().size() - 1);
@@ -374,7 +375,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
                     lastBs.getLatitude(), lastBs.getLongitude());
             double totalTime = (startDist + endDist)
                     / TransportConst.HUMAN_SPEED
-                    + transportGeometry.calcOptimalPathTime(op);
+                    + op.getTime();
             op.setTime(totalTime);
             if (best == null) {
                 best = op;

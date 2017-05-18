@@ -120,6 +120,16 @@ export class OptimalPath {
     constructor(
         public path: Path[],
         public way: BusStop[][],
-        public time: number
+        public time: number,
+        public distance: number,
+        public schedule: OptimalSchedule
+    ) {}
+}
+
+export class OptimalSchedule {
+    constructor(
+        public startDate: Date,
+        public arrivalDate: Date,
+        public duration: Date
     ) {}
 }

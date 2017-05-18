@@ -172,14 +172,14 @@ public class TransportGeometry {
         return sum;
     }
     /**
-     * Calculate optimal path time.
+     * Calculate optimal path time and distance.
      * @param op - optimal path.
-     * @return - time in hours.
      * @throws Exception - operation error.
      */
-    public double calcOptimalPathTime(final OptimalPath op) throws Exception {
+    public void calcOptimalPathTime(final OptimalPath op) throws Exception {
         double transferDist = 0;
         double transportTime = 0;
+        double dist = 0;
         List<BusStop> prevSubWay = null;
         Route r;
         int cur = 0;
@@ -194,7 +194,9 @@ public class TransportGeometry {
             }
             r = op.getPath().get(cur).getRoute();
             speed = r.getType().getAvgSpeed();
-            transportTime += calcWayDistance(subWay) / speed;
+            double subDist = calcWayDistance(subWay);
+            transportTime += subDist / speed;
+            dist += subDist;
             prevSubWay = subWay;
             cur++;
         }
@@ -202,19 +204,7 @@ public class TransportGeometry {
                 + transportTime
                 + TransportConst.TRANSFER_TIME_PAYMENT
                     * (op.getPath().size() - 1);
-        return totalTime;
+        op.setTime(totalTime);
+        op.setDistance(dist);
     }
-//    /**
-//     * Get types with irregular schedule.
-//     * @return - list route types.
-//     */
-//    public List<RouteType> getIrregularRoutes() {
-//        String str = KiraConf.setting(AppProp.IRREGULAR_SCHEDULE_TYPES);
-//        List<RouteType> irr = new ArrayList<>();
-//        String[] spl = str.split(",");
-//        for (String s : spl) {
-//            irr.add(RouteType.valueOf(s));
-//        }
-//        return irr;
-//    }
 }

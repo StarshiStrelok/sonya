@@ -18,7 +18,7 @@
 import {Component, Input} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/animations'
 
-import {OptimalPath} from '../model/abs.model';
+import {OptimalPath, Path} from '../model/abs.model';
 import {TransportMap} from '../component2/transport.map';
 
 @Component({
@@ -80,5 +80,21 @@ export class SearchResultList {
     }
     detailsBusStop(index: number) {
         console.log('index: ' + index);
+    }
+    getBusStopTime(index: number, position: string) {
+        if (!this.activePath.schedule) {
+            return '';
+        }
+    }
+    summaryDistance() {
+        let dist = 0;
+        this.activePath.path.forEach(p => {
+            dist += Number(p['distance']);
+        });
+        return Number(dist).toFixed(1);
+    }
+    showPath(op: OptimalPath) {
+        this.activePath = op;
+        this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(op);
     }
 }
