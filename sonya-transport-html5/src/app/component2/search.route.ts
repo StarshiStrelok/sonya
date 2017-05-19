@@ -48,6 +48,7 @@ export class SearchRoute {
                 this.parent.searchTabs.searchResult.setResult(res);
                 this.parent.searchTabs.searchResult.closeDetails();
                 console.log(res);
+                this.parent.searchTabs.tabGroup.selectedIndex = 0;
             });
     }
     clearRoutes() {
@@ -72,6 +73,7 @@ export class SearchRoute {
         let _comp = this;
         let groupD: any[] = [];
         let groupS: any[] = [];
+        let prevPath: Path = null;
         let addPathLayer = function (path: Path, way: BusStop[], resp: OSRMResponse) {
             let lineColor = path.route.type.lineColor;
             let legs = resp.routes[0].legs;
@@ -100,6 +102,16 @@ export class SearchRoute {
                 snakingSpeed: _comp.animateSpeed,
                 snaking: true
             }];
+            if (prevPath !== null && path.route.type.name === prevPath.route.type.name
+                    && !prevPath['dashed']) {
+                opts[2].dashArray = '5,5';
+                path['dashed'] = true;
+            }
+//            if (prevPath != null) {
+//                opts.forEach((options: any) => {
+//                    groupD.push(L.circleMarker(new L.LatLng(way[0].latitude, way[0].longitude), options));
+//                });
+//            }
             for (let i = 0; i < opts.length; i++) {
                 if (opts[i].snaking) {
                     groupD.push(L.polyline(reverseCoords, opts[i]));
@@ -110,6 +122,7 @@ export class SearchRoute {
             way.forEach(bs => {
                 groupS.push(_comp.createMarker(bs, path.route.type));
             });
+            prevPath = path;
         }
         let request = function () {
             let way = optimalPath.way[counter];
@@ -128,6 +141,17 @@ export class SearchRoute {
             });
         }
         request();  // draw polyline
+    }
+    flyToBounds(markers: BusStop[], paddingX: number) {
+        if (markers.length === 0) {
+            return;
+        }
+        this.parent.map.flyToBounds(this.getMarkersBounds(markers), {
+            animate: true,
+            duration: 0.3,
+            easeLinearity: 0.25,
+            paddingTopLeft: [paddingX ? paddingX : 0, 0]
+        });
     }
     private createMarker(bs: BusStop, routeType: RouteProfile): any {
         var marker = L.marker(new L.LatLng(bs.latitude, bs.longitude), {
@@ -160,17 +184,6 @@ export class SearchRoute {
             iconAnchor: [0, 0],
             shadowAnchor: [0, 0],
             popupAnchor: [0, 0]
-        });
-    }
-    private flyToBounds(markers: BusStop[], paddingX: number) {
-        if (markers.length === 0) {
-            return;
-        }
-        this.parent.map.flyToBounds(this.getMarkersBounds(markers), {
-            animate: true,
-            duration: 0.3,
-            easeLinearity: 0.25,
-            paddingTopLeft: [paddingX ? paddingX : 0, 0]
         });
     }
     private getMarkersBounds(markers: BusStop[]) {

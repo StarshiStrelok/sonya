@@ -16,6 +16,7 @@
  */
 
 import {Component, ViewChild, Input} from '@angular/core';
+import {MdTabGroup} from '@angular/material';
 
 import {SearchSettingsForm} from './search.settings.form';
 import {SearchResultList} from './search.result.list';
@@ -37,5 +38,6 @@ import {TransportMap} from './transport.map';
 export class SearchTab {
     @ViewChild(SearchSettingsForm) searchSettings: SearchSettingsForm;
     @ViewChild(SearchResultList) searchResult: SearchResultList;
+    @ViewChild(MdTabGroup) tabGroup: MdTabGroup;
     @Input() mapComponent: TransportMap;
 }

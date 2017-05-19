@@ -35,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         mdTooltip="{{path.description}}" mdTooltipPosition="above">{{path.route.namePrefix}}{{path.route.namePostfix}}</span>
                 </p>
                 <md-icon mdTooltip="Open details"
-                     mdTooltipPosition="above" (click)="openDetails(op)"
+                     mdTooltipPosition="above" (click)="openDetails(op, $event)"
                      [ngClass]="{'srl-selected-path': op === activePath}">access_time</md-icon>
             </md-list-item>
         </md-list>
@@ -64,7 +64,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <md-grid-tile>
                         <img [src]="'/rest/data/transport-profile/route/marker/' + p.route.type.id">
                     </md-grid-tile>
-                    <md-grid-tile colspan="5">
+                    <md-grid-tile colspan="5" class="srl-details-item"
+                                  (click)="flyToBusStop(activePath.way[i][0])">
                         <p class="srl-d-bs-lbl">{{activePath.way[i][0].name}}</p>
                     </md-grid-tile>
                     <md-grid-tile colspan="2">{{getBusStopTime(i, 'start')}}</md-grid-tile>
@@ -73,7 +74,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <span class="srl-route-label"
                             [style.background-color]="p.route.type.lineColor">{{p.route.namePrefix}}{{p.route.namePostfix}}</span>
                     </md-grid-tile>
-                    <md-grid-tile colspan="5">
+                    <md-grid-tile colspan="5" class="srl-details-item"
+                                  (click)="flyToWay(activePath.way[i])">
                         <p class="srl-d-bs-lbl">{{p.description}}</p>
                     </md-grid-tile>
                     <md-grid-tile colspan="2">{{p.distance}} km</md-grid-tile>
@@ -81,7 +83,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <md-grid-tile>
                         <img [src]="'/rest/data/transport-profile/route/marker/' + p.route.type.id">
                     </md-grid-tile>
-                    <md-grid-tile colspan="5">
+                    <md-grid-tile colspan="5" class="srl-details-item"
+                                  (click)="flyToBusStop(activePath.way[i][activePath.way[i].length - 1])">
                         <p class="srl-d-bs-lbl">{{activePath.way[i][activePath.way[i].length - 1].name}}</p>
                     </md-grid-tile>
                     <md-grid-tile colspan="2">{{getBusStopTime(i, 'end')}}</md-grid-tile>

@@ -104,7 +104,7 @@ export class EndpointLayer {
             popupAnchor: [0, 0]
         });
     }
-    private moveToMarker(lat: number, lon: number) {
+    moveToMarker(lat: number, lon: number) {
         this.map.flyTo(new L.LatLng(lat, lon), 16, {
             animate: true
         });

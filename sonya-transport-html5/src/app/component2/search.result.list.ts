@@ -18,7 +18,7 @@
 import {Component, Input} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/animations'
 
-import {OptimalPath, Path} from '../model/abs.model';
+import {OptimalPath, BusStop} from '../model/abs.model';
 import {TransportMap} from '../component2/transport.map';
 
 @Component({
@@ -65,7 +65,7 @@ export class SearchResultList {
             this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(this.activePath);
         }
     }
-    openDetails(path: OptimalPath) {
+    openDetails(path: OptimalPath, event) {
         path['animationTrigger'] = 'void';
         this.activePath = path;
         let _flags = this.flags;
@@ -73,6 +73,7 @@ export class SearchResultList {
             _flags.isDetailsOpen = true;
         }, 200);
         this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(path);
+        event.stopPropagation();
     }
     closeDetails() {
         this.flags.isDetailsOpen = false;
@@ -96,5 +97,11 @@ export class SearchResultList {
     showPath(op: OptimalPath) {
         this.activePath = op;
         this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(op);
+    }
+    flyToBusStop(bs: BusStop) {
+        this.mapComponent.layerEndpoint.moveToMarker(bs.latitude, bs.longitude);
+    }
+    flyToWay(way: BusStop[]) {
+        this.mapComponent.layerEndpoint.searchRouteCtrl.flyToBounds(way, 0);
     }
 }
