@@ -58,6 +58,14 @@ export class SearchRoute {
         // clear previous route
         this.layerRoutingStatic.clearLayers();
         this.layerRoutingDynamic.clearLayers();
+        // flying
+        let all: BusStop[] = [];
+        optimalPath.way.forEach(w => {
+            w.forEach(bs => {
+                all.push(bs); 
+            });
+        });
+        this.flyToBounds(all, 0);
         // polyline
         let counter = 0;
         let max = optimalPath.path.length;
@@ -153,6 +161,47 @@ export class SearchRoute {
             shadowAnchor: [0, 0],
             popupAnchor: [0, 0]
         });
+    }
+    private flyToBounds(markers: BusStop[], paddingX: number) {
+        if (markers.length === 0) {
+            return;
+        }
+        this.parent.map.flyToBounds(this.getMarkersBounds(markers), {
+            animate: true,
+            duration: 0.3,
+            easeLinearity: 0.25,
+            paddingTopLeft: [paddingX ? paddingX : 0, 0]
+        });
+    }
+    private getMarkersBounds(markers: BusStop[]) {
+        var _sw_lat;
+        var _sw_lon;
+        var _ne_lat;
+        var _ne_lon;
+        var _delta = 0.003;
+        for (var i = 0; i < markers.length; i++) {
+            var m = markers[i];
+            var lat = m.latitude;
+            var lon = m.longitude;
+            lon = lon ? lon : m.longitude;
+            if (!_sw_lat || _sw_lat > lat) {
+                _sw_lat = lat;
+            }
+            if (!_sw_lon || _sw_lon > lon) {
+                _sw_lon = lon;
+            }
+            if (!_ne_lat || _ne_lat < lat) {
+                _ne_lat = lat;
+            }
+            if (!_ne_lon || _ne_lon < lon) {
+                _ne_lon = lon;
+            }
+        }
+        var bounds = [
+            [_sw_lat - _delta, _sw_lon - _delta],
+            [_ne_lat + _delta, _ne_lon + _delta]
+        ];
+        return bounds;
     }
 }
 

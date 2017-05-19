@@ -20,7 +20,6 @@ import {Http} from '@angular/http';
 import {NotificationsService} from 'angular2-notifications';
 import {TranslateService} from '@ngx-translate/core';
 
-import {TransportProfile} from '../model/abs.model';
 import {TransportMap} from './transport.map';
 
 @Component({
