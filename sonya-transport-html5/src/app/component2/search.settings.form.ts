@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 import {SearchSettings} from '../model/abs.model';
 import {minNumberValidator} from '../lib/validator/min-number.directive';
 import {maxNumberValidator} from '../lib/validator/max-number.directive';
+import {TransportMap} from './transport.map';
 
 @Component({
     selector: 'search-settings',
@@ -33,6 +34,7 @@ export class SearchSettingsForm implements OnInit {
     settingsForm: FormGroup;
     settings: SearchSettings = new SearchSettings(
         null, null, null, null, null, null, null, 10, 3);
+    @Input() mapComponent: TransportMap;
     constructor(
         private fb: FormBuilder
     ) {}
@@ -55,7 +57,7 @@ export class SearchSettingsForm implements OnInit {
         if (!this.settingsForm.valid) {
             return;
         } else {
-            // TODO
+            this.mapComponent.layerEndpoint.checkSearchConditions();
         }
     }
     getSettings(): SearchSettings {

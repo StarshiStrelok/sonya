@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <div class="ssf-spacer"></div>
     <md-grid-list cols="1" rowHeight="58px;">
         
-        <md-grid-tile>
+        <md-grid-tile *ngIf="mapComponent.activeProfile && mapComponent.activeProfile.hasSchedule">
             <md-select placeholder="Day of trip" formControlName="day" class="full-width">
                 <md-option [value]="2"><div [translate]="'common.day.monday'"></div></md-option>
                 <md-option [value]="3"><div [translate]="'common.day.tuesday'"></div></md-option>
@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-select>
         </md-grid-tile>
         
-        <md-grid-tile>
+        <md-grid-tile *ngIf="mapComponent.activeProfile && mapComponent.activeProfile.hasSchedule">
             <md-input-container class="full-width">
                 <input mdInput placeholder="Time of trip (24h format)"
                        formControlName="time">
