@@ -45,6 +45,7 @@ export class SearchResultList {
     flags: any = {
         isDetailsOpen: false
     }
+    detailsTrigger = '';
     setResult(res: OptimalPath[]) {
         var i = 0, l = res.length;
         this.result = [];
@@ -65,19 +66,17 @@ export class SearchResultList {
             this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(this.activePath);
         }
     }
-    openDetails(path: OptimalPath, event) {
-        path['animationTrigger'] = 'void';
+    openDetails(path: OptimalPath, event: any) {
         this.activePath = path;
-        let _flags = this.flags;
-        setTimeout(function() {
-            _flags.isDetailsOpen = true;
-        }, 200);
+        this.flags.isDetailsOpen = true;
         this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(path);
+        this.detailsTrigger = 'in';
         event.stopPropagation();
     }
     closeDetails() {
         this.flags.isDetailsOpen = false;
-        this.activePath['animationTrigger'] = 'in';
+        //this.activePath['animationTrigger'] = 'in';
+        this.detailsTrigger = 'void';
     }
     detailsBusStop(index: number) {
         console.log('index: ' + index);

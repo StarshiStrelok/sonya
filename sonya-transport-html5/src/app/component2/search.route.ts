@@ -33,7 +33,7 @@ export class SearchRoute {
         this.layerRoutingDynamic.addTo(this.parent.map);
     }
     search() {
-        let settings: SearchSettings = this.parent.searchTabs.searchSettings.getSettings();
+        let settings: SearchSettings = this.parent.searchTabs.searchSettings.getSettingsValues();
         let startll = this.parent.layerEndpoint.startMarker.getLatLng();
         let endll = this.parent.layerEndpoint.endMarker.getLatLng();
         settings.profileId = this.parent.activeProfile.id;

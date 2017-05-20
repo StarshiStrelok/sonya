@@ -40,10 +40,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-list-item>
         </md-list>
 
-        <div *ngIf="flags.isDetailsOpen">
+        <div *ngIf="flags.isDetailsOpen" [@flyInOut]="detailsTrigger">
             <md-grid-list cols="7" rowHeight="40px" >
                 <md-grid-tile>
-                    <md-icon>directions_bus</md-icon>
+                    <md-icon>schedule</md-icon>
                 </md-grid-tile>
                 <md-grid-tile colspan="5">
                     <h3 class="srl-details-h">Trip details</h3>
@@ -51,7 +51,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <md-grid-tile>
                     <button md-button mdTooltip="Back to summary" mdTooltipPosition="above"
                             (click)="closeDetails()">
-                        <md-icon>chevron_left</md-icon>
+                        <md-icon>chevron_right</md-icon>
                     </button>
                 </md-grid-tile>
             </md-grid-list>

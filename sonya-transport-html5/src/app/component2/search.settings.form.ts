@@ -60,7 +60,7 @@ export class SearchSettingsForm implements OnInit {
             this.mapComponent.layerEndpoint.checkSearchConditions();
         }
     }
-    getSettings(): SearchSettings {
-        return this.settings;
+    getSettingsValues(): any {
+        return this.settingsForm.value;
     }
 }
