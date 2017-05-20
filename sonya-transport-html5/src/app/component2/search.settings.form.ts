@@ -48,13 +48,17 @@ export class SearchSettingsForm implements OnInit {
             day: ['', [Validators.required]],
             time: ['', [Validators.required, Validators.pattern('^([01]?[0-9]|2[0-3]):[0-5][0-9]$')]]
         });
-        let curDay = new Date().getDay() + 1;
+        let now = new Date();
+        let curDay = now.getDay() + 1;
         this.settings.day = curDay;
-        this.settings.time = new Date().getHours() + ':' + new Date().getMinutes();
+        let minutes = now.getMinutes() + '';
+        minutes = minutes.length === 1 ? '0' + minutes : minutes;
+        this.settings.time = now.getHours() + ':' + minutes;
         this.settingsForm.patchValue(this.settings);
     }
     onSubmit() {
         if (!this.settingsForm.valid) {
+            console.log('invalid');
             return;
         } else {
             this.mapComponent.layerEndpoint.checkSearchConditions();

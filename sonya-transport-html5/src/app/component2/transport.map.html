@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
                 (click)="closeMenu()" *ngIf="isMenuOpen"
-                mdTooltip="Hide" mdTooltipPosition="below">
+                mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="below">
             <md-icon>chevron_left</md-icon></button>
 
     </md-sidenav>
@@ -40,13 +40,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <button md-fab color="primary" class="tm-map-control" style="top: 25px; left: 25px"
             (click)="openMenu()" *ngIf="!isMenuOpen"
-            mdTooltip="Open control" mdTooltipPosition="below">
+            mdTooltip="{{'transport-map.controls.search' | translate }}" mdTooltipPosition="below">
         <md-icon>widgets</md-icon></button>
 
     <md-fab-speed-dial class="tm-map-control" style="top: 25px; right: 25px;"
                        direction="left" *ngIf="activeProfile && activeProfile.mapLayers && activeMapLayer.id != -1"
                        (selectAction)="changeMapLayer($event)">
-        <md-fab-trigger mdTooltip="Layers" mdTooltipPosition="below">
+        <md-fab-trigger mdTooltip="{{'transport-map.controls.layers' | translate }}"
+                        mdTooltipPosition="below">
             <md-icon *ngIf="activeMapLayer">{{activeMapLayer.mdIcon}}</md-icon>
         </md-fab-trigger>
 

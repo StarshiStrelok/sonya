@@ -21,14 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <md-tab-group dynamicHeight="true">
             <md-tab><ng-template md-tab-label>
-                    <md-icon class="st-h-i" mdTooltip="Search results"
+                    <md-icon class="st-h-i" mdTooltip="{{'transport-map.search-tab.results-tab' | translate }}"
                              mdTooltipPosition="above">view_list</md-icon>
                 </ng-template>
                 <search-result [mapComponent]="mapComponent"></search-result>
             </md-tab>
             <md-tab>
                 <ng-template md-tab-label>
-                    <md-icon class="st-h-i" mdTooltip="Search settings"
+                    <md-icon class="st-h-i" mdTooltip="{{'transport-map.search-tab.settings-tab' | translate }}"
                              mdTooltipPosition="above">settings</md-icon>
                 </ng-template>
                 <search-settings [mapComponent]="mapComponent"></search-settings>

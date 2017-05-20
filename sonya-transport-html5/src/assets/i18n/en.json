@@ -20,6 +20,32 @@
                     "body": "Geocoder temporarily not working, please use map for search"
                 }
             }
+        },
+        "search-result": {
+            "no-result": "No results, make search in first",
+            "no-result-desc": "Click right mouse button on map and set start and end of the route, or use geocoder",
+            "no-result-geocoder": "Geocoder is the service for search coordinates of geographical object by it name or address. For example, input street name and house number for object which you search and press Enter",
+            "found-results": "Found results {{count}}",
+            "open-details": "Open details",
+            "trip-details": "Trip details",
+            "back-to-summary": "Back to search results",
+            "full-distance": "summary distance"
+        },
+        "search-tab": {
+            "results-tab": "Search results",
+            "settings-tab": "Search settings"
+        },
+        "search-settings": {
+            "day-of-trip": "Day of trip",
+            "time-of-trip": "Time of trip (24h format)",
+            "max-results": "Show max results",
+            "max-transfers": "Max transfers from route to route",
+            "apply": "Apply"
+        },
+        "controls": {
+            "hide": "Hide",
+            "search": "Search routes",
+            "layers": "Layers"
         }
     },
     "common": {
@@ -32,5 +58,11 @@
             "saturday": "Saturday",
             "sunday": "Sunday"
         }
+    },
+    "validator": {
+        "required": "Required",
+        "time": "Not time format",
+        "min": "{{value}} is minimum",
+        "max": "{{value}} is maximum"
     }
 }

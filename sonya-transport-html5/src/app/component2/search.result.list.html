@@ -16,16 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div style="min-height: 100px;" [style.overflow]="result.length > 0 ? 'auto' : 'hidden'">
-    <h4 [hidden]="result.length > 0" style="text-align: center;">
-        No results, make search in first
-    </h4>
-    <h5 [hidden]="result.length > 0">
-        Click right mouse button on map and set start and end of the route, or use geocoder
-    </h5>
+    <h4 [hidden]="result.length > 0" style="text-align: center;"
+        [translate]="'transport-map.search-result.no-result'"></h4>
+    <h5 [hidden]="result.length > 0"
+        [translate]="'transport-map.search-result.no-result-desc'"></h5>
+    <h5 [hidden]="result.length > 0"
+        [translate]="'transport-map.search-result.no-result-geocoder'"></h5>
     <div [hidden]="result.length < 1">
 
         <md-list *ngIf="!flags.isDetailsOpen">
-            <h3 md-subheader class="srl-result-h">Found results {{result.length}}</h3>
+            <h3 md-subheader class="srl-result-h"
+                [translate]="'transport-map.search-result.found-results'" [translateParams]="{count: result.length}"></h3>
             <md-list-item *ngFor="let op of result" class="srl-item" (click)="showPath(op)"
                 [@flyInOut]="op.animationTrigger">
                 <md-icon md-list-icon [ngClass]="{'srl-selected-path': op === activePath}">chevron_right</md-icon>
@@ -34,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         [style.background-color]="path.route.type.lineColor"
                         mdTooltip="{{path.description}}" mdTooltipPosition="above">{{path.route.namePrefix}}{{path.route.namePostfix}}</span>
                 </p>
-                <md-icon mdTooltip="Open details"
+                <md-icon mdTooltip="{{'transport-map.search-result.open-details' | translate }}"
                      mdTooltipPosition="above" (click)="openDetails(op, $event)"
                      [ngClass]="{'srl-selected-path': op === activePath}">access_time</md-icon>
             </md-list-item>
@@ -46,11 +47,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <md-icon>schedule</md-icon>
                 </md-grid-tile>
                 <md-grid-tile colspan="5">
-                    <h3 class="srl-details-h">Trip details</h3>
+                    <h3 class="srl-details-h" [translate]="'transport-map.search-result.trip-details'"></h3>
                 </md-grid-tile>
                 <md-grid-tile>
-                    <button md-button mdTooltip="Back to summary" mdTooltipPosition="above"
-                            (click)="closeDetails()">
+                    <button md-button mdTooltip="{{'transport-map.search-result.back-to-summary' | translate }}"
+                            mdTooltipPosition="above" (click)="closeDetails()">
                         <md-icon>chevron_right</md-icon>
                     </button>
                 </md-grid-tile>
@@ -96,7 +97,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <md-grid-list cols="8" rowHeight="50px">
 
                 <md-grid-tile colspan="6">
-
+                    <p class="srl-d-bs-lbl" [translate]="'transport-map.search-result.full-distance'"></p>
                 </md-grid-tile>
 
                 <md-grid-tile colspan="2">
