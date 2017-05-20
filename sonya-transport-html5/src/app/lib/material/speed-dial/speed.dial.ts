@@ -32,16 +32,31 @@ const scaleAnim: any =
             animate(`0.2s ease-in`)
         ])
     ])
+    
+const rotateAnim: any =
+    trigger('rotateAnim', [
+        state('open', style({transform: `rotate(360deg)`})),
+        state('close', style({transform: `rotate(-360deg)`})),
+        transition('open => close', [
+            animate(`1s cubic-bezier(.4,0,.2,1)`)
+        ]),
+        transition('close => open', [
+            animate(`1s cubic-bezier(.4,0,.2,1)`)
+        ])
+    ])
 
 @Component({
     selector: 'md-fab-trigger',
-    template: ` <button md-fab color="primary" (click)="toggleSpeedDial()">
+    template: ` <button md-fab color="primary" (click)="toggleSpeedDial()"
+                    [@rotateAnim]="animationState">
                     <ng-content></ng-content>
                 </button>`,
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    animations: [rotateAnim]
 })
 export class MdFabTrigger implements AfterContentInit {
     private parent: MdFabSpeedDial;
+    private animationState: string = 'close';
     setParent(p: MdFabSpeedDial) {
         this.parent = p;
     }
@@ -50,6 +65,10 @@ export class MdFabTrigger implements AfterContentInit {
     }
     toggleSpeedDial() {
         this.parent.actions.toggle();
+        this.rotateTrigger();
+    }
+    rotateTrigger() {
+        this.animationState = this.animationState === 'close' ? 'open' : 'close';
     }
 }
 
@@ -82,6 +101,7 @@ export class MdFabActionButton implements AfterContentInit {
     select() {
         this.parent.toggle();
         this.parent.parent.selectAction.emit(this.curIndex);
+        this.parent.parent.trigger.rotateTrigger();
     }
     setParent(p: MdFabActions) {
         this.parent = p;

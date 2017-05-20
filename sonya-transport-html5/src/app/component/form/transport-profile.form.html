@@ -75,7 +75,7 @@
                 <md-card-header>
                     <md-card-title><b>Map layers</b></md-card-title>
                     <md-card-subtitle>
-                        This section allows to define different layers for the map
+                        This section allows to define different Mapbox layers for the map
                     </md-card-subtitle>
                 </md-card-header>
                 <md-card-content>
@@ -92,7 +92,7 @@
                     <md-grid-list cols="10" rowHeight="56px;" *ngFor="let ml of mapLayers"
                                   [formGroup]="ml">
                         <input type="number" hidden="true" formControlName="id"/>
-                        <md-grid-tile colspan="4">
+                        <md-grid-tile colspan="2">
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Layer name" formControlName="name">
                                 <md-error *ngIf="ml.get('name').hasError('required')">
@@ -100,6 +100,17 @@
                                 </md-error>
                                 <md-error *ngIf="ml.get('name').hasError('maxlength')">
                                     Very long string, 50 characters maximum
+                                </md-error>
+                            </md-input-container>
+                        </md-grid-tile>
+                        <md-grid-tile colspan="2">
+                            <md-input-container class="full-width">
+                                <input mdInput placeholder="Material design icon" formControlName="mdIcon">
+                                <md-error *ngIf="ml.get('mdIcon').hasError('required')">
+                                    Required
+                                </md-error>
+                                <md-error *ngIf="ml.get('mdIcon').hasError('maxlength')">
+                                    Very long string, 200 characters maximum
                                 </md-error>
                             </md-input-container>
                         </md-grid-tile>

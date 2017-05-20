@@ -70,7 +70,8 @@ export class MapLayer implements AbsModel {
     constructor(
         public id: number,
         public name: string,
-        public url: string
+        public url: string,
+        public mdIcon: string
     ) {}
 }
 

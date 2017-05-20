@@ -54,6 +54,11 @@ public class MapLayer implements Serializable {
     @Size(max = 200)
     @Column(name = "url", length = 200)
     private String url;
+    /** Layer material design icon. */
+    @NotNull
+    @Size(max = 200)
+    @Column(name = "md_icon", length = 200)
+    private String mdIcon;
     /** Transport profile. */
     @JsonIgnore
     @NotNull
@@ -108,6 +113,18 @@ public class MapLayer implements Serializable {
      */
     public void setTransportProfile(TransportProfile transportProfile) {
         this.transportProfile = transportProfile;
+    }
+    /**
+     * @return the mdIcon
+     */
+    public String getMdIcon() {
+        return mdIcon;
+    }
+    /**
+     * @param mdIcon the mdIcon to set
+     */
+    public void setMdIcon(String mdIcon) {
+        this.mdIcon = mdIcon;
     }
 // ============================================================================
     @Override

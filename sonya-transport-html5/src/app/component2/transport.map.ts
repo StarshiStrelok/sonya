@@ -188,7 +188,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
                 return this.activeProfile.mapLayers[0];
             }
         } else {
-            return new MapLayer(-1, 'OSM', 'http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+            return new MapLayer(-1, 'OSM', 'http://{s}.tile.osm.org/{z}/{x}/{y}.png', 'layers');
         }
     }
 }

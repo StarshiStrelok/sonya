@@ -110,7 +110,8 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         let mapLayerGroup: FormGroup = this.fb.group({
             id: [''],
             name: ['', [Validators.required, Validators.maxLength(50)]],
-            url: ['', [Validators.maxLength(200)]]
+            url: ['', [Validators.maxLength(200)]],
+            mdIcon: ['', [Validators.required, Validators.maxLength(200)]]
         });
         this.transportProfileForm.addControl(groupName, mapLayerGroup);
         this.mapLayers.push(mapLayerGroup);
