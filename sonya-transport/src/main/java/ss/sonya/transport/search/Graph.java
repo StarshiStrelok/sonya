@@ -17,8 +17,10 @@
  */
 package ss.sonya.transport.search;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import ss.sonya.entity.Path;
 
 /**
@@ -63,6 +65,9 @@ public class Graph {
     public static final int IDX_W_TRANSFER_2 = 4;
     /** Path in vertex order. */
     private final List<Path> paths;
+    /** Path schedule cache. Path/Days/Bus stop times/separate time. */
+    private final Map<Path, Map<String, List<List<String>>>> scheduleMap =
+            new HashMap<>();
     /** Edges count. */
     private int edges;
     /** Lists of adjacency. */
@@ -184,6 +189,23 @@ public class Graph {
             }
         }
         return max;
+    }
+    /**
+     * Put schedule to graph.
+     * @param p path.
+     * @param sch schedule.
+     */
+    public void putSchedule(final Path p,
+            final Map<String, List<List<String>>> sch) {
+        scheduleMap.put(p, sch);
+    }
+    /**
+     * Get path schedule.
+     * @param p path.
+     * @return schedule, broken by days.
+     */
+    public Map<String, List<List<String>>> getSchedule(final Path p) {
+        return scheduleMap.get(p);
     }
     /**
      * Print vertex.

@@ -32,11 +32,14 @@ import ss.sonya.constants.TransportConst;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.Route;
+import ss.sonya.entity.RouteProfile;
 import ss.sonya.entity.TransportProfile;
+import ss.sonya.entity.Trip;
 import ss.sonya.inject.DataService;
 import ss.sonya.inject.service.Geometry;
 import ss.sonya.transport.api.TransportDataService;
 import ss.sonya.transport.component.TransportGeometry;
+import ss.sonya.transport.component.VirtualScheduleBuilder;
 
 /**
  * Graph constructor.
@@ -75,6 +78,9 @@ public class GraphConstructor {
     /** Geometry. */
     @Autowired
     private Geometry geometry;
+    /** Virtual schedule builder. */
+    @Autowired
+    private VirtualScheduleBuilder virtualScheduleBuilder;
     /** Initialization. */
     @PostConstruct
     protected void init() {
@@ -190,6 +196,23 @@ public class GraphConstructor {
             }
         }
         LOG.info("--- " + graph.toString());       // output graph
+        if (profile.isHasSchedule()) {
+            long startSchedule = System.currentTimeMillis();
+            for (Path p : paths) {
+                List<Trip> schedule = transportService.getSchedule(p.getId());
+                if (schedule.get(0) != null
+                        && schedule.get(0).getIrregular() != null
+                        && !schedule.get(0).getIrregular().isEmpty()) {
+                    List<BusStop> fullWay = p.getBusstops();
+                    RouteProfile type = p.getRoute().getType();
+                    schedule = virtualScheduleBuilder
+                            .buildVirtualSchedule(schedule, fullWay, type);
+                }
+                graph.putSchedule(p, buildSchedule(schedule));
+            }
+            LOG.info("build schedule for graph, elapsed time ["
+                    + (System.currentTimeMillis() - startSchedule) + "] ms");
+        }
         LOG.info("--- build path graph end... Elapsed time ["
                 + (System.currentTimeMillis() - start) + "] ms");
         return graph;
@@ -416,6 +439,29 @@ public class GraphConstructor {
                 bs.getLongitude(),
                 newT.getLatitude(), newT.getLongitude());
         return dist1 > dist2;
+    }
+    /**
+     * Parse schedule data and create object model.
+     * @param schedule - path schedule.
+     * @return - object model <days, times>.
+     * @throws Exception - operation error.
+     */
+    public Map<String, List<List<String>>> buildSchedule(
+            final List<Trip> schedule) throws Exception {
+        Map<String, List<List<String>>> tripMap = new HashMap<>();
+        for (Trip trip : schedule) {
+            String days = trip.getDays();
+            String[] arr = trip.getRegular().split(",", -1);
+            List<String> lInf = Arrays.asList(arr);
+            if (tripMap.containsKey(days)) {
+                tripMap.get(days).add(lInf);
+            } else {
+                List<List<String>> l = new ArrayList<>();
+                l.add(lInf);
+                tripMap.put(days, l);
+            }
+        }
+        return tripMap;
     }
 }
 

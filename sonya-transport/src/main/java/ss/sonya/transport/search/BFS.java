@@ -28,6 +28,7 @@ import ss.sonya.entity.TransportProfile;
 import ss.sonya.inject.service.Geometry;
 import ss.sonya.transport.component.TransportGeometry;
 import ss.sonya.transport.search.vo.OptimalPath;
+import ss.sonya.transport.search.vo.SearchSettings;
 
 /**
  * BFS abstract class.
@@ -74,11 +75,12 @@ public abstract class BFS implements SearchEngine {
     /**
      * Sort result.
      * @param result result.
-     * @param hasSchedule is profile has schedule?
+     * @param settings search settings.
+     * @param profile transport profile.
      * @throws Exception error.
      */
     protected abstract void sortResults(List<OptimalPath> result,
-            boolean hasSchedule) throws Exception;
+            SearchSettings settings, TransportProfile profile) throws Exception;
     /**
      * Clear unreal results.
      * @param dirty dirty optimal paths.
