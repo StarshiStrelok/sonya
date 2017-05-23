@@ -233,5 +233,5 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                     + "] unreal decisions from [" + list.size() + "]");
         }
         return rest;
-    } 
+    }
 }

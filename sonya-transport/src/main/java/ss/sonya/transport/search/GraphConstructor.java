@@ -185,7 +185,6 @@ public class GraphConstructor {
                 for (int i = 0; i < pairs.length; i += 2) {
                     bs = pairs[i];
                     transferBs = pairs[i + 1];
-                    
                     int pathBsOrder = way.indexOf(bs);
                     int tPathBsOrder = transferPath.getBusstops()
                             .indexOf(transferBs);
@@ -232,7 +231,6 @@ public class GraphConstructor {
             final Map<BusStop, List<Path>> bsPaths,
             final List<BusStop> all, final double radius) throws Exception {
         Map<Path, BusStop[]> transferMap = new HashMap<>();
-        int total = 0;
         List<BusStop> way = path.getBusstops();
         for (int i = 0; i < way.size(); i++) {
             if (i == 0) {
@@ -266,14 +264,13 @@ public class GraphConstructor {
                         if (TransportConst.METRO.equals(transferPath.getRoute()
                                 .getType().getName())
                                 || TransportConst.METRO.equals(
-                                        path.getRoute().getType().getName())) {                            
+                                        path.getRoute().getType().getName())) {
                             List<BusStop> tmpList = new ArrayList<>(
                                     Arrays.asList(pairs));
                             tmpList.add(bs);
                             tmpList.add(transferBs);
                             pairs = tmpList.toArray(new BusStop[0]);
                             transferMap.put(transferPath, pairs);
-                            total++;
                             continue;
                         }
                         // else add 2 transfers max for other transport types
@@ -352,10 +349,21 @@ public class GraphConstructor {
                             bs, transferBs
                         });
                     }
-                    total++;
                 }
             }
         }
+        mergeNeighboringTransfers(way, transferMap);
+        return transferMap;
+    }
+    /**
+     * Merge neighboring transfers.
+     * Select shortest only.
+     * @param way path way.
+     * @param transferMap transfer map.
+     * @throws Exception error.
+     */
+    private void mergeNeighboringTransfers(final List<BusStop> way,
+            final Map<Path, BusStop[]> transferMap) throws Exception {
         // if start & end transfer follow each other - select best
         for (Path tPath : transferMap.keySet()) {
             if (TransportConst.METRO.equals(
@@ -388,19 +396,6 @@ public class GraphConstructor {
                 }
             }
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(total + " * " + path);
-            int total2 = 0;
-            for (Path p : transferMap.keySet()) {
-                total2++;
-                if (transferMap.get(p)[TRANSFER_2_TO] != null) {
-                    total2++;
-                }
-            }
-            LOG.debug("transfer path count [" + transferMap.size()
-                    + "], transfers [" + total2 + "]\n");
-        }
-        return transferMap;
     }
     /**
      * Get transfer bus stops from access zone for current bus stop.

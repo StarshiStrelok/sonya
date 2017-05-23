@@ -35,6 +35,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,8 @@ import ss.sonya.constants.TransportConst;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.TransportProfile;
+import ss.sonya.inject.service.Geometry;
+import ss.sonya.transport.component.TransportGeometry;
 import ss.sonya.transport.search.vo.BusStopTime;
 import ss.sonya.transport.search.vo.OptimalPath;
 import ss.sonya.transport.search.vo.OptimalSchedule;
@@ -53,9 +57,20 @@ import ss.sonya.transport.search.vo.SearchSettings;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class BFSAlgorithmV1 extends BFS implements SearchEngine {
+public class BFSAlgorithmV1 implements SearchEngine {
+    /** Logger. */
+    private static final Logger LOG = Logger.getLogger(BFSAlgorithmV1.class);
     /** Limit time multiplexer. max_time=min_time * multiplexer. */
     private static final double LIMIT_TIME_MULTIPLEXER = 2;
+    /** Transport geometry. */
+    @Autowired
+    private TransportGeometry transportGeometry;
+    /** Geometry. */
+    @Autowired
+    private Geometry geometry;
+    /** Graph constructor. */
+    @Autowired
+    private GraphConstructor graphConstructor;
     @Override
     public List<OptimalPath> search(final SearchSettings settings)
             throws Exception {
@@ -158,8 +173,18 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         LOG.info("#-bfs-#-#-#-#-#-#-#-#-#-# search complete #-#-#-#-#-#-#\n");
         return result;
     }
-    @Override
-    protected Map<Integer, Set<BusStop>> createPointVertices(
+    /**
+     * Create vertices for start or end vertices.
+     * Grouping start / end bus stops by vertices (paths),
+     * because every bus stop has paths, passing through it.
+     * @param pointBusStops point bus stops.
+     * @param isStart start or end point.
+     * @param profile transport profile.
+     * @param graph graph.
+     * @return point vertices map.
+     * @throws Exception - method error.
+     */
+    private Map<Integer, Set<BusStop>> createPointVertices(
             final List<BusStop> pointBusStops, final boolean isStart,
             final TransportProfile profile, final Graph graph)
             throws Exception {
@@ -207,8 +232,15 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         }
         return map;
     }
-    @Override
-    protected List<OptimalPath> straightPaths(
+    /**
+     * Find straight paths.
+     * @param startVertices start vertices.
+     * @param endVertices end vertices.
+     * @param graph graph.
+     * @return straight paths list.
+     * @throws Exception method error.
+     */
+    private List<OptimalPath> straightPaths(
             final Map<Integer, Set<BusStop>> startVertices,
             final Map<Integer, Set<BusStop>> endVertices,
             final Graph graph) throws Exception {
@@ -244,7 +276,13 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         }
         return list;
     }
-    @Override
+    /**
+     * Sort result.
+     * @param result result.
+     * @param settings search settings.
+     * @param profile transport profile.
+     * @throws Exception error.
+     */
     protected void sortResults(final List<OptimalPath> result,
             final SearchSettings settings, final TransportProfile profile)
             throws Exception {
@@ -303,7 +341,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
      * @param settings search settings.
      * @return result in two parts: short paths in under zero index,
      *      and long under 1 index.
-     * @throws Exception 
+     * @throws Exception error.
      */
     private List<OptimalPath>[] groupingResult(final List<OptimalPath> dirty,
             final SearchSettings settings) throws Exception {
@@ -472,6 +510,41 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         LOG.info("#-bfs-# insert schedule elapsed time ["
                 + (System.currentTimeMillis() - start) + "] ms");
     }
+        /**
+     * Clear unreal results.
+     * @param dirty dirty optimal paths.
+     * @param startBs all start bus stops.
+     * @return real optimal paths.
+     * @throws Exception method error.
+     */
+    private List<OptimalPath> clearUnrealResults(
+            final List<OptimalPath> dirty,
+            final List<BusStop> startBs) throws Exception {
+        long start = System.currentTimeMillis();
+        List<OptimalPath> rest = new ArrayList<>();
+        for (OptimalPath op : dirty) {
+            if (op.getWay().size() > 1) {
+                // if next way start bus stop in start area zone - remove it
+                if (!startBs.contains(op.getWay().get(1).get(0))) {
+                    rest.add(op);
+                }
+            } else {
+                rest.add(op);
+            }
+//            for (List<BusStop> way : op.getWay()) {
+//                if (way.size() <= 2 && op.getPath().get(
+//                        op.getWay().indexOf(way))
+//                        .getRoute().getType() != RouteType.METRO) {
+//                    unreal.add(op);
+//                    break;
+//                }
+//            }
+        }
+        LOG.info("#-bfs-# unreal results, was [" + dirty.size()
+                    + "], rest [" + rest.size() + "], elapsed time ["
+                    + (System.currentTimeMillis() - start) + "] ms");
+        return rest;
+    }
     /**
      * Insert schedule into optimal path.
      */
@@ -490,7 +563,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
          * Constructor.
          * @param p portion of total optimal path list.
          */
-        public InsertScheduleTask(final List<OptimalPath> p, final String pTime,
+        InsertScheduleTask(final List<OptimalPath> p, final String pTime,
                 final int pDay, final Graph g) {
             portion = p;
             time = pTime;

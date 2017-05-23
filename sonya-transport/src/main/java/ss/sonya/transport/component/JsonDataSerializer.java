@@ -58,6 +58,8 @@ public class JsonDataSerializer implements ImportDataSerializer {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(
             JsonDataSerializer.class);
+    /** Short time format length. For example 7:15 => 07:15. */
+    private static final int SHORT_TIME = 4;
 // ========================== JSON FIELDS =====================================
     /** -> Meta data. */
     private static final String META = "meta";
@@ -410,8 +412,8 @@ public class JsonDataSerializer implements ImportDataSerializer {
                 ooo.put(SCH_DAYS, t.getDays());
                 if (t.getRegular() != null && !t.getRegular().isEmpty()) {
                     String testStr = t.getRegular().replace(",", "");
-                    if (p.getBusstops().size() !=
-                            (t.getRegular().length() - testStr.length() + 1)) {
+                    if (p.getBusstops().size() != (t.getRegular().length()
+                            - testStr.length() + 1)) {
                         LOG.warn(p.getBusstops().size() + ": "
                             + (t.getRegular().length() - testStr.length() + 1));
                         throw new IllegalArgumentException(
@@ -421,7 +423,7 @@ public class JsonDataSerializer implements ImportDataSerializer {
                     String[] times = t.getRegular().split(",", -1);
                     StringBuilder sb = new StringBuilder();
                     for (String time : times) {
-                        time = time.length() == 4 ? "0" + time : time;
+                        time = time.length() == SHORT_TIME ? "0" + time : time;
                         sb.append(time).append(",");
                     }
                     if (sb.length() > 1) {
