@@ -132,7 +132,7 @@ public class OptimalPath {
             }
             sb.append(" | ").append(p.getDescription()).append("\n");
             if (schedule != null) {
-                BusStopTime[] t = schedule.getData().get(p);
+                BusStopTime[] t = schedule.getData().get(path.indexOf(p));
                 sb.append("\ttrip time: ").append(sdfTime.format(t[0].getTime()))
                         .append(" - ").append(sdfTime.format(t[1].getTime()))
                         .append("\n");

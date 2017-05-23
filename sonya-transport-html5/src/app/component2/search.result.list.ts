@@ -84,6 +84,12 @@ export class SearchResultList {
     getBusStopTime(index: number, position: string) {
         if (!this.activePath.schedule) {
             return '';
+        } else {
+            if ('start' === position) {
+                return this.activePath.schedule.data[index][0].time;
+            } else if ('end' === position) {
+                return this.activePath.schedule.data[index][1].time;
+            }
         }
     }
     summaryDistance() {

@@ -25,7 +25,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -514,7 +513,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         private OptimalSchedule buildOptimalSchedule(final OptimalPath op)
                 throws Exception {
             OptimalSchedule os = new OptimalSchedule();
-            LinkedHashMap<Path, BusStopTime[]> data = new LinkedHashMap<>();
+            List<BusStopTime[]> data = new ArrayList<>();
             Calendar c = GregorianCalendar.getInstance();
             Date startTrip = hhMM.parse(time);
             c.setTime(startTrip);
@@ -607,7 +606,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
                 // add day if end date after 00:00
                 eDate = eDate.before(startTrip) ? new Date(eDate.getTime()
                         + TimeUnit.DAYS.toMillis(1)) : eDate;
-                data.put(path, new BusStopTime[] {
+                data.add(new BusStopTime[] {
                             new BusStopTime(sBs, sDate),
                             new BusStopTime(eBs, eDate)
                         });
@@ -619,11 +618,11 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
             }
             os.setData(data);
             os.setArrivalDate(cDate);
-            long dtime = data.get(op.getPath().get(0))[0].getTime().getTime()
-                    - data.get(op.getPath().get(op.getPath().size() - 1))[1]
-                            .getTime().getTime();
-            
+            long dtime = data.get(0)[0].getTime().getTime()
+                    - data.get(data.size() - 1)[1].getTime().getTime();
             os.setDuration(new Date(epoch - dtime));
+            os.setArrivalTime(hhMM.format(os.getArrivalDate()));
+            os.setDurationTime(hhMM.format(os.getDuration()));
             return os;
         }
     }

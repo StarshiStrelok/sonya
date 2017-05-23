@@ -131,6 +131,16 @@ export class OptimalSchedule {
     constructor(
         public startDate: Date,
         public arrivalDate: Date,
-        public duration: Date
+        public duration: Date,
+        public arrivalTime: string,
+        public durationTime: string,
+        public data: BusStopTime[][]
+    ) {}
+}
+
+export class BusStopTime {
+    constructor(
+        public busstop: string,
+        public time: Date
     ) {}
 }

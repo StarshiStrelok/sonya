@@ -17,8 +17,7 @@
 package ss.sonya.transport.search.vo;
 
 import java.util.Date;
-import java.util.LinkedHashMap;
-import ss.sonya.entity.Path;
+import java.util.List;
 
 /**
  * Optimal schedule.
@@ -27,23 +26,27 @@ import ss.sonya.entity.Path;
  */
 public class OptimalSchedule {
     /** Schedule data. */
-    private LinkedHashMap<Path, BusStopTime[]> data;
-    /** Arrival date. */
+    private List<BusStopTime[]> data;
+    /** Arrival time. Date format. */
     private Date arrivalDate;
     /** Start date. */
     private Date startDate;
-    /** Duration time. */
+    /** Duration time. Date format. */
     private Date duration;
+    /** Arrival time. String format. */
+    private String arrivalTime;
+    /** Duration time. String format. */
+    private String durationTime;
     /**
      * @return the data
      */
-    public LinkedHashMap<Path, BusStopTime[]> getData() {
+    public List<BusStopTime[]> getData() {
         return data;
     }
     /**
      * @param data the data to set
      */
-    public void setData(LinkedHashMap<Path, BusStopTime[]> data) {
+    public void setData(List<BusStopTime[]> data) {
         this.data = data;
     }
     /**
@@ -81,5 +84,29 @@ public class OptimalSchedule {
      */
     public void setDuration(Date duration) {
         this.duration = duration;
+    }
+    /**
+     * @return the arrivalTime
+     */
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
+    /**
+     * @param arrivalTime the arrivalTime to set
+     */
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+    /**
+     * @return the durationTime
+     */
+    public String getDurationTime() {
+        return durationTime;
+    }
+    /**
+     * @param durationTime the durationTime to set
+     */
+    public void setDurationTime(String durationTime) {
+        this.durationTime = durationTime;
     }
 }
