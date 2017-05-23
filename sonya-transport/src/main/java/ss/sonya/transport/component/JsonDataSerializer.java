@@ -409,7 +409,25 @@ public class JsonDataSerializer implements ImportDataSerializer {
                 JSONObject ooo = new JSONObject();
                 ooo.put(SCH_DAYS, t.getDays());
                 if (t.getRegular() != null && !t.getRegular().isEmpty()) {
-                    ooo.put(SCH_REGULAR, t.getRegular());
+                    String testStr = t.getRegular().replace(",", "");
+                    if (p.getBusstops().size() !=
+                            (t.getRegular().length() - testStr.length() + 1)) {
+                        LOG.warn(p.getBusstops().size() + ": "
+                            + (t.getRegular().length() - testStr.length() + 1));
+                        throw new IllegalArgumentException(
+                                "schedule not match with"
+                                    + " path bus stops count! " + p);
+                    }
+                    String[] times = t.getRegular().split(",", -1);
+                    StringBuilder sb = new StringBuilder();
+                    for (String time : times) {
+                        time = time.length() == 4 ? "0" + time : time;
+                        sb.append(time).append(",");
+                    }
+                    if (sb.length() > 1) {
+                        sb.setLength(sb.length() - 1);
+                    }
+                    ooo.put(SCH_REGULAR, sb.toString());
                 }
                 if (t.getIrregular() != null && !t.getIrregular().isEmpty()) {
                     ooo.put(SCH_IRREGULAR, t.getIrregular());

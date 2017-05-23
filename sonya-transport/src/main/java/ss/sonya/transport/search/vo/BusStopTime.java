@@ -17,6 +17,7 @@
 package ss.sonya.transport.search.vo;
 
 import java.util.Date;
+import ss.sonya.entity.BusStop;
 
 /**
  * Bus stop + it time.
@@ -27,6 +28,15 @@ public class BusStopTime {
     private String busstop;
     /** Bus stop time. */
     private Date time;
+    /**
+     * Constructor.
+     * @param bs bus stop.
+     * @param t time.
+     */
+    public BusStopTime(final BusStop bs, final Date t) {
+        busstop = bs.getName();
+        time = t;
+    }
     /**
      * @return the busstop
      */

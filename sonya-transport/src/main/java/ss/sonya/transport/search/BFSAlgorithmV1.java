@@ -16,15 +16,22 @@
  */
 package ss.sonya.transport.search;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -36,7 +43,9 @@ import ss.sonya.constants.TransportConst;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
 import ss.sonya.entity.TransportProfile;
+import ss.sonya.transport.search.vo.BusStopTime;
 import ss.sonya.transport.search.vo.OptimalPath;
+import ss.sonya.transport.search.vo.OptimalSchedule;
 import ss.sonya.transport.search.vo.SearchSettings;
 
 /**
@@ -139,7 +148,7 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
         result = clearUnrealResults(result, startBs);
         List<OptimalPath>[] grouping = groupingResult(result, settings);
         result = grouping[0];
-        sortResults(result, profile.isHasSchedule());
+        sortResults(result, settings, profile);
         if (result.size() > settings.getMaxResults()) {
             result = result.subList(0, settings.getMaxResults());
         }
@@ -238,10 +247,40 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
     }
     @Override
     protected void sortResults(final List<OptimalPath> result,
-            final boolean hasSchedule) throws Exception {
-        if (hasSchedule) {
-            // TODO
+            final SearchSettings settings, final TransportProfile profile)
+            throws Exception {
+        if (profile.isHasSchedule()) {
+            Graph graph = graphConstructor.findGraph(settings.getProfileId());
+            insertSchedule(result, settings.getTime(), settings.getDay(),
+                    graph);
+            List<OptimalPath> withSchedule = new ArrayList<>();
+            result.stream().forEach(op -> {
+                if (op.getSchedule() != null) {
+                    withSchedule.add(op);
+                }
+            });
+            result.clear();
+            result.addAll(withSchedule);
+            Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
+                Date d1 = o1.getSchedule().getArrivalDate();
+                Date d2 = o2.getSchedule().getArrivalDate();
+                if (d1.getTime() < d2.getTime()) {
+                    return -1;
+                } else if (d1.getTime() > d2.getTime()) {
+                    return 1;
+                } else {
+                    if (o1.getPath().size() > o2.getPath().size()) {
+                        return 1;
+                    } else if (o1.getPath().size() < o2.getPath().size()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
         } else {
+            // move decisions with minimal transfers to top,
+            // then sort it's by distance
             Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
                 if (o1.getPath().size() > o2.getPath().size()) {
                     return 1;
@@ -389,5 +428,203 @@ public class BFSAlgorithmV1 extends BFS implements SearchEngine {
             LOG.trace("#-bfs-# best --> " + best);
         }
         return best;
+    }
+    /**
+     * Insert schedule into optimal path.
+     * @param opList optimal path list.
+     * @param time start trip time.
+     * @param day trip day.
+     * @param graph graph.
+     */
+    private void insertSchedule(final List<OptimalPath> opList,
+            final String time, final int day, final Graph graph) {
+        long start = System.currentTimeMillis();
+        int cores = Runtime.getRuntime().availableProcessors();
+        int portionSize = opList.size() / cores;
+        LOG.info("#-bfs-# portion size [" + portionSize + "]");
+        List<Future<Void>> tasks = new ArrayList<>(cores);
+        ExecutorService ex = Executors.newFixedThreadPool(cores);
+        if (portionSize == 0) {
+            tasks.add(ex.submit(
+                    new InsertScheduleTask(opList, time, day, graph)
+            ));
+        } else {
+            int min, max;
+            for (int i = 1; i <= cores; i++) {
+                min = (i - 1) * portionSize;
+                if ((i + 1) * portionSize < opList.size()) {
+                    max = i * portionSize;
+                } else {
+                    max = opList.size();
+                }
+                tasks.add(ex.submit(
+                        new InsertScheduleTask(
+                                opList.subList(min, max), time, day, graph)
+                ));
+            }
+        }
+        for (Future<Void> task : tasks) {
+            try {
+                task.get();
+            } catch (InterruptedException | ExecutionException ex1) {
+                LOG.error("insert schedule task error!", ex1);
+            }
+        }
+        LOG.info("#-bfs-# insert schedule elapsed time ["
+                + (System.currentTimeMillis() - start) + "] ms");
+    }
+    /**
+     * Insert schedule into optimal path.
+     */
+    private class InsertScheduleTask implements Callable<Void> {
+        /** Portion of total list. */
+        private final List<OptimalPath> portion;
+        /** Start trip time. */
+        private final String time;
+        /** Trip day. */
+        private final int day;
+        /** Graph. */
+        private final Graph graph;
+        /** Time format. */
+        private final SimpleDateFormat hhMM = new SimpleDateFormat("HH:mm");
+        /**
+         * Constructor.
+         * @param p portion of total optimal path list.
+         */
+        public InsertScheduleTask(final List<OptimalPath> p, final String pTime,
+                final int pDay, final Graph g) {
+            portion = p;
+            time = pTime;
+            day = pDay;
+            graph = g;
+        }
+        @Override
+        public Void call() throws Exception {
+            for (OptimalPath op : portion) {
+                op.setSchedule(buildOptimalSchedule(op));
+            }
+            return null;
+        }
+        /**
+         * Put optimal schedule.
+         * @param op - optimal schedule.
+         * @return - optimal schedule or null.
+         * @throws Exception - method error.
+         */
+        private OptimalSchedule buildOptimalSchedule(final OptimalPath op)
+                throws Exception {
+            OptimalSchedule os = new OptimalSchedule();
+            LinkedHashMap<Path, BusStopTime[]> data = new LinkedHashMap<>();
+            Calendar c = GregorianCalendar.getInstance();
+            Date startTrip = hhMM.parse(time);
+            c.setTime(startTrip);
+            int i = 0;
+            Date cDate = null;
+            Iterator<Path> itr = op.getPath().iterator();
+            BusStop prevBs = null;
+            String dayOfWeek = "" + day;
+            long epoch = hhMM.parse("00:00").getTime();
+            while (itr.hasNext()) {
+                Path path = itr.next();
+                Map<String, List<List<String>>> tripMap = graph
+                        .getSchedule(path);
+                List<List<String>> trips = null;
+                if (tripMap == null) {
+                    LOG.warn("Schedule absent for " + path);
+                    return null;
+                }
+                for (String days : tripMap.keySet()) {
+                    if (days.contains(dayOfWeek)) {
+                        trips = tripMap.get(days);
+                        break;
+                    }
+                }
+                if (trips == null) {
+                    return null;         // no trips today
+                }
+                List<BusStop> way = op.getWay().get(i);
+                BusStop sBs = way.get(0);
+                BusStop eBs = way.get(way.size() - 1);
+                List<BusStop> fullWay = new ArrayList<>();
+                for (BusStop bs : path.getBusstops()) {
+                    if (!TransportConst.MOCK_BS.equals(bs.getName())) {
+                        fullWay.add(bs);
+                    }
+                }
+                int sIdx = fullWay.indexOf(sBs);
+                int eIdx = fullWay.indexOf(eBs);
+                Date nowDate = cDate == null ? startTrip : cDate;   // now date
+                if (prevBs != null && !prevBs.equals(sBs)) {
+                    // calc transfet distance.
+                    double humanDist = geometry.calcDistance(prevBs.getLatitude(),
+                            prevBs.getLongitude(), sBs.getLatitude(),
+                            sBs.getLongitude());        // km
+                    double addTime = humanDist
+                            / TransportConst.HUMAN_SPEED;
+                    double addTimeSec = addTime * TimeUnit.HOURS.toMinutes(1)
+                            * TimeUnit.MINUTES.toSeconds(1);      // sec
+                    nowDate = new Date(nowDate.getTime()
+                            + (long) (addTimeSec * TimeUnit.SECONDS.toMillis(1)));
+                }
+                Date sDate = null;                              // start bs date
+                List<String> foundTrip = null;                  // found trip
+                Date tDate;                                     // temp variable
+                for (int j = 0; j < trips.size(); j++) {
+                    List<String> trip = trips.get(j);
+                    String tm = trip.get(sIdx);
+                    if (tm.isEmpty()) {
+                        continue;
+                    }
+                    tDate = new Date(TransportConst.ALL_TIMES.get(tm));
+                    // add day for times after 00:00
+                    // and before transport midnight
+                    if (tDate.getTime() < TransportConst.TRANSPORT_MIDNIGHT) {
+                        tDate = new Date(tDate.getTime()
+                                + TimeUnit.DAYS.toMillis(1));
+                    }
+                    if (tDate.after(nowDate)) {
+                        if (sDate == null) {
+                            sDate = tDate;
+                            foundTrip = trip;
+                        } else if (tDate.before(sDate)) {
+                            sDate = tDate;
+                            foundTrip = trip;
+                        }
+                    }
+                }
+                if (sDate == null || foundTrip == null) {
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(path + " for [" + hhMM.format(nowDate)
+                                + "] no trip today");
+                    }
+                    return null;
+                }
+                String tripEndTime = foundTrip.get(eIdx);
+                if (tripEndTime.isEmpty()) {
+                    return null;
+                }
+                Date eDate = hhMM.parse(tripEndTime);
+                // add day if end date after 00:00
+                eDate = eDate.before(startTrip) ? new Date(eDate.getTime()
+                        + TimeUnit.DAYS.toMillis(1)) : eDate;
+                data.put(path, new BusStopTime[] {
+                            new BusStopTime(sBs, sDate),
+                            new BusStopTime(eBs, eDate)
+                        });
+                cDate = eDate;
+                if (i == 0) {
+                    os.setStartDate(sDate);
+                }
+                i++;
+            }
+            os.setData(data);
+            os.setArrivalDate(cDate);
+            long dtime = data.get(op.getPath().get(0))[0].getTime().getTime()
+                    - data.get(op.getPath().get(op.getPath().size() - 1))[1]
+                            .getTime().getTime();
+            
+            os.setDuration(new Date(epoch - dtime));
+            return os;
+        }
     }
 }

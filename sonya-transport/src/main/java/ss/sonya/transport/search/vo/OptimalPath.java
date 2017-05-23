@@ -17,6 +17,7 @@
 package ss.sonya.transport.search.vo;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import ss.sonya.entity.BusStop;
@@ -104,11 +105,25 @@ public class OptimalPath {
         long minInHour = TimeUnit.HOURS.toMinutes(1);
         String format = "| %-29s | %-8d | %-8d |\n";
         DecimalFormat df = new DecimalFormat("###.#");
+        SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
         String hr = "+-------------------------------+----------+----------+\n";
-        StringBuilder sb = new StringBuilder("> Optimal path <\n");
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append("==========================================================");
+        sb.append("\n");
+        sb.append("> Optimal path <\n");
         sb.append("> transfers [").append(path.size() - 1).append("]\n");
         sb.append("> time [").append(df.format(time * minInHour))
                 .append("] min\n");
+        if (schedule != null) {
+            sb.append("> arrival time [")
+                    .append(sdfTime.format(schedule.getArrivalDate()))
+                    .append("]\n");
+            sb.append("> trip duration [")
+                    .append(sdfTime.format(schedule.getDuration()))
+                    .append("]\n");
+        }
+        sb.append("\n");
         path.forEach(p -> {
             sb.append("\t").append(p.getRoute().getType().getName());
             sb.append(": ").append(p.getRoute().getNamePrefix());
@@ -116,6 +131,12 @@ public class OptimalPath {
                 sb.append(p.getRoute().getNamePostfix());
             }
             sb.append(" | ").append(p.getDescription()).append("\n");
+            if (schedule != null) {
+                BusStopTime[] t = schedule.getData().get(p);
+                sb.append("\ttrip time: ").append(sdfTime.format(t[0].getTime()))
+                        .append(" - ").append(sdfTime.format(t[1].getTime()))
+                        .append("\n");
+            }
             sb.append(hr);
             sb.append("|           Bus stop            "
                     + "|    ID    | External |\n");
@@ -126,6 +147,8 @@ public class OptimalPath {
             });
             sb.append(hr).append("\n");
         });
+        sb.append("==========================================================");
+        sb.append("\n");
         return sb.toString();
     }
 }

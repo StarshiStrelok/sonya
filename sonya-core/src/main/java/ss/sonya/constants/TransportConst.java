@@ -16,13 +16,22 @@
  */
 package ss.sonya.constants;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.apache.log4j.Logger;
 
 /**
  * Transport constants.
  * @author ss
  */
 public final class TransportConst {
+    /** Logger. */
+    private static final Logger LOG = Logger.getLogger(TransportConst.class);
     /** Mock bus stop. */
     public static final String MOCK_BS = "mock";
     /** Specific route profile name, means subway. */
@@ -33,6 +42,23 @@ public final class TransportConst {
     public static final double HUMAN_SPEED = 4;
     /** Transfer time payment. In hours. */
     public static final double TRANSFER_TIME_PAYMENT = 10 / 60;
+    /** Contains times from 00:00 - 23:59. */
+    public static final Map<String, Long> ALL_TIMES = new HashMap<>();
+    /** Initialization. */
+    static {
+        Calendar c = GregorianCalendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        try {
+            c.setTime(sdf.parse("00:00"));
+        } catch (ParseException ex) {
+            LOG.fatal("wrong zero time will be setted!", ex);
+        }
+        long minInDay = TimeUnit.DAYS.toMinutes(1);
+        for (int i = 0; i < minInDay; i++) {
+            ALL_TIMES.put(sdf.format(c.getTime()), c.getTime().getTime());
+            c.add(Calendar.MINUTE, 1);
+        }
+    }
     /**
      * Private constructor.
      */

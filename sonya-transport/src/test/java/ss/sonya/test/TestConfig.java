@@ -52,6 +52,9 @@ public abstract class TestConfig {
         tp.setNorthEastLon(32.0);
         tp.setSouthWestLat(28.0);
         tp.setSouthWestLon(28.0);
+        tp.setHasSchedule(false);
+        tp.setBusStopAccessZoneRadius(0.3);
+        tp.setSearchLimitForPoints(6);
         RouteProfile rp = new RouteProfile();
         rp.setAvgSpeed(30d);
         rp.setLineColor("#343434");
