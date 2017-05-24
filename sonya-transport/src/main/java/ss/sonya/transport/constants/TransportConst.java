@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ss.sonya.constants;
+package ss.sonya.transport.constants;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

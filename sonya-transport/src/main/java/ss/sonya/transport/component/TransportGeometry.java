@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ss.sonya.constants.TransportConst;
+import ss.sonya.transport.constants.TransportConst;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Route;
 import ss.sonya.inject.service.Geometry;
