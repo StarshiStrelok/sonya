@@ -18,7 +18,7 @@
 import {Component, Input} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/animations'
 
-import {OptimalPath, BusStop} from '../model/abs.model';
+import {OptimalPath, BusStop, BusStopTime, Path} from '../model/abs.model';
 import {TransportMap} from '../component2/transport.map';
 
 @Component({
@@ -97,7 +97,11 @@ export class SearchResultList {
         this.activePath.path.forEach(p => {
             dist += Number(p['distance']);
         });
-        return Number(dist).toFixed(1);
+        if (dist) {
+            return Number(dist).toFixed(1);
+        } else {
+            '0';
+        }
     }
     summaryTime() {
         if (!this.activePath.schedule) {
@@ -105,10 +109,28 @@ export class SearchResultList {
         } else {
             var d = new Date(this.activePath.schedule.duration);
             if (d.getHours() !== 0) {
-                return this.convertMSToTime(this.activePath.schedule.duration);
+                return d.getHours() + ' h ' + d.getMinutes() + ' min';
             } else {
                 return d.getMinutes() + ' min';
             }
+        }
+    }
+    tripPeriod(op: OptimalPath) {
+        if (op.schedule) {
+            let resp = this.convertMSToTime(op.schedule.data[0][0].time) + ' - '
+                + this.convertMSToTime(op.schedule.data[op.schedule.data.length - 1][1].time);
+            return resp;
+        } else {
+            return '';
+        }
+    }
+    pathTripDuration(index: number, p: Path) {
+        if (this.activePath.schedule) {
+            let range: BusStopTime[] = this.activePath.schedule.data[index];
+            let delta = (range[1].time - range[0].time) / 1000 / 60;
+            return delta.toFixed(0) + ' min';
+        } else {
+            return p['distance'] + ' km';
         }
     }
     showPath(op: OptimalPath) {

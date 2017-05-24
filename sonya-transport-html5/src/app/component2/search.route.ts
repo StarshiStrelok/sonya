@@ -44,10 +44,15 @@ export class SearchRoute {
         this.parent.waiting.open();
         this.parent.dataService.searchRoutes(settings, this.parent.waiting)
             .then((res: OptimalPath[]) => {
+                if (res.length === 0) {
+                    this.parent.notificationService.info(
+                        this.parent.translate.instant('transport-map.search-result.not-found.title'),
+                        this.parent.translate.instant('transport-map.search-result.not-found.body')
+                    );
+                }
                 this.parent.waiting.close();
                 this.parent.searchTabs.searchResult.setResult(res);
                 this.parent.searchTabs.searchResult.closeDetails();
-                console.log(res);
                 this.parent.searchTabs.tabGroup.selectedIndex = 0;
             });
     }

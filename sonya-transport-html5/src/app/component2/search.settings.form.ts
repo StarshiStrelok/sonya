@@ -18,7 +18,7 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
-import {SearchSettings} from '../model/abs.model';
+import {SearchSettings, RouteProfile} from '../model/abs.model';
 import {minNumberValidator} from '../lib/validator/min-number.directive';
 import {maxNumberValidator} from '../lib/validator/max-number.directive';
 import {TransportMap} from './transport.map';
@@ -26,9 +26,24 @@ import {TransportMap} from './transport.map';
 @Component({
     selector: 'search-settings',
     templateUrl: './search.settings.form.html',
-    styles: [`.ssf-spacer {
-        height: 10px;
-    }`]
+    styles: [`  .ssf-spacer {
+                   height: 10px;
+                }
+                .ssf-typ {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 15px;
+                    margin-left: 15px;
+                    border-width: 1px;
+                    border-color: #bbbbbb;
+                }
+                .ssf-typ:hover {
+                    cursor: pointer;
+                }
+                .ssf-typ-label {
+                    flex: 1;
+                }
+                `]
 })
 export class SearchSettingsForm implements OnInit {
     settingsForm: FormGroup;
@@ -65,6 +80,13 @@ export class SearchSettingsForm implements OnInit {
         }
     }
     getSettingsValues(): any {
-        return this.settingsForm.value;
+        let fv = this.settingsForm.value;
+        fv.disabledRouteTypes = [];
+        this.mapComponent.activeProfile.routeProfiles.forEach(rp => {
+            if (rp['searchDisable']) {
+                fv.disabledRouteTypes.push(rp);
+            }
+        });
+        return fv;
     }
 }

@@ -17,6 +17,9 @@
  */
 package ss.sonya.transport.search.vo;
 
+import java.util.List;
+import ss.sonya.entity.RouteProfile;
+
 /**
  * Search settings.
  * @author ss
@@ -40,6 +43,8 @@ public class SearchSettings {
     private int maxResults;
     /** Max transfers. */
     private int maxTransfers;
+    /** Disabled route types. */
+    private List<RouteProfile> disabledRouteTypes;
     /**
      * @return the sLat
      */
@@ -147,5 +152,17 @@ public class SearchSettings {
      */
     public void setProfileId(Integer profileId) {
         this.profileId = profileId;
+    }
+    /**
+     * @return the disabledRouteTypes
+     */
+    public List<RouteProfile> getDisabledRouteTypes() {
+        return disabledRouteTypes;
+    }
+    /**
+     * @param disabledRouteTypes the disabledRouteTypes to set
+     */
+    public void setDisabledRouteTypes(List<RouteProfile> disabledRouteTypes) {
+        this.disabledRouteTypes = disabledRouteTypes;
     }
 }

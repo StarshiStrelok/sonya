@@ -18,6 +18,7 @@
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {MdSidenav} from '@angular/material';
 import {NotificationsService} from 'angular2-notifications';
+import {TranslateService} from '@ngx-translate/core';
 
 import {slideAnimation, AnimatedSlide} from './../app.component';
 import {TransportProfile, ModelClass, MapLayer} from '../model/abs.model';
@@ -58,6 +59,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         public dataService: DataService,
         public notificationService: NotificationsService,
         public osrmService: OSRMService,
+        public translate: TranslateService,
         private cookieService: CookieService
     ) {
         super();

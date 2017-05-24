@@ -30,7 +30,12 @@
             "trip-details": "Trip details",
             "back-to-summary": "Back to search results",
             "full-distance": "summary distance",
-            "full-time": "trip time"
+            "full-time": "trip time",
+            "legend": "Legend",
+            "not-found": {
+                "title": "Not found",
+                "body": "Nothing not found, change search conditions and try again"
+            }
         },
         "search-tab": {
             "results-tab": "Search results",
@@ -65,5 +70,12 @@
         "time": "Not time format",
         "min": "{{value}} is minimum",
         "max": "{{value}} is maximum"
+    },
+    "route-type": {
+        "Autobus": "Bus",
+        "Trolleybus": "Trolleybus",
+        "Route taxi": "Route taxi",
+        "Tram": "Tram",
+        "Metro": "Subway"
     }
 }

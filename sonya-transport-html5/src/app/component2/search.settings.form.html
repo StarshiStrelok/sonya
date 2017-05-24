@@ -67,6 +67,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-input-container>
         </md-grid-tile>
         
+        <md-grid-tile *ngIf="mapComponent.activeProfile">
+            <h5 class="ssf-typ-label">Enable / disable transport types</h5><br/>
+            <span *ngFor="let typ of mapComponent.activeProfile.routeProfiles" class="ssf-typ"
+                [style.background-color]="typ['searchDisable'] ? 'gray' : typ.lineColor"
+                [style.border-style]="typ['searchDisable'] ? 'dashed' : 'solid'"
+                mdTooltip="{{'route-type.' + typ.name | translate }}"
+                mdTooltipPosition="above"
+                (click)="typ['searchDisable'] = !typ['searchDisable']"></span>
+        </md-grid-tile>
+        
         <md-grid-tile>
             <button md-raised-button (click)="onSubmit()">
                     <md-icon>done</md-icon>

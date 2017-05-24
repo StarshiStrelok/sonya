@@ -63,6 +63,8 @@ public class BFSAlgorithmV1 implements SearchEngine {
     private static final double LIMIT_TIME_MULTIPLEXER = 2;
     /** 100%. */
     private static final int PERCENT_100 = 100;
+    /** Minimal allowed distance for 2-bs way. In km. */
+    private static final double MIN_DIST_FOR_SHORT_WAY = 0.7;
     /** Transport geometry. */
     @Autowired
     private TransportGeometry transportGeometry;
@@ -160,7 +162,7 @@ public class BFSAlgorithmV1 implements SearchEngine {
                     + (System.currentTimeMillis() - startBfs) + "] ms");
         }
         // at this moment result not thread safe
-        result = clearUnrealResults(result, startBs);
+        result = clearUnrealResults(result, startBs, settings);
         List<OptimalPath>[] grouping = groupingResult(result, settings);
         result = grouping[0];
         sortResults(result, settings, profile);
@@ -291,28 +293,26 @@ public class BFSAlgorithmV1 implements SearchEngine {
             Graph graph = graphConstructor.findGraph(settings.getProfileId());
             insertSchedule(result, settings.getTime(), settings.getDay(),
                     graph);
-            List<OptimalPath> withSchedule = new ArrayList<>();
-            result.stream().forEach(op -> {
-                if (op.getSchedule() != null) {
-                    withSchedule.add(op);
-                }
-            });
-            result.clear();
-            result.addAll(withSchedule);
             Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
-                Date d1 = o1.getSchedule().getArrivalDate();
-                Date d2 = o2.getSchedule().getArrivalDate();
-                if (d1.getTime() < d2.getTime()) {
-                    return -1;
-                } else if (d1.getTime() > d2.getTime()) {
+                if (o1.getPath().size() > o2.getPath().size()) {
                     return 1;
+                } else if (o1.getPath().size() < o2.getPath().size()) {
+                    return -1;
                 } else {
-                    if (o1.getPath().size() > o2.getPath().size()) {
-                        return 1;
-                    } else if (o1.getPath().size() < o2.getPath().size()) {
+                    Date d1 = o1.getSchedule().getArrivalDate();
+                    Date d2 = o2.getSchedule().getArrivalDate();
+                    if (d1.getTime() < d2.getTime()) {
                         return -1;
+                    } else if (d1.getTime() > d2.getTime()) {
+                        return 1;
                     } else {
-                        return 0;
+                        if (o1.getTime() > o2.getTime()) {
+                            return 1;
+                        } else if (o1.getTime() < o2.getTime()) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
                     }
                 }
             });
@@ -508,43 +508,76 @@ public class BFSAlgorithmV1 implements SearchEngine {
                 LOG.error("insert schedule task error!", ex1);
             }
         }
+        List<OptimalPath> withSchedule = new ArrayList<>();
+        opList.stream().forEach(op -> {
+            if (op.getSchedule() != null) {
+                withSchedule.add(op);
+            }
+        });
+        opList.clear();
+        opList.addAll(withSchedule);
         LOG.info("#-bfs-# insert schedule elapsed time ["
                 + (System.currentTimeMillis() - start) + "] ms");
     }
-        /**
+    /**
      * Clear unreal results.
      * @param dirty dirty optimal paths.
      * @param startBs all start bus stops.
+     * @param settings search settings.
      * @return real optimal paths.
      * @throws Exception method error.
      */
     private List<OptimalPath> clearUnrealResults(
             final List<OptimalPath> dirty,
-            final List<BusStop> startBs) throws Exception {
+            final List<BusStop> startBs,
+            final SearchSettings settings) throws Exception {
         long start = System.currentTimeMillis();
         List<OptimalPath> rest = new ArrayList<>();
+        Path p;
+        List<BusStop> way;
         for (OptimalPath op : dirty) {
+            boolean wrong = false;
+            for (int i = 0; i < op.getPath().size(); i++) {
+                p = op.getPath().get(i);
+                if (settings.getDisabledRouteTypes()
+                        .contains(p.getRoute().getType())) {
+                    // client disable this route type
+                    wrong = true;
+                    break;
+                }
+                way = op.getWay().get(i);
+                if (way.size() == 2
+                        && p.getRoute().getType().getName()
+                            != TransportConst.METRO) {
+                    // very short way, only metro allowed
+                    if (geometry.calcDistance(way.get(0).getLatitude(),
+                            way.get(0).getLongitude(), way.get(1).getLatitude(),
+                            way.get(1).getLongitude())
+                                < MIN_DIST_FOR_SHORT_WAY) {
+                        wrong = true;
+                        break;
+                    }
+                }
+            }
+            if (!wrong) {
+                rest.add(op);
+            }
+        }
+        List<OptimalPath> rest2 = new ArrayList<>();
+        for (OptimalPath op : rest) {
             if (op.getWay().size() > 1) {
                 // if next way start bus stop in start area zone - remove it
                 if (!startBs.contains(op.getWay().get(1).get(0))) {
-                    rest.add(op);
+                    rest2.add(op);
                 }
             } else {
-                rest.add(op);
+                rest2.add(op);
             }
-//            for (List<BusStop> way : op.getWay()) {
-//                if (way.size() <= 2 && op.getPath().get(
-//                        op.getWay().indexOf(way))
-//                        .getRoute().getType() != RouteType.METRO) {
-//                    unreal.add(op);
-//                    break;
-//                }
-//            }
         }
         LOG.info("#-bfs-# unreal results, was [" + dirty.size()
                     + "], rest [" + rest.size() + "], elapsed time ["
                     + (System.currentTimeMillis() - start) + "] ms");
-        return rest;
+        return rest2;
     }
     /**
      * Insert schedule into optimal path.

@@ -22,6 +22,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         [translate]="'transport-map.search-result.no-result-desc'"></h5>
     <h5 [hidden]="result.length > 0"
         [translate]="'transport-map.search-result.no-result-geocoder'"></h5>
+    
+    <md-list *ngIf="mapComponent.activeProfile && result.length === 0">
+        <h3 md-subheader class="srl-result-h"
+                [translate]="'transport-map.search-result.legend'"></h3>
+        <md-list-item *ngFor="let typ of mapComponent.activeProfile.routeProfiles">
+            <span md-list-icon [style.background-color]="typ.lineColor" class="srl-route-label"></span>
+            <p md-line style="line-height: 30px;" [translate]="'route-type.' + typ.name"></p>
+        </md-list-item>
+    </md-list>
+    
     <div [hidden]="result.length < 1">
 
         <md-list *ngIf="!flags.isDetailsOpen">
@@ -34,6 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <span *ngFor="let path of op.path" class="srl-route-label"
                         [style.background-color]="path.route.type.lineColor"
                         mdTooltip="{{path.description}}" mdTooltipPosition="above">{{path.route.namePrefix}}{{path.route.namePostfix}}</span>
+                    <span class="srl-time-lbl">{{tripPeriod(op)}}</span>
                 </p>
                 <md-icon mdTooltip="{{'transport-map.search-result.open-details' | translate }}"
                      mdTooltipPosition="above" (click)="openDetails(op, $event)"
@@ -41,6 +52,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-list-item>
         </md-list>
 
+        <!-- DETAILS -->
+        
         <div *ngIf="flags.isDetailsOpen" [@flyInOut]="detailsTrigger">
             <md-grid-list cols="7" rowHeight="40px" >
                 <md-grid-tile>
@@ -79,7 +92,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                   (click)="flyToWay(activePath.way[i])">
                         <p class="srl-d-bs-lbl">{{p.description}}</p>
                     </md-grid-tile>
-                    <md-grid-tile colspan="2">{{p.distance}} km</md-grid-tile>
+                    <md-grid-tile colspan="2">{{pathTripDuration(i, p)}}</md-grid-tile>
                     
                     <md-grid-tile>
                         <img [src]="'/rest/data/transport-profile/route/marker/' + p.route.type.id">
@@ -96,18 +109,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <!-- Summary -->
             <md-grid-list cols="8" rowHeight="50px">
 
-                <md-grid-tile colspan="6">
+                <md-grid-tile>
+                    <md-icon>directions_run</md-icon>
+                </md-grid-tile>
+                <md-grid-tile colspan="5">
                     <p class="srl-d-bs-lbl" [translate]="'transport-map.search-result.full-distance'"></p>
                 </md-grid-tile>
-
                 <md-grid-tile colspan="2">
                     {{summaryDistance()}} km
                 </md-grid-tile>
                 
-                <md-grid-tile colspan="6">
+                <md-grid-tile>
+                    <md-icon>alarm</md-icon>
+                </md-grid-tile>
+                <md-grid-tile colspan="5">
                     <p class="srl-d-bs-lbl" [translate]="'transport-map.search-result.full-time'"></p>
                 </md-grid-tile>
-
                 <md-grid-tile colspan="2">
                     {{summaryTime()}}
                 </md-grid-tile>
