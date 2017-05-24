@@ -694,8 +694,6 @@ public class BFSAlgorithmV1 implements SearchEngine {
             long dtime = data.get(0)[0].getTime().getTime()
                     - data.get(data.size() - 1)[1].getTime().getTime();
             os.setDuration(new Date(epoch - dtime));
-            os.setArrivalTime(hhMM.format(os.getArrivalDate()));
-            os.setDurationTime(hhMM.format(os.getDuration()));
             return os;
         }
     }

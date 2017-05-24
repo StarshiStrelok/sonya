@@ -33,10 +33,6 @@ public class OptimalSchedule {
     private Date startDate;
     /** Duration time. Date format. */
     private Date duration;
-    /** Arrival time. String format. */
-    private String arrivalTime;
-    /** Duration time. String format. */
-    private String durationTime;
     /**
      * @return the data
      */
@@ -84,29 +80,5 @@ public class OptimalSchedule {
      */
     public void setDuration(Date duration) {
         this.duration = duration;
-    }
-    /**
-     * @return the arrivalTime
-     */
-    public String getArrivalTime() {
-        return arrivalTime;
-    }
-    /**
-     * @param arrivalTime the arrivalTime to set
-     */
-    public void setArrivalTime(String arrivalTime) {
-        this.arrivalTime = arrivalTime;
-    }
-    /**
-     * @return the durationTime
-     */
-    public String getDurationTime() {
-        return durationTime;
-    }
-    /**
-     * @param durationTime the durationTime to set
-     */
-    public void setDurationTime(String durationTime) {
-        this.durationTime = durationTime;
     }
 }
