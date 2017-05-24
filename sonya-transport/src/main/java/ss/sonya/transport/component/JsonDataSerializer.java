@@ -424,6 +424,10 @@ public class JsonDataSerializer implements ImportDataSerializer {
                     StringBuilder sb = new StringBuilder();
                     for (String time : times) {
                         time = time.length() == SHORT_TIME ? "0" + time : time;
+                        if (time.length() != 0 && time.length() != 5) {
+                            throw new IllegalArgumentException("wrong time ["
+                                    + time + "] for " + p);
+                        }
                         sb.append(time).append(",");
                     }
                     if (sb.length() > 1) {

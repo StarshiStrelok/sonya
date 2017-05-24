@@ -17,6 +17,7 @@
 package ss.sonya.inject.dao;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,6 +25,7 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,8 @@ import ss.sonya.inject.CommonDAO;
  */
 @Repository
 class CommonDAOImpl implements CommonDAO {
+    /** Logger. */
+    private static final Logger LOG = Logger.getLogger(CommonDAOImpl.class);
     /** Persistence context. */
     @PersistenceContext
     private EntityManager em;
@@ -93,7 +97,19 @@ class CommonDAOImpl implements CommonDAO {
             rollbackFor = Exception.class)
     public <T> void deleteAll(List<T> entities) {
         entities.stream().forEach(e -> {
-            em.remove(em.contains(e) ? e : em.merge(e));
+            try {
+                if (!em.contains(e)) {
+                    Field f = e.getClass().getDeclaredField("id");
+                    f.setAccessible(true);
+                    Object id = f.get(e);
+                    e = (T) em.find(entities.get(0).getClass(), id);
+                    f.setAccessible(false);
+                }
+                em.remove(e);
+            } catch (IllegalAccessException | IllegalArgumentException
+                    | NoSuchFieldException | SecurityException ex) {
+                LOG.warn("batch delete error!", ex);
+            }
         });
     }
 }

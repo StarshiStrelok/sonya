@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -505,7 +504,7 @@ public class BFSAlgorithmV1 implements SearchEngine {
         for (Future<Void> task : tasks) {
             try {
                 task.get();
-            } catch (InterruptedException | ExecutionException ex1) {
+            } catch (Exception ex1) {
                 LOG.error("insert schedule task error!", ex1);
             }
         }

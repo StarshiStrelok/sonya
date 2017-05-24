@@ -16,9 +16,19 @@
  */
 package ss.sonya.test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import ss.sonya.entity.BusStop;
+import ss.sonya.inject.service.Geometry;
+import ss.sonya.transport.api.TransportDataService;
 import ss.sonya.transport.search.SearchEngine;
 import ss.sonya.transport.search.vo.OptimalPath;
 import ss.sonya.transport.search.vo.SearchSettings;
@@ -36,20 +46,110 @@ public class GraphConstructorTest extends TestConfig {
     }
     @Autowired
     private SearchEngine searchEngine;
+    @Autowired
+    private TransportDataService transportService;
+    @Autowired
+    private Geometry geometry;
     @Test
+    @Ignore
     public void test() throws Exception {
         SearchSettings s = new SearchSettings();
-        s.setStartLat(52.10192);
-        s.setStartLon(23.65341);
-        s.setEndLat(52.09706);
-        s.setEndLon(23.76375);
+        s.setStartLat(52.10541712888425);
+        s.setStartLon(23.813064853142283);
+        s.setEndLat(52.07315360261306);
+        s.setEndLon(23.72802366453412);
         s.setProfileId(1);
         s.setMaxTransfers(3);
         s.setMaxResults(5);
-        s.setTime("13:40");
-        s.setDay(2);
+        s.setTime("11:41");
+        s.setDay(5);
         for (OptimalPath op : searchEngine.search(s)) {
             System.out.println(op.toString());
         }
+    }
+    @Test
+    //@Ignore
+    public void test2() throws Exception {
+        final int profileId = 1;
+        double swLon = Double.MAX_VALUE;
+        double swLat = Double.MAX_VALUE;
+        double neLon = Double.MIN_VALUE;
+        double neLat = Double.MIN_VALUE;
+        List<BusStop> all = transportService.getFromProfile(profileId, BusStop.class);
+        for (BusStop bs : all) {
+            if (swLon > bs.getLongitude()) {
+                swLon = bs.getLongitude();
+            }
+            if (swLat > bs.getLatitude()) {
+                swLat = bs.getLatitude();
+            }
+            if (neLon < bs.getLongitude()) {
+                neLon = bs.getLongitude();
+            }
+            if (neLat < bs.getLatitude()) {
+                neLat = bs.getLatitude();
+            }
+        }
+        System.out.println("SW_LAT: " + swLat);
+        System.out.println("SW_LON: " + swLon);
+        System.out.println("NE_LAT: " + neLat);
+        System.out.println("NE_LON: " + neLon);
+        int attempt = 1000;
+        long start = System.currentTimeMillis();
+        List<OptimalPath> list;
+        int empty = 0;
+        long s;
+        long delta;
+        List<Integer[]> data = new ArrayList<>();
+        long max = Long.MIN_VALUE;
+        for (int i = 0; i < attempt; i++) {
+            s = System.currentTimeMillis();
+            double eLat = swLat + (neLat - swLat) * new Random().nextDouble();
+            double eLon = swLon + (neLon - swLon) * new Random().nextDouble();
+            double sLat = swLat + (neLat - swLat) * new Random().nextDouble();
+            double sLon = swLon + (neLon - swLon) * new Random().nextDouble();
+            if (geometry.calcDistance(sLat, sLon, eLat, eLon) < 1) {
+                i--;
+                continue;
+            }
+            SearchSettings settings = new SearchSettings();
+            settings.setStartLat(sLat);
+            settings.setStartLon(sLon);
+            settings.setEndLat(eLat);
+            settings.setEndLon(eLon);
+            settings.setDay(5);
+            settings.setProfileId(profileId);
+            settings.setTime("11:41");
+            settings.setMaxResults(10);
+            settings.setMaxTransfers(2);
+            list = searchEngine.search(settings);
+            if (list.isEmpty()) {
+                empty++;
+            }
+            delta = System.currentTimeMillis() - s;
+            data.add(new Integer[] {(int) delta, list.size()});
+            if (delta > max) {
+                max = delta;
+            }
+        }
+        Map<Integer, Integer> m = new HashMap<>();
+        for (Integer[] p : data) {
+            long percent = p[0] * 100 / max;
+            if (m.containsKey((int) percent)) {
+                m.put((int) percent, m.get((int) percent) + 1);
+            } else {
+                m.put((int) percent, 1);
+            }
+        }
+        List<Integer> ks = new ArrayList<>(m.keySet());
+        Collections.sort(ks);
+        for (Integer k : ks) {
+            System.out.println(String.format("%-7s", m.get(k)) + String.format("%-11s", " [~"
+                    + (k * max / 100) + "] ms") + " : "
+                    + new String(new char[k]).replace("\0", "."));
+        }
+        System.out.println("max time [" + max + "] ms");
+        System.out.println("avg time [" + (System.currentTimeMillis() - start) / attempt + "]");
+        System.out.println("empty [" + empty  + "]");
     }
 }
