@@ -62,6 +62,8 @@ public class BFSAlgorithmV1 implements SearchEngine {
     private static final Logger LOG = Logger.getLogger(BFSAlgorithmV1.class);
     /** Limit time multiplexer. max_time=min_time * multiplexer. */
     private static final double LIMIT_TIME_MULTIPLEXER = 2;
+    /** 100%. */
+    private static final int PERCENT_100 = 100;
     /** Transport geometry. */
     @Autowired
     private TransportGeometry transportGeometry;
@@ -403,7 +405,7 @@ public class BFSAlgorithmV1 implements SearchEngine {
         if (LOG.isDebugEnabled()) {
             Map<Integer, Integer> m = new HashMap<>();
             for (OptimalPath op : shortPaths) {
-                double percent = op.getTime() * 100 / max;
+                double percent = op.getTime() * PERCENT_100 / max;
                 if (m.containsKey((int) percent)) {
                     m.put((int) percent, m.get((int) percent) + 1);
                 } else {
@@ -416,7 +418,7 @@ public class BFSAlgorithmV1 implements SearchEngine {
                 for (Integer p : ks) {
                     LOG.debug("#-bfs-#" + String.format("%-7s", m.get(p))
                             + String.format("%-26s", " [~"
-                            + (p * max / 100) + "] ms") + " : "
+                            + (p * max / PERCENT_100) + "] ms") + " : "
                             + new String(new char[p]).replace("\0", "."));
                 }
             }
@@ -562,6 +564,9 @@ public class BFSAlgorithmV1 implements SearchEngine {
         /**
          * Constructor.
          * @param p portion of total optimal path list.
+         * @param pTime start trip time.
+         * @param pDay trip day.
+         * @param g graph.
          */
         InsertScheduleTask(final List<OptimalPath> p, final String pTime,
                 final int pDay, final Graph g) {
@@ -628,7 +633,8 @@ public class BFSAlgorithmV1 implements SearchEngine {
                 Date nowDate = cDate == null ? startTrip : cDate;   // now date
                 if (prevBs != null && !prevBs.equals(sBs)) {
                     // calc transfet distance.
-                    double humanDist = geometry.calcDistance(prevBs.getLatitude(),
+                    double humanDist = geometry.calcDistance(
+                            prevBs.getLatitude(),
                             prevBs.getLongitude(), sBs.getLatitude(),
                             sBs.getLongitude());        // km
                     double addTime = humanDist
@@ -636,7 +642,8 @@ public class BFSAlgorithmV1 implements SearchEngine {
                     double addTimeSec = addTime * TimeUnit.HOURS.toMinutes(1)
                             * TimeUnit.MINUTES.toSeconds(1);      // sec
                     nowDate = new Date(nowDate.getTime()
-                            + (long) (addTimeSec * TimeUnit.SECONDS.toMillis(1)));
+                            + (long) (addTimeSec
+                                    * TimeUnit.SECONDS.toMillis(1)));
                 }
                 Date sDate = null;                              // start bs date
                 List<String> foundTrip = null;                  // found trip

@@ -37,7 +37,7 @@ import ss.sonya.entity.Path;
  *
  *  V - current vertex
  *  E[] - array transfer vertices
- * 
+ *
  *  V   E   E   E
  * [0] [1] [4] [4]  Vertex number of transfer path
  *     [5] [2] [3]  Bus stop order in way for V-path (first transfer).
@@ -88,7 +88,8 @@ public class Graph {
      * Add new edge.
      * @param v vertex 1 (path 1).
      * @param w vertex 2 (path 2).
-     * @param tInfo[0] vertex 1: path #1 bus stop (first transfer).
+     * @param tInfo  transfer information.
+     *        tInfo[0] vertex 1: path #1 bus stop (first transfer).
      *        tInfo[1] vertex 2: path #2 bus stop (first transfer).
      *        tInfo[2] vertex 1: path #1 bus stop (second transfer).
      *        tInfo[3] vertex 2: path #2 bus stop (second transfer)...
