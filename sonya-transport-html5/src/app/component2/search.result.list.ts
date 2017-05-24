@@ -86,9 +86,9 @@ export class SearchResultList {
             return '';
         } else {
             if ('start' === position) {
-                return this.activePath.schedule.data[index][0].time;
+                return this.convertMSToTime(this.activePath.schedule.data[index][0].time);
             } else if ('end' === position) {
-                return this.activePath.schedule.data[index][1].time;
+                return this.convertMSToTime(this.activePath.schedule.data[index][1].time);
             }
         }
     }
@@ -99,6 +99,18 @@ export class SearchResultList {
         });
         return Number(dist).toFixed(1);
     }
+    summaryTime() {
+        if (!this.activePath.schedule) {
+            return '?'
+        } else {
+            var d = new Date(this.activePath.schedule.duration);
+            if (d.getHours() !== 0) {
+                return this.convertMSToTime(this.activePath.schedule.duration);
+            } else {
+                return d.getMinutes() + ' min';
+            }
+        }
+    }
     showPath(op: OptimalPath) {
         this.activePath = op;
         this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(op);
@@ -108,5 +120,11 @@ export class SearchResultList {
     }
     flyToWay(way: BusStop[]) {
         this.mapComponent.layerEndpoint.searchRouteCtrl.flyToBounds(way, 0);
+    }
+    private convertMSToTime(ms: number) {
+        var d = new Date(ms);
+        var t = (d.getHours() < 10 ? '0' + d.getHours() : d.getHours()) + ':'
+        + (d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes());
+        return t;
     }
 }

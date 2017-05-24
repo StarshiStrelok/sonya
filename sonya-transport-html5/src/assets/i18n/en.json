@@ -29,7 +29,8 @@
             "open-details": "Open details",
             "trip-details": "Trip details",
             "back-to-summary": "Back to search results",
-            "full-distance": "summary distance"
+            "full-distance": "summary distance",
+            "full-time": "trip time"
         },
         "search-tab": {
             "results-tab": "Search results",

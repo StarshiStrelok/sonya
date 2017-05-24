@@ -129,11 +129,9 @@ export class OptimalPath {
 
 export class OptimalSchedule {
     constructor(
-        public startDate: Date,
-        public arrivalDate: Date,
-        public duration: Date,
-        public arrivalTime: string,
-        public durationTime: string,
+        public startDate: number,
+        public arrivalDate: number,
+        public duration: number,
         public data: BusStopTime[][]
     ) {}
 }
@@ -141,6 +139,6 @@ export class OptimalSchedule {
 export class BusStopTime {
     constructor(
         public busstop: string,
-        public time: Date
+        public time: number
     ) {}
 }

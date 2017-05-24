@@ -103,6 +103,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <md-grid-tile colspan="2">
                     {{summaryDistance()}} km
                 </md-grid-tile>
+                
+                <md-grid-tile colspan="6">
+                    <p class="srl-d-bs-lbl" [translate]="'transport-map.search-result.full-time'"></p>
+                </md-grid-tile>
+
+                <md-grid-tile colspan="2">
+                    {{summaryTime()}}
+                </md-grid-tile>
 
             </md-grid-list>
         </div>
