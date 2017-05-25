@@ -51,6 +51,10 @@ export class SearchResultList {
         this.result = [];
         var orig = this.result;
         let itr = function() {
+            if (!res[i]) {
+                // interrupt
+                return;
+            }
             res[i]['animationTrigger'] = 'in';
             orig.push(res[i]);
             if (++i < l) {

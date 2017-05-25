@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </md-input-container>
                 <md-autocomplete #auto="mdAutocomplete">
                     <md-option *ngFor="let startPosition of startPositions"
-                        [value]="startPosition.display_name" (click)="selectStart(startPosition)">
+                        [value]="startPosition.display_name">
                         {{ startPosition.display_name }}
                     </md-option>
                 </md-autocomplete>
@@ -58,7 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-input-container>
             <md-autocomplete #auto1="mdAutocomplete">
                 <md-option *ngFor="let endPosition of endPositions" 
-                    [value]="endPosition.display_name" (click)="selectEnd(endPosition)">
+                    [value]="endPosition.display_name">
                     {{ endPosition.display_name }}
                 </md-option>
             </md-autocomplete>
