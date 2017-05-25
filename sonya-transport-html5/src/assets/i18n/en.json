@@ -46,7 +46,8 @@
             "time-of-trip": "Time of trip (24h format)",
             "max-results": "Show max results",
             "max-transfers": "Max transfers from route to route",
-            "apply": "Apply"
+            "apply": "Apply",
+            "route-types": "Enable / disable transport types here"
         },
         "controls": {
             "hide": "Hide",

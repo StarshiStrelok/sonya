@@ -30,15 +30,7 @@ import {TransportMap} from './transport.map';
                    height: 10px;
                 }
                 .ssf-typ {
-                    width: 30px;
-                    height: 30px;
-                    border-radius: 15px;
-                    margin-left: 15px;
-                    border-width: 1px;
-                    border-color: #bbbbbb;
-                }
-                .ssf-typ:hover {
-                    cursor: pointer;
+                    margin-left: 10px;
                 }
                 .ssf-typ-label {
                     flex: 1;

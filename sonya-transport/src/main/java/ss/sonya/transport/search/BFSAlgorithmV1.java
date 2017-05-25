@@ -91,8 +91,19 @@ public class BFSAlgorithmV1 implements SearchEngine {
         TransportProfile profile = graphConstructor
                 .findProfile(settings.getProfileId());
         LOG.info("#-bfs-# profile [" + profile + "]");
-        Set<BusStop> all = graphConstructor
-                .findBusStopPathsMap(profile.getId()).keySet();
+        Set<BusStop> all;
+        if (settings.getDisabledRouteTypes().isEmpty()) {
+            all = graphConstructor
+                    .findBusStopPathsMap(profile.getId()).keySet();
+        } else {
+            all = new HashSet<>();
+            graph.getAllPaths().forEach(p -> {
+                if (!settings.getDisabledRouteTypes()
+                        .contains(p.getRoute().getType())) {
+                    all.addAll(p.getBusstops());
+                }
+            });
+        }
         LOG.info("#-bfs-# total bus stops [" + all.size() + "]");
         // find fixed count closer bus stops near start point
         List<BusStop> startBs = transportGeometry.findNearestBusStops(

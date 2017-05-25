@@ -63,6 +63,7 @@ public class GraphConstructorTest extends TestConfig {
         s.setMaxResults(5);
         s.setTime("11:41");
         s.setDay(5);
+        s.setDisabledRouteTypes(Collections.emptyList());
         for (OptimalPath op : searchEngine.search(s)) {
             System.out.println(op.toString());
         }
@@ -122,6 +123,7 @@ public class GraphConstructorTest extends TestConfig {
             settings.setTime("11:41");
             settings.setMaxResults(10);
             settings.setMaxTransfers(2);
+            settings.setDisabledRouteTypes(Collections.emptyList());
             list = searchEngine.search(settings);
             if (list.isEmpty()) {
                 empty++;

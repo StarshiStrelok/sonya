@@ -209,6 +209,13 @@ public class Graph {
         return scheduleMap.get(p);
     }
     /**
+     * Get all graph paths.
+     * @return all graph paths.
+     */
+    public List<Path> getAllPaths() {
+        return paths;
+    }
+    /**
      * Print vertex.
      * @param v - vertex.
      * @return - string.
