@@ -53,6 +53,12 @@
             "hide": "Hide",
             "search": "Search routes",
             "layers": "Layers"
+        },
+        "map": {
+            "ctx-menu": {
+                "start-point": "Departure point",
+                "end-point": "Destination point"
+            }
         }
     },
     "common": {

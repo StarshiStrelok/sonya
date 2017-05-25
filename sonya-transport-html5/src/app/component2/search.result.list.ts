@@ -29,10 +29,10 @@ import {TransportMap} from '../component2/transport.map';
             state('in', style({transform: 'translateX(0)'})),
             transition('void => *', [
                 style({transform: 'translateX(-100%)'}),
-                animate(200)
+                animate(300)
             ]),
             transition('* => void', [
-                animate(200, style({transform: 'translateX(100%)'}))
+                animate(300, style({transform: 'translateX(100%)'}))
             ])
         ])
     ],
@@ -54,14 +54,12 @@ export class SearchResultList {
             res[i]['animationTrigger'] = 'in';
             orig.push(res[i]);
             if (++i < l) {
-                setTimeout(itr, 200);
+                setTimeout(itr, 300 / (1.0 + i));
             }
         };
         itr();
         //this.result = res;
-        if (this.result.length === 0) {
-            // TODO message
-        } else {
+        if (this.result.length !== 0) {
             this.activePath = this.result[0];
             this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(this.activePath);
         }
@@ -75,7 +73,6 @@ export class SearchResultList {
     }
     closeDetails() {
         this.flags.isDetailsOpen = false;
-        //this.activePath['animationTrigger'] = 'in';
         this.detailsTrigger = 'void';
     }
     detailsBusStop(index: number) {

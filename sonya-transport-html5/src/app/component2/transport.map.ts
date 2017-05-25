@@ -65,18 +65,26 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         super();
     }
     ngOnInit() {
+        this.translate.onLangChange.subscribe((event: any) => {
+            this.createContextMenu();
+        });
         this.dataService.getAll<TransportProfile>(ModelClass.TRANSPORT_PROFILE)
             .then((profiles: TransportProfile[]) => {
                 this.profiles = profiles;
                 this.activeProfile = this.profiles[0];
                 this.createMap(this.activeProfile);
-                this.mapMenu = this.createMapMenu(180, [
-                    new CtxMenuItem('A', 'Start point',
-                        this.fnMakeStartPoint, this),
-                    new CtxMenuItem('B', 'End point',
-                        this.fnMakeEndPoint, this)
-                ]);
+                this.createContextMenu();
             });
+    }
+    createContextMenu() {
+        this.translate.get('transport-map.map.ctx-menu.start-point').subscribe(val => {
+            this.mapMenu = this.createMapMenu(180, [
+                new CtxMenuItem('A', val,
+                    this.fnMakeStartPoint, this),
+                new CtxMenuItem('B', this.translate.instant('transport-map.map.ctx-menu.end-point'),
+                    this.fnMakeEndPoint, this)
+            ]);
+        });
     }
     fnMakeStartPoint(comp: TransportMap) {
         comp.setEndpoint(true);
@@ -144,10 +152,10 @@ export class TransportMap extends AnimatedSlide implements OnInit {
             this.map.removeLayer(this.activeLeafletLayer);
         }
         let _layer = L.tileLayer(this.activeMapLayer.url
-                + (this.activeMapLayer.url.indexOf('access_token=') !== -1
-                        ? this.activeProfile.mapboxKey : ''), {
-            id: this.activeMapLayer.id
-        });
+            + (this.activeMapLayer.url.indexOf('access_token=') !== -1
+                ? this.activeProfile.mapboxKey : ''), {
+                id: this.activeMapLayer.id
+            });
         _layer.addTo(this.map);
         this.activeLeafletLayer = _layer;
     }
