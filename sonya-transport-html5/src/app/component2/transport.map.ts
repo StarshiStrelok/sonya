@@ -107,7 +107,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         console.log('new map layer index [' + event + ']');
         this.activeMapLayer = this.activeProfile.mapLayers[event];
         this.setMapLayer();
-        this.cookieService.setCookie(CookieKey.MAP, event);
+        this.cookieService.setCookie(CookieKey.MAP + this.activeProfile.id, this.activeMapLayer.id);
     }
     switchProfile(profile: TransportProfile) {
         this.cookieService.setCookie(CookieKey.PROFILE, profile.id);
@@ -214,9 +214,15 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     }
     private getStartMapLayer(): MapLayer {
         if (this.activeProfile.mapLayers && this.activeProfile.mapLayers.length > 0) {
-            let layerVal = Number(this.cookieService.getCookie(CookieKey.MAP));
-            if (layerVal > -1) {
-                return this.activeProfile.mapLayers[layerVal];
+            let layerC = this.cookieService.getCookie(CookieKey.MAP + this.activeProfile.id);
+            if (layerC) {
+                let layerId = Number(layerC);
+                let f: MapLayer[] = this.activeProfile.mapLayers.filter(l => l.id === layerId);
+                if (f.length === 1) {
+                    return f[0];
+                } else {
+                    return this.activeProfile.mapLayers[0];
+                }
             } else {
                 return this.activeProfile.mapLayers[0];
             }

@@ -32,7 +32,7 @@ const scaleAnim: any =
             animate(`0.2s ease-in`)
         ])
     ])
-    
+
 const rotateAnim: any =
     trigger('rotateAnim', [
         state('open', style({transform: `rotate(360deg)`})),
@@ -61,7 +61,7 @@ export class MdFabTrigger implements AfterContentInit {
         this.parent = p;
     }
     ngAfterContentInit() {
-        
+
     }
     toggleSpeedDial() {
         this.parent.actions.toggle();
@@ -108,7 +108,7 @@ export class MdFabActionButton implements AfterContentInit {
     }
     startAnimation() {
         let _comp = this;
-        setTimeout(function() {
+        setTimeout(function () {
             _comp.triggerNextAnimation(_comp);
         }, _comp.delay / 2.5);
     }
@@ -133,7 +133,15 @@ export class MdFabActions implements AfterContentInit {
     parent: MdFabSpeedDial;
     private isOpen: boolean = false;
     ngAfterContentInit() {
-        this.items.forEach(item => item.setParent(this));
+        this.initChilds();
+        this.items.changes.subscribe(
+            o => this.initChilds()
+        );
+    }
+    private initChilds() {
+        this.items.forEach(item => {
+            item.setParent(this);
+        });
     }
     toggle() {
         this.isOpen = !this.isOpen;
