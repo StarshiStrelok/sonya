@@ -65,16 +65,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         super();
     }
     ngOnInit() {
-        this.translate.onLangChange.subscribe((event: any) => {
-            this.createContextMenu();
-        });
-        this.dataService.getAll<TransportProfile>(ModelClass.TRANSPORT_PROFILE)
-            .then((profiles: TransportProfile[]) => {
-                this.profiles = profiles;
-                this.activeProfile = this.profiles[0];
-                this.createMap(this.activeProfile);
-                this.createContextMenu();
-            });
+        this.initProfile();
     }
     createContextMenu() {
         this.translate.get('transport-map.map.ctx-menu.start-point').subscribe(val => {
@@ -117,6 +108,38 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         this.activeMapLayer = this.activeProfile.mapLayers[event];
         this.setMapLayer();
         this.cookieService.setCookie(CookieKey.MAP, event);
+    }
+    switchProfile(profile: TransportProfile) {
+        this.cookieService.setCookie(CookieKey.PROFILE, profile.id);
+        this.initProfile();
+    }
+    readUserProfile() {
+        let pid = Number(this.cookieService.getCookie(CookieKey.PROFILE));
+        if (pid) {
+            let p: TransportProfile[] = this.profiles.filter(profile => profile.id === pid);
+            if (p.length == 1) {
+                this.activeProfile = p[0];
+            } else {
+                this.activeProfile = this.profiles[0];
+            }
+        } else {
+            this.activeProfile = this.profiles[0];
+        }
+    }
+    private initProfile() {
+        if (this.map) {
+            this.map.remove();
+        }
+        this.translate.onLangChange.subscribe((event: any) => {
+            this.createContextMenu();
+        });
+        this.dataService.getAll<TransportProfile>(ModelClass.TRANSPORT_PROFILE)
+            .then((profiles: TransportProfile[]) => {
+                this.profiles = profiles;
+                this.readUserProfile();
+                this.createMap(this.activeProfile);
+                this.createContextMenu();
+            });
     }
     private createMap(profile: TransportProfile) {
         var map = L.map.Sonya(this.mapElement.nativeElement, {

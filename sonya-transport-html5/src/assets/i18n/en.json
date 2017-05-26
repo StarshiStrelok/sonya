@@ -52,7 +52,8 @@
         "controls": {
             "hide": "Hide",
             "search": "Search routes",
-            "layers": "Layers"
+            "layers": "Layers",
+            "profile": "City"
         },
         "map": {
             "ctx-menu": {
@@ -84,5 +85,9 @@
         "Route taxi": "Route taxi",
         "Tram": "Tram",
         "Metro": "Subway"
+    },
+    "profile": {
+        "Brest": "Brest",
+        "Minsk": "Minsk"
     }
 }

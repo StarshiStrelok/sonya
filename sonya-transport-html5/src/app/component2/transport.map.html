@@ -38,12 +38,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </md-card-content>
     </md-card>
 
+    <!-- CONTROLS -->
     <button md-fab color="primary" class="tm-map-control" style="top: 25px; left: 25px"
             (click)="openMenu()" *ngIf="!isMenuOpen"
             mdTooltip="{{'transport-map.controls.search' | translate }}" mdTooltipPosition="below">
-        <md-icon>widgets</md-icon></button>
+        <md-icon>widgets</md-icon>
+    </button>
 
-    <md-fab-speed-dial class="tm-map-control" style="top: 25px; right: 25px;"
+    <md-fab-speed-dial class="tm-map-control" style="top: 100px; right: 25px;"
                        direction="left" *ngIf="activeProfile && activeProfile.mapLayers && activeMapLayer.id != -1"
                        (selectAction)="changeMapLayer($event)">
         <md-fab-trigger mdTooltip="{{'transport-map.controls.layers' | translate }}"
@@ -58,6 +60,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-fab-action>
         </md-fab-actions>
     </md-fab-speed-dial>
+    
+    <button md-fab color="primary" class="tm-map-control" style="top: 25px; right: 25px"
+            mdTooltip="{{'transport-map.controls.profile' | translate }}"
+            mdTooltipPosition="below" *ngIf="profiles && profiles.length > 1"
+            [mdMenuTriggerFor]="cityMenu">
+        <md-icon>place</md-icon>
+    </button>
+    <md-menu #cityMenu="mdMenu">
+        <button md-menu-item *ngFor="let profile of profiles" (click)="switchProfile(profile)">
+                <span [translate]="'profile.' + profile.name"></span>
+        </button>
+    </md-menu>
 
 </md-sidenav-container>
 

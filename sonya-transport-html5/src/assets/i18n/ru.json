@@ -52,7 +52,8 @@
         "controls": {
             "hide": "Скрыть",
             "search": "Поиск маршрутов",
-            "layers": "Карта"
+            "layers": "Карта",
+            "profile": "Город"
         },
         "map": {
             "ctx-menu": {
@@ -84,5 +85,9 @@
         "Route taxi": "Маршрутное такси",
         "Tram": "Трамвай",
         "Metro": "Метро"
+    },
+    "profile": {
+        "Brest": "Брест",
+        "Minsk": "Минск"
     }
 }
