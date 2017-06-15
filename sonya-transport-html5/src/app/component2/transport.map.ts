@@ -111,6 +111,8 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     }
     switchProfile(profile: TransportProfile) {
         this.cookieService.setCookie(CookieKey.PROFILE, profile.id);
+        this.geocoder.clearStart();
+        this.geocoder.clearEnd();
         this.initProfile();
     }
     readUserProfile() {

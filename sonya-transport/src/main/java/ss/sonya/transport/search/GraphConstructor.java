@@ -352,7 +352,9 @@ public class GraphConstructor {
                 }
             }
         }
-        mergeNeighboringTransfers(way, transferMap);
+        if (!TransportConst.METRO.equals(path.getRoute().getType().getName())) {
+            mergeNeighboringTransfers(way, transferMap);
+        }
         return transferMap;
     }
     /**
@@ -391,8 +393,11 @@ public class GraphConstructor {
                             : pairs[TRANSFER_2_FROM];
                     pairs[TRANSFER_1_TO] = d1 < d2 ? pairs[TRANSFER_1_TO]
                             : pairs[TRANSFER_2_TO];
-                    pairs[TRANSFER_2_FROM] = null;
-                    pairs[TRANSFER_2_TO] = null;
+                    pairs = new BusStop[] {
+                        pairs[TRANSFER_1_FROM],
+                        pairs[TRANSFER_1_TO]
+                    };
+                    transferMap.put(tPath, pairs);
                 }
             }
         }

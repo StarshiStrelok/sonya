@@ -17,8 +17,10 @@
 package ss.sonya.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -51,25 +53,25 @@ public class GraphConstructorTest extends TestConfig {
     @Autowired
     private Geometry geometry;
     @Test
-    @Ignore
+    //@Ignore
     public void test() throws Exception {
         SearchSettings s = new SearchSettings();
-        s.setStartLat(52.10541712888425);
-        s.setStartLon(23.813064853142283);
-        s.setEndLat(52.07315360261306);
-        s.setEndLon(23.72802366453412);
-        s.setProfileId(1);
+        s.setStartLat(53.91136622203158);
+        s.setStartLon(27.450993061065677);
+        s.setEndLat(53.93956770751937);
+        s.setEndLon(27.61739730834961);
+        s.setProfileId(4);
         s.setMaxTransfers(3);
         s.setMaxResults(5);
-        s.setTime("11:41");
-        s.setDay(5);
+        s.setTime("21:12");
+        s.setDay(3);
         s.setDisabledRouteTypes(Collections.emptyList());
         for (OptimalPath op : searchEngine.search(s)) {
             System.out.println(op.toString());
         }
     }
     @Test
-    //@Ignore
+    @Ignore
     public void test2() throws Exception {
         final int profileId = 1;
         double swLon = Double.MAX_VALUE;
@@ -122,7 +124,7 @@ public class GraphConstructorTest extends TestConfig {
             settings.setProfileId(profileId);
             settings.setTime("11:41");
             settings.setMaxResults(10);
-            settings.setMaxTransfers(2);
+            settings.setMaxTransfers(4);
             settings.setDisabledRouteTypes(Collections.emptyList());
             list = searchEngine.search(settings);
             if (list.isEmpty()) {
@@ -153,5 +155,37 @@ public class GraphConstructorTest extends TestConfig {
         System.out.println("max time [" + max + "] ms");
         System.out.println("avg time [" + (System.currentTimeMillis() - start) / attempt + "]");
         System.out.println("empty [" + empty  + "]");
+    }
+    @Test
+    @Ignore
+    public void testBFS() {
+        List<Integer>[][] edgesTo = new List[3][21];
+        for (int g = 0; g < edgesTo.length; g++) {
+            for (int h = 0; h < edgesTo[g].length; h++) {
+                edgesTo[g][h] = new LinkedList<>();
+            }
+        }
+        edgesTo[0][1].add(0);
+        edgesTo[0][2].add(0);
+        edgesTo[0][3].add(0);
+        edgesTo[1][4].add(1);
+        edgesTo[1][6].add(3);
+        edgesTo[1][7].add(2);
+        edgesTo[2][7].addAll(Arrays.asList(new Integer[] {4, 20, 6}));
+        edgesTo[1][20].addAll(Arrays.asList(new Integer[] {1, 2, 3}));
+        List<Integer[]> ways = new ArrayList<>();
+        int endV = 7;
+        int startV = 0;
+        int depth = 1;
+        Integer[] way = new Integer[] {endV};
+        //BFSTask.restoreLevel(endV, way, edgesTo, ways, startV, depth);
+        for (Integer[] decision : ways) {
+            StringBuilder sb = new StringBuilder();
+            for (Integer v : decision) {
+                sb.append("[").append(v).append("]-");
+            }
+            sb.setLength(sb.length() - 1);
+            System.out.println(sb.toString());
+        }
     }
 }

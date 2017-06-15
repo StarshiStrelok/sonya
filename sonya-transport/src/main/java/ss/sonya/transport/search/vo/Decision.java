@@ -25,7 +25,7 @@ import ss.sonya.entity.BusStop;
  */
 public class Decision {
     /** Path from start to end. */
-    private final int[] way;
+    private final Integer[] way;
     /** Start vertex start bus stop. */
     private final BusStop s;
     /** End vertex end bus stop. */
@@ -37,7 +37,7 @@ public class Decision {
      * @param pWay - path from start vertex to end vertex.
      */
     public Decision(final BusStop pS, final BusStop pE,
-            final int[] pWay) {
+            final Integer[] pWay) {
         s = pS;
         e = pE;
         way = pWay;
@@ -45,7 +45,7 @@ public class Decision {
     /**
      * @return the path
      */
-    public int[] getWay() {
+    public Integer[] getWay() {
         return way;
     }
     /**

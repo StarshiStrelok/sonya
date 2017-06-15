@@ -70,6 +70,10 @@ export class EndpointLayer {
         if (this.layerEndpoint.hasLayer(this.startMarker)
             && this.layerEndpoint.hasLayer(this.endMarker)) {
             this.searchRouteCtrl.search();
+        } else {
+            if (this.parent.searchTabs.tabGroup.selectedIndex !== 0) {
+                this.parent.searchTabs.tabGroup.selectedIndex = 0;
+            }
         }
     }
     private createMarker(isStart: boolean): any {

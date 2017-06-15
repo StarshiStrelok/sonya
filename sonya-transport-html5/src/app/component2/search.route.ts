@@ -33,6 +33,10 @@ export class SearchRoute {
         this.layerRoutingDynamic.addTo(this.parent.map);
     }
     search() {
+        if (!this.parent.searchTabs.searchSettings.isValid()) {
+            this.parent.searchTabs.tabGroup.selectedIndex = 1;
+            return;
+        }
         let settings: SearchSettings = this.parent.searchTabs.searchSettings.getSettingsValues();
         let startll = this.parent.layerEndpoint.startMarker.getLatLng();
         let endll = this.parent.layerEndpoint.endMarker.getLatLng();

@@ -18,6 +18,7 @@
 package ss.sonya.transport.search;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
+import ss.sonya.transport.constants.TransportConst;
 import ss.sonya.transport.search.vo.Decision;
 import ss.sonya.transport.search.vo.OptimalPath;
 
@@ -82,7 +84,12 @@ public class BFSTask implements Callable<List<OptimalPath>> {
     private List<Decision> bfs(final Integer sV) throws Exception {
         Set<Integer> endCriteria = endVertices.keySet();
         List<Decision> result = new ArrayList<>();
-        int[][] edgesTo = new int[limitDepth][graph.vertices()];
+        List<Integer>[][] edgesTo = new List[limitDepth][graph.vertices()];
+        for (int g = 0; g < edgesTo.length; g++) {
+            for (int h = 0; h < edgesTo[g].length; h++) {
+                edgesTo[g][h] = new LinkedList<>();
+            }
+        }
         boolean[] marked = new boolean[graph.vertices()];
         // end vertices marked as visited already
         endCriteria.forEach(v -> {
@@ -106,17 +113,14 @@ public class BFSTask implements Callable<List<OptimalPath>> {
             levelCount--;
             for (Integer[] adj : graph.adj(v)) {
                 w = adj[Graph.IDX_W];
-                edgesTo[depth - 1][w] = v;
+                edgesTo[depth - 1][w].add(v);
                 if (endCriteria.contains(w)) {
                     // bingo! found potencial decision
                     // create way
-                    int d = depth;
-                    int[] way = new int[depth + 1];
-                    for (int x = w; x != sV; x = edgesTo[--d][x]) {
-                        way[d] = x;
-                    }
-                    way[0] = sV;
-                    if (way.length > 0) {
+                    List<Integer[]> ways = new ArrayList<>();
+                    restoreLevel(
+                            w, new Integer[] {w}, edgesTo, ways, sV, depth - 1);
+                    for (Integer[] way : ways) {
                         for (BusStop startBs : startVertices.get(sV)) {
                             for (BusStop endBs : endVertices.get(w)) {
                                 result.add(new Decision(startBs, endBs, way));
@@ -135,13 +139,34 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                 break;
             }
         }
-//        Map<String, Decision> set = new HashMap<>();
-//        for (Decision d : result) {
-//            set.put(d.toString(), d);
-//        }
-//        LOG.info("total [" + result.size() + "], rest [" + set.size()
-//                + "], visits [" + visits + "]");
-        return result;
+        Map<String, Decision> set = new HashMap<>();
+        for (Decision d : result) {
+            set.put(d.toString(), d);
+        }
+        LOG.info("total [" + result.size() + "], rest [" + set.size()
+                + "]");
+        return new ArrayList<>(set.values());
+    }
+    public void restoreLevel(final int v, final Integer[] way,
+            final List<Integer>[][] edgesTo, final List<Integer[]> result,
+            final int sV, final int depth) {
+        List<Integer> node = edgesTo[depth][v];
+        for (Integer nextV : node) {
+            Integer[] nextWay = new Integer[way.length + 1];
+            nextWay[0] = nextV;
+            for (int j = 1; j < way.length + 1; j++) {
+                nextWay[j] = way[j - 1];
+            }
+            if (sV == nextV) {
+                result.add(nextWay);
+            } else {
+                if (depth > 0) {
+                    restoreLevel(nextV, nextWay, edgesTo, result, sV, depth - 1);
+                } else {
+                    throw new IllegalArgumentException("Algorithm error!");
+                }
+            }
+        }
     }
     /**
      * Transform found decisions to optimal paths.
@@ -151,7 +176,7 @@ public class BFSTask implements Callable<List<OptimalPath>> {
     private List<OptimalPath> transformDecisions(final List<Decision> list) {
         List<OptimalPath> rest = new LinkedList<>();
         int idxS, idxT, idxE;
-        int[] way;
+        Integer[] way;
         Queue<Integer> queue = new LinkedList<>();
         for (Decision decision : list) {
             queue.clear();
@@ -185,6 +210,7 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                     if (idxT != -1) {
                         int v1 = -1;
                         int w1 = -1;
+                        int checkTotal = Integer.MAX_VALUE;
                         for (int j = 1; j < adjW.length; j += 2) {
                             int vt = adjW[j];
                             if (idxT < vt) {
@@ -192,8 +218,18 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                                     v1 = vt;
                                     w1 = adjW[j + 1];
                                 } else if (v1 > vt) {
-                                    v1 = vt;
-                                    w1 = adjW[j + 1];
+                                    // check total bus stop count for two paths
+                                    int tV = vt + 1;
+                                    int tW = graph.getPath(w).getBusstops()
+                                            .size() - (adjW[j + 1] + 1);
+                                    int newTotal = tV + tW;
+                                    if (checkTotal > newTotal) {
+                                        v1 = vt;
+                                        w1 = adjW[j + 1];
+                                        checkTotal = newTotal;
+                                    } else if (checkTotal == newTotal) {
+                                        
+                                    }
                                 }
                             }
                         }
@@ -215,16 +251,27 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                 OptimalPath op = new OptimalPath();
                 List<Path> paths = new ArrayList<>();
                 List<List<BusStop>> pathsWay = new ArrayList<>();
+                int transfers = 0;
                 for (int i = 0; i < way.length; i++) {
                     int v = way[i];
                     int s = queue.poll();
                     int e = queue.poll();
                     Path p = graph.getPath(v);
+                    if (paths.size() > 0 && TransportConst.METRO.equals(
+                            p.getRoute().getType().getName())
+                            && paths.get(paths.size() - 1)
+                                    .getRoute().getType().getName()
+                                    .equals(TransportConst.METRO)) {
+                        transfers--;
+                    }
+                    transfers++;
                     paths.add(p);
                     pathsWay.add(p.getBusstops().subList(s, e + 1));
                 }
+                op.setTransfers(transfers);
                 op.setPath(paths);
                 op.setWay(pathsWay);
+                op.setDecision(decision);
                 rest.add(op);
             }
         }

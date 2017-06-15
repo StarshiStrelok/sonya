@@ -63,9 +63,11 @@ export class SearchSettingsForm implements OnInit {
         this.settings.time = now.getHours() + ':' + minutes;
         this.settingsForm.patchValue(this.settings);
     }
+    isValid() {
+        return this.settingsForm.valid;
+    }
     onSubmit() {
         if (!this.settingsForm.valid) {
-            console.log('invalid');
             return;
         } else {
             this.mapComponent.layerEndpoint.checkSearchConditions();

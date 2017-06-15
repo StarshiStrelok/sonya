@@ -224,9 +224,14 @@ public class Graph {
         StringBuilder sb = new StringBuilder();
         sb.append("\n\n*************** ").append(v).append(" **************\n");
         for (Integer[] w : adj(v)) {
-            sb.append(String.format("%-6s", "[" + w[0] + "]:"));
-            sb.append(String.format("%-6s", " [" + w[1] + "]"));
-            sb.append(String.format("%-6s", " [" + w[2] + "]")).append("\n");
+            for (int k = 0; k < w.length; k++) {
+                if (k == 0) {
+                    sb.append(String.format("%-6s", "[" + w[k] + "]:"));
+                } else {
+                    sb.append(String.format("%-6s", " [" + w[k] + "]"));
+                }
+            }
+            sb.append("\n");
         }
         sb.append("edges: ").append(adj(v).size());
         sb.append("\n\n");

@@ -38,8 +38,12 @@ public class OptimalPath {
     private Double time;
     /** Distance, km. */
     private Double distance;
+    /** Transfers, exclude metro-metro transfers. */
+    private int transfers;
     /** Optimal Schedule. */
     private OptimalSchedule schedule;
+    /** Decision. */
+    private Decision decision;
     /**
      * @return the path
      */
@@ -100,6 +104,30 @@ public class OptimalPath {
     public void setDistance(Double distance) {
         this.distance = distance;
     }
+    /**
+     * @return the transfers
+     */
+    public int getTransfers() {
+        return transfers;
+    }
+    /**
+     * @param transfers the transfers to set
+     */
+    public void setTransfers(int transfers) {
+        this.transfers = transfers;
+    }
+    /**
+     * @return the decision
+     */
+    public Decision getDecision() {
+        return decision;
+    }
+    /**
+     * @param decision the decision to set
+     */
+    public void setDecision(Decision decision) {
+        this.decision = decision;
+    }
     @Override
     public String toString() {
         long minInHour = TimeUnit.HOURS.toMinutes(1);
@@ -113,8 +141,16 @@ public class OptimalPath {
         sb.append("\n");
         sb.append("> Optimal path <\n");
         sb.append("> transfers [").append(path.size() - 1).append("]\n");
-        sb.append("> time [").append(df.format(time * minInHour))
-                .append("] min\n");
+        sb.append("> decision [");
+        for (int i = 0; i < decision.getWay().length; i++) {
+            sb.append(decision.getWay()[i]).append("-");
+        }
+        sb.setLength(sb.length() - 1);
+        sb.append("]\n");
+        if (time != null) {
+            sb.append("> time [").append(df.format(time * minInHour))
+                    .append("] min\n");
+        }
         if (schedule != null) {
             sb.append("> arrival time [")
                     .append(sdfTime.format(schedule.getArrivalDate()))
