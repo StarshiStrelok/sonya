@@ -18,6 +18,7 @@
 package ss.sonya.transport.search;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,13 @@ public class BFSTask implements Callable<List<OptimalPath>> {
     private List<Decision> bfs(final Integer sV) throws Exception {
         Set<Integer> endCriteria = endVertices.keySet();
         List<Decision> result = new ArrayList<>();
-        int[][] edgesTo = new int[limitDepth][graph.vertices()];
+        int vertices = graph.vertices();
+        List<Integer>[][] edgesTo = new List[limitDepth][vertices];
+        for (int m = 0; m < limitDepth; m++) {
+            for (int n = 0; n < vertices; n++) {
+                edgesTo[m][n] = new ArrayList<>();
+            }
+        }
         boolean[] marked = new boolean[graph.vertices()];
         // end vertices marked as visited already
         endCriteria.forEach(v -> {
@@ -107,20 +114,23 @@ public class BFSTask implements Callable<List<OptimalPath>> {
             levelCount--;
             for (Integer[] adj : graph.adj(v)) {
                 w = adj[Graph.IDX_W];
-                edgesTo[depth - 1][w] = v;
+                edgesTo[depth - 1][w].add(v);
                 if (endCriteria.contains(w)) {
                     // bingo! found potencial decision
                     // create way
-                    int d = depth;
-                    Integer[] way = new Integer[depth + 1];
-                    for (int x = w; x != sV; x = edgesTo[--d][x]) {
-                        way[d] = x;
-                    }
-                    way[0] = sV;
-                    if (way.length > 0) {
+                    List<Integer[]> ways = new ArrayList<>();
+                    Integer[] stub = new Integer[depth + 1];
+                    stub[stub.length - 1] = w;
+                    restoreLevel(w, edgesTo, stub, ways, sV, depth - 1);
+                    for (Integer[] way : ways) {
                         for (BusStop startBs : startVertices.get(sV)) {
                             for (BusStop endBs : endVertices.get(w)) {
-                                result.add(new Decision(startBs, endBs, way));
+                                Decision dec = new Decision(startBs, endBs, way);
+                                if (dec.toString().contains("914")
+                                        && dec.toString().contains("912")) {
+                                    System.out.println(dec);
+                                }
+                                result.add(dec);
                             }
                         }
                     }
@@ -136,13 +146,28 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                 break;
             }
         }
-//        Map<String, Decision> set = new HashMap<>();
-//        for (Decision d : result) {
-//            set.put(d.toString(), d);
-//        }
-//        LOG.info("total [" + result.size() + "], rest [" + set.size()
-//                + "], visits [" + visits + "]");
-        return result;
+        Map<String, Decision> set = new HashMap<>();
+        for (Decision d : result) {
+            set.put(d.toString(), d);
+        }
+        LOG.info("total [" + result.size() + "], rest [" + set.size() + "]");
+        return new ArrayList<>(set.values());
+    }
+    private void restoreLevel(final int v,
+            final List<Integer>[][] edgesTo, final Integer[] path,
+            final List<Integer[]> result, final int sV, final int depth) {
+        List<Integer> tV = edgesTo[depth][v];
+        for (Integer w : tV) {
+            if (sV == w) {
+                path[0] = w;
+                result.add(path);
+            } else {
+                Integer[] copyPath = new Integer[path.length];
+                System.arraycopy(path, 0, copyPath, 0, path.length);
+                copyPath[depth] = w;
+                restoreLevel(w, edgesTo, copyPath, result, sV, depth - 1);
+            }
+        }
     }
     /**
      * Transform found decisions to optimal paths.

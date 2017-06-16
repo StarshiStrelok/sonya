@@ -104,6 +104,28 @@ public class Graph {
         edges++;
     }
     /**
+     * Check if way in graph exist.
+     * @param way graph way.
+     * @return true if exist.
+     */
+    public boolean isWayExist(final int[] way) {
+        for (int i = 0; i < way.length - 1; i++) {
+            int v = way[i];
+            int w = way[i + 1];
+            boolean isExist = false;
+            for (Integer[] wt : adj(v)) {
+                if (wt[IDX_W] == w) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (!isExist) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
      * Get graph vertices count.
      * @return - vertices count.
      */
@@ -249,22 +271,4 @@ public class Graph {
         sb.append(" ]");
         return sb.toString();
     }
-// ================================ PRIVATE ===================================
-//    /**
-//     * Check if edge exist.
-//     * For diagnostic.
-//     * @param v - vertex.
-//     * @param w - other vertex.
-//     * @return - true if exist.
-//     */
-//    private boolean isEdgeExist(
-//            int v, int w) {
-//        for (Integer[] e : adj(v)) {
-//            if (e[IDX_W] == w) {
-//                System.out.println("duplicate found");
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 }
