@@ -38,8 +38,6 @@ public class OptimalPath {
     private Double time;
     /** Distance, km. */
     private Double distance;
-    /** Transfers, exclude metro-metro transfers. */
-    private int transfers;
     /** Optimal Schedule. */
     private OptimalSchedule schedule;
     /** Decision. */
@@ -103,18 +101,6 @@ public class OptimalPath {
      */
     public void setDistance(Double distance) {
         this.distance = distance;
-    }
-    /**
-     * @return the transfers
-     */
-    public int getTransfers() {
-        return transfers;
-    }
-    /**
-     * @param transfers the transfers to set
-     */
-    public void setTransfers(int transfers) {
-        this.transfers = transfers;
     }
     /**
      * @return the decision

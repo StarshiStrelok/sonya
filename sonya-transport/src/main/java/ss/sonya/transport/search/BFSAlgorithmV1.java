@@ -128,6 +128,7 @@ public class BFSAlgorithmV1 implements SearchEngine {
             LOG.info("#-bfs-# straight paths [" + straight.size() + "]");
             result.addAll(straight);
         }
+        LOG.info("#-bfs-# max transfers [" + settings.getMaxTransfers() + "]");
         if (settings.getMaxTransfers() > 0) {
             // exclude vertices which belong to both criteria (straight vert.)
             endVertices.keySet().forEach(v -> {
@@ -304,25 +305,19 @@ public class BFSAlgorithmV1 implements SearchEngine {
             insertSchedule(result, settings.getTime(), settings.getDay(),
                     graph);
             Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
-                if (o1.getTransfers() > o2.getTransfers()) {
-                    return 1;
-                } else if (o1.getTransfers() < o2.getTransfers()) {
+                Date d1 = o1.getSchedule().getArrivalDate();
+                Date d2 = o2.getSchedule().getArrivalDate();
+                if (d1.getTime() < d2.getTime()) {
                     return -1;
+                } else if (d1.getTime() > d2.getTime()) {
+                    return 1;
                 } else {
-                    Date d1 = o1.getSchedule().getArrivalDate();
-                    Date d2 = o2.getSchedule().getArrivalDate();
-                    if (d1.getTime() < d2.getTime()) {
-                        return -1;
-                    } else if (d1.getTime() > d2.getTime()) {
+                    if (o1.getTime() > o2.getTime()) {
                         return 1;
+                    } else if (o1.getTime() < o2.getTime()) {
+                        return -1;
                     } else {
-                        if (o1.getTime() > o2.getTime()) {
-                            return 1;
-                        } else if (o1.getTime() < o2.getTime()) {
-                            return -1;
-                        } else {
-                            return 0;
-                        }
+                        return 0;
                     }
                 }
             });
@@ -330,9 +325,9 @@ public class BFSAlgorithmV1 implements SearchEngine {
             // move decisions with minimal transfers to top,
             // then sort it's by distance
             Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
-                if (o1.getTransfers() > o2.getTransfers()) {
+                if (o1.getPath().size() > o2.getPath().size()) {
                     return 1;
-                } else if (o1.getTransfers() < o2.getTransfers()) {
+                } else if (o1.getPath().size() < o2.getPath().size()) {
                     return -1;
                 } else {
                     if (o1.getTime() > o2.getTime()) {
@@ -344,19 +339,6 @@ public class BFSAlgorithmV1 implements SearchEngine {
                     }
                 }
             });
-        }
-        for (int i = 0; i < result.size(); i++) {
-            OptimalPath op = result.get(i);
-            Path prevPath = null;
-            for (Path p : op.getPath()) {
-                if (prevPath != null) {
-                    if (TransportConst.METRO.equals(p.getRoute().getType().getName())
-                            && TransportConst.METRO.equals(prevPath.getRoute().getType().getName())) {
-                        System.out.println(op);
-                    }
-                }
-                prevPath = p;
-            }
         }
     }
     /**
@@ -542,66 +524,6 @@ public class BFSAlgorithmV1 implements SearchEngine {
         LOG.info("#-bfs-# insert schedule elapsed time ["
                 + (System.currentTimeMillis() - start) + "] ms");
     }
-//    /**
-//     * Clear unreal results.
-//     * @param dirty dirty optimal paths.
-//     * @param startBs all start bus stops.
-//     * @param settings search settings.
-//     * @return real optimal paths.
-//     * @throws Exception method error.
-//     */
-//    private List<OptimalPath> clearUnrealResults(
-//            final List<OptimalPath> dirty,
-//            final List<BusStop> startBs,
-//            final SearchSettings settings) throws Exception {
-//        long start = System.currentTimeMillis();
-//        List<OptimalPath> rest = new ArrayList<>();
-//        Path p;
-//        List<BusStop> way;
-//        for (OptimalPath op : dirty) {
-//            boolean wrong = false;
-//            for (int i = 0; i < op.getPath().size(); i++) {
-//                p = op.getPath().get(i);
-//                if (settings.getDisabledRouteTypes()
-//                        .contains(p.getRoute().getType())) {
-//                    // client disable this route type
-//                    wrong = true;
-//                    break;
-//                }
-//                way = op.getWay().get(i);
-//                if (way.size() == 2
-//                        && p.getRoute().getType().getName()
-//                            != TransportConst.METRO) {
-//                    // very short way, only metro allowed
-//                    if (geometry.calcDistance(way.get(0).getLatitude(),
-//                            way.get(0).getLongitude(), way.get(1).getLatitude(),
-//                            way.get(1).getLongitude())
-//                                < MIN_DIST_FOR_SHORT_WAY) {
-//                        wrong = true;
-//                        break;
-//                    }
-//                }
-//            }
-//            if (!wrong) {
-//                rest.add(op);
-//            }
-//        }
-//        List<OptimalPath> rest2 = new ArrayList<>();
-//        for (OptimalPath op : rest) {
-//            if (op.getWay().size() > 1) {
-//                // if next way start bus stop in start area zone - remove it
-//                if (!startBs.contains(op.getWay().get(1).get(0))) {
-//                    rest2.add(op);
-//                }
-//            } else {
-//                rest2.add(op);
-//            }
-//        }
-//        LOG.info("#-bfs-# unreal results, was [" + dirty.size()
-//                    + "], rest [" + rest.size() + "], elapsed time ["
-//                    + (System.currentTimeMillis() - start) + "] ms");
-//        return rest2;
-//    }
     /**
      * Insert schedule into optimal path.
      */

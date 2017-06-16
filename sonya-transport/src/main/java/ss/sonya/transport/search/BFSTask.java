@@ -18,7 +18,7 @@
 package ss.sonya.transport.search;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,6 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
-import ss.sonya.transport.constants.TransportConst;
 import ss.sonya.transport.search.vo.Decision;
 import ss.sonya.transport.search.vo.OptimalPath;
 
@@ -65,15 +64,85 @@ public class BFSTask implements Callable<List<OptimalPath>> {
         endVertices = pEndVertices;
         startVertices = pStartVertices;
         graph = pGraph;
-        limitDepth = pLimitDepth;
+        limitDepth = pLimitDepth + 1;
     }
     @Override
     public List<OptimalPath> call() throws Exception {
+//        List<Decision> allLight = new ArrayList<>();
+//        for (Integer sV : startCriteria) {
+//            allLight.addAll(bfsLight(sV));
+//        }
+//        LOG.info("potencial decisions (light) [" + allLight.size() + "]");
         List<Decision> all = new ArrayList<>();
         for (Integer sV : startCriteria) {
             all.addAll(bfs(sV));
         }
+//        LOG.info("potencial decisions [" + all.size() + "]");
         return transformDecisions(all);
+    }
+        /**
+     * BFS implementation.
+     * @param sV start vertex.
+     * @return list decisions.
+     * @throws Exception method error.
+     */
+    private List<Decision> bfsLight(final Integer sV) throws Exception {
+        Set<Integer> endCriteria = endVertices.keySet();
+        List<Decision> result = new ArrayList<>();
+        int[][] edgesTo = new int[limitDepth][graph.vertices()];
+        boolean[] marked = new boolean[graph.vertices()];
+        // end vertices marked as visited already
+        endCriteria.forEach(v -> {
+            marked[v] = true;
+        });
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(sV);
+        int depth = 0;
+        int levelCount = 0;
+        int w;
+        while (!queue.isEmpty()) {
+            if (levelCount == 0) {
+                depth++;
+                levelCount = queue.size();
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("#-bfs-# depth = " + depth
+                            + " level count = " + levelCount);
+                }
+            }
+            int v = queue.poll();
+            levelCount--;
+            for (Integer[] adj : graph.adj(v)) {
+                w = adj[Graph.IDX_W];
+                edgesTo[depth - 1][w] = v;
+                if (endCriteria.contains(w)) {
+                    // bingo! found potencial decision
+                    // create way
+                    int d = depth;
+                    Integer[] way = new Integer[depth + 1];
+                    for (int x = w; x != sV; x = edgesTo[--d][x]) {
+                        way[d] = x;
+                    }
+                    way[0] = sV;
+                    if (way.length > 0) {
+                        for (BusStop startBs : startVertices.get(sV)) {
+                            for (BusStop endBs : endVertices.get(w)) {
+                                result.add(new Decision(startBs, endBs, way));
+                            }
+                        }
+                    }
+                }
+                // exclude duplicates from next level.
+                if (!queue.contains(w) && !marked[w]) {
+                    queue.add(w);
+                }
+            }
+            marked[v] = true;
+            // search while limit depth not reached
+            if (depth == limitDepth) {
+                break;
+            }
+        }
+        return result;
     }
     /**
      * BFS implementation.
@@ -109,6 +178,10 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                     LOG.trace("#-bfs-# depth = " + depth
                             + " level count = " + levelCount);
                 }
+                // search while limit depth not reached
+                if (depth == limitDepth) {
+                    break;
+                }
             }
             int v = queue.poll();
             levelCount--;
@@ -125,12 +198,7 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                     for (Integer[] way : ways) {
                         for (BusStop startBs : startVertices.get(sV)) {
                             for (BusStop endBs : endVertices.get(w)) {
-                                Decision dec = new Decision(startBs, endBs, way);
-                                if (dec.toString().contains("914")
-                                        && dec.toString().contains("912")) {
-                                    System.out.println(dec);
-                                }
-                                result.add(dec);
+                                result.add(new Decision(startBs, endBs, way));
                             }
                         }
                     }
@@ -141,22 +209,30 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                 }
             }
             marked[v] = true;
-            // search while limit depth not reached
-            if (depth == limitDepth) {
-                break;
-            }
         }
-        Map<String, Decision> set = new HashMap<>();
-        for (Decision d : result) {
-            set.put(d.toString(), d);
-        }
-        LOG.info("total [" + result.size() + "], rest [" + set.size() + "]");
-        return new ArrayList<>(set.values());
+//        Map<String, Decision> set = new HashMap<>();
+//        for (Decision d : result) {
+//            set.put(d.toString(), d);
+//        }
+//        LOG.info("total [" + result.size() + "], rest [" + set.size() + "]");
+        return result;
     }
+    /**
+     * Restore one level of graph.
+     * @param v current vertex.
+     * @param edgesTo edges array.
+     * @param path current path.
+     * @param result result array.
+     * @param sV start vertex.
+     * @param depth current depth (level).
+     */
     private void restoreLevel(final int v,
             final List<Integer>[][] edgesTo, final Integer[] path,
             final List<Integer[]> result, final int sV, final int depth) {
         List<Integer> tV = edgesTo[depth][v];
+        if (path[path.length - 2] == null) {
+            tV = Arrays.asList(new Integer[] {tV.get(tV.size() - 1)});
+        }
         for (Integer w : tV) {
             if (sV == w) {
                 path[0] = w;
@@ -241,24 +317,14 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                 OptimalPath op = new OptimalPath();
                 List<Path> paths = new ArrayList<>();
                 List<List<BusStop>> pathsWay = new ArrayList<>();
-                int transfers = 0;
                 for (int i = 0; i < way.length; i++) {
                     int v = way[i];
                     int s = queue.poll();
                     int e = queue.poll();
                     Path p = graph.getPath(v);
-                    if (paths.size() > 0 && TransportConst.METRO.equals(
-                            p.getRoute().getType().getName())
-                            && paths.get(paths.size() - 1)
-                                    .getRoute().getType().getName()
-                                    .equals(TransportConst.METRO)) {
-                        transfers--;
-                    }
-                    transfers++;
                     paths.add(p);
                     pathsWay.add(p.getBusstops().subList(s, e + 1));
                 }
-                op.setTransfers(transfers);
                 op.setPath(paths);
                 op.setWay(pathsWay);
                 op.setDecision(decision);

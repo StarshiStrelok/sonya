@@ -61,7 +61,7 @@ public class GraphConstructorTest extends TestConfig {
         s.setEndLat(53.93956770751937);
         s.setEndLon(27.61739730834961);
         s.setProfileId(4);
-        s.setMaxTransfers(4);
+        s.setMaxTransfers(3);
         s.setMaxResults(5);
         s.setTime("21:12");
         s.setDay(3);
@@ -171,14 +171,18 @@ public class GraphConstructorTest extends TestConfig {
         edgesTo[0][4].add(1);
         edgesTo[1][5].addAll(Arrays.asList(new Integer[] {2, 3}));
         edgesTo[1][6].addAll(Arrays.asList(new Integer[] {4, 3}));
-        //edgesTo[1][7].add(4);
-        edgesTo[2][7].addAll(Arrays.asList(new Integer[] {5, 6}));
+        edgesTo[1][8].add(4);
+        edgesTo[2][7].add(5);
         List<Integer[]> ways = new ArrayList<>();
         int endV = 7;
         int startV = 1;
         int depth = 2;
         Integer[] way = new Integer[depth + 2];
         way[depth + 1] = endV;
+        //BFSTask.restoreLevel(endV, edgesTo, way, ways, startV, depth);
+        edgesTo[2][7].add(6);
+        //BFSTask.restoreLevel(endV, edgesTo, way, ways, startV, depth);
+        edgesTo[2][7].add(8);
         //BFSTask.restoreLevel(endV, edgesTo, way, ways, startV, depth);
         for (Integer[] decision : ways) {
             StringBuilder sb = new StringBuilder();
