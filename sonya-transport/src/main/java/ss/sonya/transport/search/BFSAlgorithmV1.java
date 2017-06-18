@@ -59,8 +59,6 @@ import ss.sonya.transport.search.vo.SearchSettings;
 public class BFSAlgorithmV1 implements SearchEngine {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(BFSAlgorithmV1.class);
-    /** Limit time multiplexer. max_time=min_time * multiplexer. */
-    private static final double LIMIT_TIME_MULTIPLEXER = 2;
     /** 100%. */
     private static final int PERCENT_100 = 100;
     /** Minimal allowed distance for 2-bs way. In km. */
@@ -173,9 +171,7 @@ public class BFSAlgorithmV1 implements SearchEngine {
                     + (System.currentTimeMillis() - startBfs) + "] ms");
         }
         // at this moment result not thread safe
-        //result = clearUnrealResults(result, startBs, settings);
-        List<OptimalPath>[] grouping = groupingResult(result, settings);
-        result = grouping[0];
+        result = groupingResult(result, settings);
         sortResults(result, settings, profile);
         if (result.size() > settings.getMaxResults()) {
             result = result.subList(0, settings.getMaxResults());
@@ -349,14 +345,13 @@ public class BFSAlgorithmV1 implements SearchEngine {
      *      and long under 1 index.
      * @throws Exception error.
      */
-    private List<OptimalPath>[] groupingResult(final List<OptimalPath> dirty,
+    private List<OptimalPath> groupingResult(final List<OptimalPath> dirty,
             final SearchSettings settings) throws Exception {
         long start = System.currentTimeMillis();
         double sLat = settings.getStartLat();
         double sLon = settings.getStartLon();
         double eLat = settings.getEndLat();
         double eLon = settings.getEndLon();
-        long minInHour = TimeUnit.HOURS.toMinutes(1);
         List<OptimalPath> total = new ArrayList<>();
         Map<String, List<OptimalPath>> grouping = new HashMap<>();
         StringBuilder k = new StringBuilder();
@@ -375,61 +370,14 @@ public class BFSAlgorithmV1 implements SearchEngine {
         }
         LOG.info("#-bfs-# dirty [" + dirty.size()
                 + "], groups [" + grouping.size() + "]");
-        double max = -1;
-        double min = Double.MAX_VALUE;
         for (List<OptimalPath> list : grouping.values()) {
             OptimalPath best = selectBest(list, sLat, sLon, eLat, eLon);
-            if (best.getTime() > max) {
-                max = best.getTime();
-            }
-            if (best.getTime() < min) {
-                min = best.getTime();
-            }
             total.add(best);
         }
-        double limitTime = min * LIMIT_TIME_MULTIPLEXER;
-        LOG.info("#-bfs-# max time [" + (max * minInHour)
-                + "] min");
-        LOG.info("#-bfs-# min time [" + (min * minInHour)
-                + "] min");
-        LOG.info("#-bfs-# limit time [" + (limitTime * minInHour)
-                + "] min");
-        List<OptimalPath> longPaths = new ArrayList<>();
-        List<OptimalPath> shortPaths = new ArrayList<>();
-        for (OptimalPath op : total) {
-            if (op.getTime() < limitTime) {
-                shortPaths.add(op);
-            } else {
-                longPaths.add(op);
-            }
-        }
         LOG.info("#-bfs-# total paths size [" + total.size() + "]");
-        LOG.info("#-bfs-# short paths size [" + shortPaths.size() + "]");
-        LOG.info("#-bfs-# long paths size [" + longPaths.size() + "]");
-        if (LOG.isDebugEnabled()) {
-            Map<Integer, Integer> m = new HashMap<>();
-            for (OptimalPath op : shortPaths) {
-                double percent = op.getTime() * PERCENT_100 / max;
-                if (m.containsKey((int) percent)) {
-                    m.put((int) percent, m.get((int) percent) + 1);
-                } else {
-                    m.put((int) percent, 1);
-                }
-            }
-            List<Integer> ks = new ArrayList<>(m.keySet());
-            Collections.sort(ks);
-            if (LOG.isDebugEnabled()) {
-                for (Integer p : ks) {
-                    LOG.debug("#-bfs-#" + String.format("%-7s", m.get(p))
-                            + String.format("%-26s", " [~"
-                            + (p * max / PERCENT_100) + "] ms") + " : "
-                            + new String(new char[p]).replace("\0", "."));
-                }
-            }
-        }
         LOG.info("#-bfs-# grouping elapsed time ["
                 + (System.currentTimeMillis() - start) + "]");
-        return new List[] {shortPaths, longPaths};
+        return total;
     }
     /**
      * Select best optimal path from same optimal paths.
