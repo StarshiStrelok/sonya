@@ -254,11 +254,6 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                         int v1 = -1;
                         int w1 = -1;
                         double checkTotal = Double.MAX_VALUE;
-                        if (decision.toString().contains("13#914#912#191")
-                                && decision.getWay().length == 4
-                                && v == 912 && w == 191) {
-                LOG.debug("");
-            }
                         for (int j = 1; j < adjW.length; j += 2) {
                             int vt = adjW[j];
                             if (idxT < vt) {
