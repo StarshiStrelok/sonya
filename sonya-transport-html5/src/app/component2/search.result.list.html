@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <h3 md-subheader class="srl-result-h"
                 [translate]="'transport-map.search-result.legend'"></h3>
         <md-list-item *ngFor="let typ of mapComponent.activeProfile.routeProfiles">
-            <span md-list-icon [style.background-color]="typ.lineColor" class="srl-route-label"></span>
+            <span md-list-icon [style.background-color]="typ.lineColor" class="srl-route-label-2"></span>
             <p md-line style="line-height: 30px;" [translate]="'route-type.' + typ.name"></p>
         </md-list-item>
     </md-list>
@@ -64,8 +64,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </md-grid-tile>
                 <md-grid-tile>
                     <button md-button mdTooltip="{{'transport-map.search-result.back-to-summary' | translate }}"
-                            mdTooltipPosition="above" (click)="closeDetails()">
-                        <md-icon>chevron_right</md-icon>
+                            mdTooltipPosition="above" (click)="closeDetails()" color="accent">
+                        <md-icon>close</md-icon>
                     </button>
                 </md-grid-tile>
             </md-grid-list>
@@ -128,8 +128,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <md-grid-tile colspan="2">
                     {{summaryTime()}}
                 </md-grid-tile>
-
+                
             </md-grid-list>
+            
+            <button md-raised-button (click)="closeDetails()" color="primary" class="full-width">
+                    <md-icon>chevron_left</md-icon> {{'transport-map.search-result.back-to-summary' | translate }}
+            </button>
+            
         </div>
 
     </div>

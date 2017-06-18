@@ -253,15 +253,33 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                     if (idxT != -1) {
                         int v1 = -1;
                         int w1 = -1;
+                        double checkTotal = Double.MAX_VALUE;
+                        if (decision.toString().contains("13#914#912#191")
+                                && decision.getWay().length == 4
+                                && v == 912 && w == 191) {
+                LOG.debug("");
+            }
                         for (int j = 1; j < adjW.length; j += 2) {
                             int vt = adjW[j];
                             if (idxT < vt) {
+                                int tV = vt + 1;
+                                int tW = graph.getPath(w).getBusstops()
+                                        .size() - (adjW[j + 1] + 1);
+                                double newTotal = (tV / graph.getPath(v)
+                                        .getRoute().getType().getAvgSpeed())
+                                    + (tW / graph.getPath(w).getRoute()
+                                            .getType().getAvgSpeed());
                                 if (v1 == -1) {
                                     v1 = vt;
                                     w1 = adjW[j + 1];
-                                } else if (v1 > vt) {
-                                    v1 = vt;
-                                    w1 = adjW[j + 1];
+                                    checkTotal = newTotal;
+                                } else {
+                                    // check total bus stop count for two paths
+                                    if (checkTotal > newTotal) {
+                                        v1 = vt;
+                                        w1 = adjW[j + 1];
+                                        checkTotal = newTotal;
+                                    }
                                 }
                             }
                         }

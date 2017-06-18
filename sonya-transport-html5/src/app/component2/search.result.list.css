@@ -24,6 +24,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     border-radius: 2px;
     font-weight: bold;
     margin-left: 5px;
+    border: 1px solid white;
+}
+.srl-route-label-2 {
+    padding: .2em .6em .3em;
+    border-radius: 2px;
+    font-weight: bold;
+    margin-left: 5px;
 }
 .srl-route-label:hover {
     cursor: pointer;
