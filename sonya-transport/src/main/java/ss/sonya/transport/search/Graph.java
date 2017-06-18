@@ -18,9 +18,11 @@
 package ss.sonya.transport.search;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import ss.sonya.entity.Path;
 
 /**
@@ -72,6 +74,8 @@ public class Graph {
     private int edges;
     /** Lists of adjacency. */
     private final List<Integer[]>[] adj;
+    /** Metro vertices. */
+    private final Set<Integer> metroVertices;
     /**
      * Constructor.
      * @param sortedPaths sorted paths.
@@ -83,6 +87,7 @@ public class Graph {
         for (int i = 0; i < adj.length; i++) {
             adj[i] = new LinkedList<>();
         }
+        metroVertices = new HashSet<>();
     }
     /**
      * Add new edge.
@@ -124,6 +129,20 @@ public class Graph {
             }
         }
         return true;
+    }
+    /**
+     * Add metro vertex.
+     * @param v metro vertex.
+     */
+    public void addMetroVertex(final int v) {
+        metroVertices.add(v);
+    }
+    /**
+     * Get all metro vertices.
+     * @return metro vertices.
+     */
+    public Set<Integer> metroVertices() {
+        return metroVertices;
     }
     /**
      * Get graph vertices count.
@@ -268,6 +287,7 @@ public class Graph {
         sb.append(", graph average degree=").append(avgDegree());
         sb.append(", graph degree=").append(2 * edges());
         sb.append(", vertex max degree=").append(maxDegree());
+        sb.append(", metro vertices=").append(metroVertices);
         sb.append(" ]");
         return sb.toString();
     }

@@ -170,6 +170,10 @@ public class GraphConstructor {
         List<BusStop> way;
         for (Path path : paths) {
             int vertex = paths.indexOf(path);
+            if (TransportConst.METRO
+                    .equals(path.getRoute().getType().getName())) {
+                graph.addMetroVertex(vertex);
+            }
             way = path.getBusstops();
             // getting transfer paths for current path
             Map<Path, BusStop[]> tMap = analyzePath(path, nearBsCache, bsPaths,
