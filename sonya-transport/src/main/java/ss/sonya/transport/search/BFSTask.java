@@ -180,6 +180,9 @@ public class BFSTask implements Callable<List<OptimalPath>> {
      * @param result result array.
      * @param sV start vertex.
      * @param depth current depth (level).
+     * @param restriction depth restriction for
+     *                    ordinary (without metro) decisions.
+     * @param metroVCount metro vertex count in decision.
      */
     private void restoreDecisionLevel(final int v,
             final List<Integer>[][] edgesTo, final Integer[] path,

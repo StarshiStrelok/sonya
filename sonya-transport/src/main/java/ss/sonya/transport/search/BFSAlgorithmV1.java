@@ -84,19 +84,13 @@ public class BFSAlgorithmV1 implements SearchEngine {
         TransportProfile profile = graphConstructor
                 .findProfile(settings.getProfileId());
         LOG.info("#-bfs-# profile [" + profile + "]");
-        Set<BusStop> all;
-        if (settings.getDisabledRouteTypes().isEmpty()) {
-            all = graphConstructor
-                    .findBusStopPathsMap(profile.getId()).keySet();
-        } else {
-            all = new HashSet<>();
-            graph.getAllPaths().forEach(p -> {
-                if (!settings.getDisabledRouteTypes()
-                        .contains(p.getRoute().getType())) {
-                    all.addAll(p.getBusstops());
-                }
-            });
-        }
+        Set<BusStop> all = new HashSet<>();
+        graph.getAllPaths().forEach(p -> {
+            if (!settings.getDisabledRouteTypes()
+                    .contains(p.getRoute().getType())) {
+                all.addAll(p.getBusstops());
+            }
+        });
         LOG.info("#-bfs-# total bus stops [" + all.size() + "]");
         // find fixed count closer bus stops near start point
         List<BusStop> startBs = transportGeometry.findNearestBusStops(
@@ -124,16 +118,6 @@ public class BFSAlgorithmV1 implements SearchEngine {
         }
         LOG.info("#-bfs-# max transfers [" + settings.getMaxTransfers() + "]");
         if (settings.getMaxTransfers() > 0) {
-            // exclude vertices which belong to both criteria (straight vert.)
-            endVertices.keySet().forEach(v -> {
-                if (startVertices.keySet().contains(v)) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("#-bfs-# exclude vertex from start criteria ["
-                                + v + "], it exist in end criteria");
-                    }
-                    startVertices.remove(v);
-                }
-            });
             // multi-threading, using [physical processors]
             // or [physical processors] + [hyper-threading]
             int cores = Runtime.getRuntime().availableProcessors();
@@ -167,6 +151,9 @@ public class BFSAlgorithmV1 implements SearchEngine {
                     + (System.currentTimeMillis() - startBfs) + "] ms");
         }
         // at this moment result not thread safe
+        if (!settings.getDisabledRouteTypes().isEmpty()) {
+            result = excludeDisabledRoutes(result, settings);
+        }
         result = groupingResult(result, settings);
         result = filterDuplicates(result);
         sortResults(result, settings, profile);
@@ -254,10 +241,13 @@ public class BFSAlgorithmV1 implements SearchEngine {
         List<BusStop> way;
         Path path;
         List<OptimalPath> list = new ArrayList<>();
+        List<Integer> excludes = new ArrayList<>();
         for (Integer s : startVertices.keySet()) {
             for (Integer e : endVertices.keySet()) {
                 // vertex exist in start & end points - straight path
                 if (s.intValue() == e.intValue()) {
+                    excludes.add(e);
+                    excludes.add(s);
                     // straight path found
                     path = graph.getPath(s);
                     way = path.getBusstops();
@@ -280,6 +270,16 @@ public class BFSAlgorithmV1 implements SearchEngine {
                     }
                 }
             }
+        }
+        // exclude vertices which belong to both criteria (straight vert.)
+        for (Integer v : excludes) {
+            endVertices.remove(v);
+            startVertices.remove(v);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("#-bfs-# exclude vertex from criteries ["
+                        + v + "], it straight vertex");
+            }
+            startVertices.remove(v);
         }
         return list;
     }
@@ -632,6 +632,11 @@ public class BFSAlgorithmV1 implements SearchEngine {
             return os;
         }
     }
+    /**
+     * Filter duplicate among optimal paths.
+     * @param result all optimal paths.
+     * @return filtered list of optimal paths.
+     */
     private List<OptimalPath> filterDuplicates(final List<OptimalPath> result) {
         long start = System.currentTimeMillis();
         List<OptimalPath> filtered = new ArrayList<>();
@@ -674,7 +679,35 @@ public class BFSAlgorithmV1 implements SearchEngine {
                 }
             }
         }
-        LOG.info("#-bfs-# filter duplicats: was [" + result.size()
+        LOG.info("#-bfs-# filter duplicates: was [" + result.size()
+                + "], rest [" + filtered.size() + "], elapsed time ["
+                + (System.currentTimeMillis() - start) + "]");
+        return filtered;
+    }
+    /**
+     * Exclude disabled routes (if user not want see any route in result).
+     * @param result all optimal paths.
+     * @param settings search settings.
+     * @return filtered list.
+     */
+    private List<OptimalPath> excludeDisabledRoutes(
+            final List<OptimalPath> result, final SearchSettings settings) {
+        long start = System.currentTimeMillis();
+        List<OptimalPath> filtered = new ArrayList<>();
+        for (OptimalPath op : result) {
+            boolean isMatch = false;
+            for (Path p : op.getPath()) {
+                if (settings.getDisabledRouteTypes()
+                        .contains(p.getRoute().getType())) {
+                    isMatch = true;
+                    break;
+                }
+            }
+            if (!isMatch) {
+                filtered.add(op);
+            }
+        }
+        LOG.info("#-bfs-# exclude disabled routes: was [" + result.size()
                 + "], rest [" + filtered.size() + "], elapsed time ["
                 + (System.currentTimeMillis() - start) + "]");
         return filtered;

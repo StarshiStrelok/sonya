@@ -23,7 +23,7 @@
         },
         "search-result": {
             "no-result": "No results, make search in first",
-            "no-result-desc": "Click right mouse button on map and set start and end of the route, or use geocoder",
+            "no-result-desc": "Click right mouse button on map and set start and end point of the route, or use geocoder",
             "no-result-geocoder": "Geocoder is the service for search coordinates of geographical object by it name or address. For example, input street name and house number for object which you search and press Enter",
             "found-results": "Found results {{count}}",
             "open-details": "Open details",
