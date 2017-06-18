@@ -68,82 +68,83 @@ public class BFSTask implements Callable<List<OptimalPath>> {
     }
     @Override
     public List<OptimalPath> call() throws Exception {
-//        List<Decision> allLight = new ArrayList<>();
-//        for (Integer sV : startCriteria) {
-//            allLight.addAll(bfsLight(sV));
-//        }
-//        LOG.info("potencial decisions (light) [" + allLight.size() + "]");
+        long start = System.currentTimeMillis();
         List<Decision> all = new ArrayList<>();
         for (Integer sV : startCriteria) {
             all.addAll(bfs(sV));
         }
-//        LOG.info("potencial decisions [" + all.size() + "]");
-        return transformDecisions(all);
+        LOG.info("#-bfs-# bfs graph search time ["
+                + (System.currentTimeMillis() - start) + "]");
+        start = System.currentTimeMillis();
+        List<OptimalPath> list = transformDecisions(all);
+        LOG.info("#-bfs-# bfs transform decisions time ["
+                + (System.currentTimeMillis() - start) + "]");
+        return list;
     }
-        /**
-     * BFS implementation.
-     * @param sV start vertex.
-     * @return list decisions.
-     * @throws Exception method error.
-     */
-    private List<Decision> bfsLight(final Integer sV) throws Exception {
-        Set<Integer> endCriteria = endVertices.keySet();
-        List<Decision> result = new ArrayList<>();
-        int[][] edgesTo = new int[limitDepth][graph.vertices()];
-        boolean[] marked = new boolean[graph.vertices()];
-        // end vertices marked as visited already
-        endCriteria.forEach(v -> {
-            marked[v] = true;
-        });
-        Queue<Integer> queue = new LinkedList<>();
-        queue.add(sV);
-        int depth = 0;
-        int levelCount = 0;
-        int w;
-        while (!queue.isEmpty()) {
-            if (levelCount == 0) {
-                depth++;
-                levelCount = queue.size();
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("#-bfs-# depth = " + depth
-                            + " level count = " + levelCount);
-                }
-            }
-            int v = queue.poll();
-            levelCount--;
-            for (Integer[] adj : graph.adj(v)) {
-                w = adj[Graph.IDX_W];
-                edgesTo[depth - 1][w] = v;
-                if (endCriteria.contains(w)) {
-                    // bingo! found potencial decision
-                    // create way
-                    int d = depth;
-                    Integer[] way = new Integer[depth + 1];
-                    for (int x = w; x != sV; x = edgesTo[--d][x]) {
-                        way[d] = x;
-                    }
-                    way[0] = sV;
-                    if (way.length > 0) {
-                        for (BusStop startBs : startVertices.get(sV)) {
-                            for (BusStop endBs : endVertices.get(w)) {
-                                result.add(new Decision(startBs, endBs, way));
-                            }
-                        }
-                    }
-                }
-                // exclude duplicates from next level.
-                if (!queue.contains(w) && !marked[w]) {
-                    queue.add(w);
-                }
-            }
-            marked[v] = true;
-            // search while limit depth not reached
-            if (depth == limitDepth) {
-                break;
-            }
-        }
-        return result;
-    }
+//    /**
+//     * BFS implementation.
+//     * @param sV start vertex.
+//     * @return list decisions.
+//     * @throws Exception method error.
+//     */
+//    private List<Decision> bfsLight(final Integer sV) throws Exception {
+//        Set<Integer> endCriteria = endVertices.keySet();
+//        List<Decision> result = new ArrayList<>();
+//        int[][] edgesTo = new int[limitDepth][graph.vertices()];
+//        boolean[] marked = new boolean[graph.vertices()];
+//        // end vertices marked as visited already
+//        endCriteria.forEach(v -> {
+//            marked[v] = true;
+//        });
+//        Queue<Integer> queue = new LinkedList<>();
+//        queue.add(sV);
+//        int depth = 0;
+//        int levelCount = 0;
+//        int w;
+//        while (!queue.isEmpty()) {
+//            if (levelCount == 0) {
+//                depth++;
+//                levelCount = queue.size();
+//                if (LOG.isTraceEnabled()) {
+//                    LOG.trace("#-bfs-# depth = " + depth
+//                            + " level count = " + levelCount);
+//                }
+//            }
+//            int v = queue.poll();
+//            levelCount--;
+//            for (Integer[] adj : graph.adj(v)) {
+//                w = adj[Graph.IDX_W];
+//                edgesTo[depth - 1][w] = v;
+//                if (endCriteria.contains(w)) {
+//                    // bingo! found potencial decision
+//                    // create way
+//                    int d = depth;
+//                    Integer[] way = new Integer[depth + 1];
+//                    for (int x = w; x != sV; x = edgesTo[--d][x]) {
+//                        way[d] = x;
+//                    }
+//                    way[0] = sV;
+//                    if (way.length > 0) {
+//                        for (BusStop startBs : startVertices.get(sV)) {
+//                            for (BusStop endBs : endVertices.get(w)) {
+//                                result.add(new Decision(startBs, endBs, way));
+//                            }
+//                        }
+//                    }
+//                }
+//                // exclude duplicates from next level.
+//                if (!queue.contains(w) && !marked[w]) {
+//                    queue.add(w);
+//                }
+//            }
+//            marked[v] = true;
+//            // search while limit depth not reached
+//            if (depth == limitDepth) {
+//                break;
+//            }
+//        }
+//        return result;
+//    }
     /**
      * BFS implementation.
      * @param sV start vertex.
