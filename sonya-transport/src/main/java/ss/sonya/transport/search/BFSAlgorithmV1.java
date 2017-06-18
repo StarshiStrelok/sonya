@@ -59,10 +59,6 @@ import ss.sonya.transport.search.vo.SearchSettings;
 public class BFSAlgorithmV1 implements SearchEngine {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(BFSAlgorithmV1.class);
-    /** 100%. */
-    private static final int PERCENT_100 = 100;
-    /** Minimal allowed distance for 2-bs way. In km. */
-    private static final double MIN_DIST_FOR_SHORT_WAY = 0.7;
     /** Transport geometry. */
     @Autowired
     private TransportGeometry transportGeometry;
@@ -172,6 +168,7 @@ public class BFSAlgorithmV1 implements SearchEngine {
         }
         // at this moment result not thread safe
         result = groupingResult(result, settings);
+        result = filterDuplicates(result);
         sortResults(result, settings, profile);
         if (result.size() > settings.getMaxResults()) {
             result = result.subList(0, settings.getMaxResults());
@@ -301,19 +298,25 @@ public class BFSAlgorithmV1 implements SearchEngine {
             insertSchedule(result, settings.getTime(), settings.getDay(),
                     graph);
             Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
-                Date d1 = o1.getSchedule().getArrivalDate();
-                Date d2 = o2.getSchedule().getArrivalDate();
-                if (d1.getTime() < d2.getTime()) {
-                    return -1;
-                } else if (d1.getTime() > d2.getTime()) {
+                if (o1.getTransfers() > o2.getTransfers()) {
                     return 1;
+                } else if (o1.getTransfers() < o2.getTransfers()) {
+                    return -1;
                 } else {
-                    if (o1.getTime() > o2.getTime()) {
-                        return 1;
-                    } else if (o1.getTime() < o2.getTime()) {
+                    Date d1 = o1.getSchedule().getArrivalDate();
+                    Date d2 = o2.getSchedule().getArrivalDate();
+                    if (d1.getTime() < d2.getTime()) {
                         return -1;
+                    } else if (d1.getTime() > d2.getTime()) {
+                        return 1;
                     } else {
-                        return 0;
+                        if (o1.getTime() > o2.getTime()) {
+                            return 1;
+                        } else if (o1.getTime() < o2.getTime()) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
                     }
                 }
             });
@@ -628,5 +631,52 @@ public class BFSAlgorithmV1 implements SearchEngine {
             os.setDuration(new Date(epoch - dtime));
             return os;
         }
+    }
+    private List<OptimalPath> filterDuplicates(final List<OptimalPath> result) {
+        long start = System.currentTimeMillis();
+        List<OptimalPath> filtered = new ArrayList<>();
+        Map<Integer, List<OptimalPath>> map = new HashMap<>();
+        for (OptimalPath op : result) {
+            Integer key = op.getPath().size();
+            if (map.containsKey(key)) {
+                map.get(key).add(op);
+            } else {
+                List<OptimalPath> list = new ArrayList<>();
+                list.add(op);
+                map.put(key, list);
+            }
+        }
+        Set<String> relevance = new HashSet<>();
+        List<Integer> sortedLevels = new ArrayList<>(map.keySet());
+        Collections.sort(sortedLevels);
+        for (Integer level : sortedLevels) {
+            for (OptimalPath op : map.get(level)) {
+                if (level == 1) {
+                    filtered.add(op);
+                    relevance.add(op.getPath().get(0).getId() + "");
+                } else {
+                    StringBuilder opKeySb = new StringBuilder();
+                    for (Path p : op.getPath()) {
+                        opKeySb.append(p.getId()).append("#");
+                    }
+                    String opKey = opKeySb.toString();
+                    boolean isMatch = false;
+                    for (String relKey : relevance) {
+                        if (opKey.contains(relKey)) {
+                            isMatch = true;
+                            break;
+                        }
+                    }
+                    if (!isMatch) {
+                        filtered.add(op);
+                        relevance.add(opKey);
+                    }
+                }
+            }
+        }
+        LOG.info("#-bfs-# filter duplicats: was [" + result.size()
+                + "], rest [" + filtered.size() + "], elapsed time ["
+                + (System.currentTimeMillis() - start) + "]");
+        return filtered;
     }
 }

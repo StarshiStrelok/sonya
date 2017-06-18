@@ -38,6 +38,8 @@ public class OptimalPath {
     private Double time;
     /** Distance, km. */
     private Double distance;
+    /** Transfers (exclude metro transfers). Used for sort result. */
+    private int transfers;
     /** Optimal Schedule. */
     private OptimalSchedule schedule;
     /** Decision. */
@@ -103,6 +105,18 @@ public class OptimalPath {
         this.distance = distance;
     }
     /**
+     * @return the transfers
+     */
+    public int getTransfers() {
+        return transfers;
+    }
+    /**
+     * @param transfers the transfers to set
+     */
+    public void setTransfers(int transfers) {
+        this.transfers = transfers;
+    }
+    /**
      * @return the decision
      */
     public Decision getDecision() {
@@ -126,10 +140,14 @@ public class OptimalPath {
         sb.append("==========================================================");
         sb.append("\n");
         sb.append("> Optimal path <\n");
-        sb.append("> transfers [").append(path.size() - 1).append("]\n");
+        sb.append("> transfers [").append(transfers).append("]\n");
         sb.append("> decision [");
-        for (int i = 0; i < decision.getWay().length; i++) {
-            sb.append(decision.getWay()[i]).append("-");
+        if (decision != null) {
+            for (int i = 0; i < decision.getWay().length; i++) {
+                sb.append(decision.getWay()[i]).append("-");
+            }
+        } else {
+            sb.append("'straight'");
         }
         sb.setLength(sb.length() - 1);
         sb.append("]\n");

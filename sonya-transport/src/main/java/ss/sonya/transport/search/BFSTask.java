@@ -27,6 +27,7 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
+import ss.sonya.transport.constants.TransportConst;
 import ss.sonya.transport.search.vo.Decision;
 import ss.sonya.transport.search.vo.OptimalPath;
 
@@ -279,14 +280,20 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                 OptimalPath op = new OptimalPath();
                 List<Path> paths = new ArrayList<>();
                 List<List<BusStop>> pathsWay = new ArrayList<>();
+                int transfers = 0;
                 for (int i = 0; i < way.length; i++) {
                     int v = way[i];
                     int s = queue.poll();
                     int e = queue.poll();
                     Path p = graph.getPath(v);
+                    if (!TransportConst.METRO.equals(
+                            p.getRoute().getType().getName())) {
+                        transfers++;
+                    }
                     paths.add(p);
                     pathsWay.add(p.getBusstops().subList(s, e + 1));
                 }
+                op.setTransfers(transfers);
                 op.setPath(paths);
                 op.setWay(pathsWay);
                 op.setDecision(decision);
