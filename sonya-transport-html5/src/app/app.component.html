@@ -7,11 +7,6 @@
             <md-icon>menu</md-icon>
     </button>
     <md-menu #menu="mdMenu" [overlapTrigger]="false">
-        <button md-menu-item (click)="toControl()">
-            <md-icon>build</md-icon>
-            <span>Control</span>
-        </button>
-        <hr/>
         <button md-menu-item (click)="changeLanguage('en')">
             <img src="/assets/image/flag/en_32.png" class="lang-menu-icon">
             <span>English</span>
@@ -19,6 +14,10 @@
         <button md-menu-item (click)="changeLanguage('ru')">
             <img src="/assets/image/flag/ru_32.png" class="lang-menu-icon">
             <span>Russian</span>
+        </button>
+        <button md-menu-item (click)="signIn()" *ngIf="isControlVisible">
+            <md-icon>account_circle</md-icon>
+            <span>Sign In</span>
         </button>
     </md-menu>
 </md-toolbar>

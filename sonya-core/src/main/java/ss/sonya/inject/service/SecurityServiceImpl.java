@@ -16,12 +16,18 @@
  */
 package ss.sonya.inject.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -45,6 +51,8 @@ public class SecurityServiceImpl implements SonyaSecurity {
     /** Logger. */
     private static final Logger LOG = Logger
             .getLogger(SecurityServiceImpl.class);
+    /** Basic authentication. */
+    private static final String AUTH_BASIC = "Basic";
     /** User profile DAO. */
     @Autowired
     private UserProfileDAO userProfileDAO;
@@ -80,6 +88,45 @@ public class SecurityServiceImpl implements SonyaSecurity {
         } catch (Exception e) {
             LOG.error("user profile creation error!", e);
             return RegistrationStatus.ERROR;
+        }
+    }
+    @Override
+    public Authentication authentication(final String token)
+            throws UsernameNotFoundException, BadCredentialsException {
+        LOG.trace("authentication header [" + token + "]");
+        if (token.startsWith(AUTH_BASIC)) {
+            String base64 = token.replace(AUTH_BASIC, "").trim();
+            String decoded;
+            try {
+                decoded = new String(Base64.getMimeDecoder().decode(base64),
+                        "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                LOG.warn("authentication token encoding error!");
+                throw new IllegalArgumentException(
+                        "authentication token encoding error!");
+            }
+            String[] pair = decoded.split(":");
+            String login = pair[0];
+            LOG.trace("login [" + login + "]");
+            String password = pair[1];
+            UserProfile profile = userProfileDAO.findByLogin(login);
+            if (profile == null) {
+                throw new UsernameNotFoundException(
+                        "user profile not found in DB!");
+            }
+            UserDetails user = createSpringUser(profile);
+            if (user == null || !user.getUsername().equals(login)) {
+                throw new UsernameNotFoundException("login not found!");
+            }
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                throw new BadCredentialsException("password not match!");
+            }
+            Collection<? extends GrantedAuthority> authorities =
+                    user.getAuthorities();
+            return new UsernamePasswordAuthenticationToken(user,
+                    password, authorities);
+        } else {
+            return null;
         }
     }
 // ============================= PRIVATE ======================================

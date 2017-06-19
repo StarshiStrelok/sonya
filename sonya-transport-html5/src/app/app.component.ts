@@ -1,4 +1,4 @@
-import {Component, HostBinding} from '@angular/core';
+import {Component, HostBinding, HostListener} from '@angular/core';
 import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {TranslateService} from '@ngx-translate/core';
@@ -21,6 +21,13 @@ import {CookieService, CookieKey} from './service/cookie.service';
             `]
 })
 export class AppComponent {
+    private isControlVisible = false;
+    @HostListener('window:keydown', ['$event'])
+    showControl(event: KeyboardEvent) {
+        if (event.keyCode === 9) {  // TAB
+            this.isControlVisible = !this.isControlVisible;
+        }
+    }
     constructor(
         private translate: TranslateService,
         private router: Router,

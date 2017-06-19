@@ -106,6 +106,9 @@ export class DataService {
         } else if (status === 500) {
             this.notificationService.error('Server error',
                 'Internal server error occured, please try again');
+        } else if (status === 401) {
+            this.notificationService.warn('Access denied',
+                'Authentication required');
         } else {
             this.notificationService.error('Error',
                 'Unknown error occured');

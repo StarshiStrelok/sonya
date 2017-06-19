@@ -35,7 +35,7 @@ import ss.sonya.transport.config.TransportSpringConfig;
  */
 @EnableWebMvc
 @Configuration
-@Import({TransportSpringConfig.class})
+@Import({TransportSpringConfig.class, ServerSecuritySpringConfig.class})
 public class ServerSpringConfig extends WebMvcConfigurerAdapter {
     @Override
     public void configureMessageConverters(

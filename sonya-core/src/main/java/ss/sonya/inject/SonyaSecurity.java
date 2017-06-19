@@ -16,7 +16,10 @@
  */
 package ss.sonya.inject;
 
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ss.sonya.constants.RegistrationStatus;
 import ss.sonya.entity.UserProfile;
 
@@ -31,4 +34,13 @@ public interface SonyaSecurity extends UserDetailsService {
      * @return registration status.
      */
     RegistrationStatus createProfile(UserProfile profile);
+    /**
+     * Create principal from authentication token.
+     * @param token authentication token.
+     * @return principal or null if auth method not allowed.
+     * @throws UsernameNotFoundException login not found.
+     * @throws BadCredentialsException wrong password.
+     */
+    Authentication authentication(String token)
+            throws UsernameNotFoundException, BadCredentialsException;
 }
