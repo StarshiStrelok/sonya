@@ -24,6 +24,7 @@ import {BusStopGrid} from './component/busstop.grid';
 import {ConfirmImport} from './component/confirm.import.dialog';
 import {PathForm} from './component/form/path.form';
 import {Window, WindowDirective} from './component/window';
+import {RegistrationForm} from './security/registration.form';
 // ---------------------- UI components ---------------------------------------
 import {TransportMap} from './component2/transport.map';
 import {GeoCoder} from './component2/geocoder';
@@ -35,6 +36,7 @@ import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
 import {OSRMService} from './service/osrm.service'
 import {CookieService} from './service/cookie.service';
+import {SecurityService} from './service/security.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
@@ -54,6 +56,7 @@ export function HttpLoaderFactory(http: Http) {
         BusStopGrid,
         PathForm,
         ConfirmImport,
+        RegistrationForm,
         Window,
         WindowDirective,
         SideNavContentDirective,
@@ -83,9 +86,10 @@ export function HttpLoaderFactory(http: Http) {
         AppRoutingModule
     ],
     entryComponents: [
-        Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm, BusStopGrid, ConfirmImport
+        Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm, BusStopGrid, ConfirmImport,
+        RegistrationForm
     ],
-    providers: [DataService, DialogService, OSRMService, CookieService],
+    providers: [DataService, DialogService, OSRMService, CookieService, SecurityService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

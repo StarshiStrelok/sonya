@@ -2,6 +2,9 @@ import {Component, HostBinding, HostListener} from '@angular/core';
 import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {TranslateService} from '@ngx-translate/core';
+import {DialogService} from './service/dialog.service';
+import {SecurityService} from './service/security.service';
+import {RegistrationForm} from './security/registration.form';
 
 import {Links} from './links';
 import {CookieService, CookieKey} from './service/cookie.service';
@@ -31,7 +34,9 @@ export class AppComponent {
     constructor(
         private translate: TranslateService,
         private router: Router,
-        private cookieService: CookieService
+        private cookieService: CookieService,
+        private dialogService: DialogService,
+        private securityService: SecurityService
     ) {
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.setDefaultLang('en');
@@ -48,6 +53,21 @@ export class AppComponent {
     };
     toControl() {
         this.router.navigate([Links.PROFILE_LIST]);
+    }
+    signIn() {
+        this.securityService.profilesCount().then(count => {
+            if (Number(count) === 0) {
+                this.dialogService.openWindow('Please, register new admin user',
+                    '', '50%', RegistrationForm, {})
+                    .subscribe((res: boolean) => {
+                        if (res) {
+                            console.log('registered');
+                        }
+                    });
+            } else {
+                console.log('open sign in');
+            }
+        });
     }
     toMain() {
         this.router.navigate(['']);

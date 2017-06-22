@@ -15,32 +15,35 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<form [formGroup]="pathForm" novalidate>
-    <input type="number" hidden="true" formControlName="id"/>
+<form [formGroup]="regForm" novalidate>
     <md-grid-list cols="2" rowHeight="56px;">
         
         <md-grid-tile colspan="2">
             <md-input-container class="full-width">
-                <input mdInput placeholder="Path name" formControlName="description">
-                <md-error *ngIf="pathForm.get('description').hasError('required')">
+                <input mdInput placeholder="Login" formControlName="login">
+                <md-error *ngIf="regForm.get('login').hasError('required')">
                     Required
                 </md-error>
-                <md-error *ngIf="pathForm.get('description').hasError('maxlength')">
-                    Very long string, 100 characters maximum
+                <md-error *ngIf="regForm.get('login').hasError('maxlength')">
+                    Very long, 100 characters maximum
                 </md-error>
             </md-input-container>
         </md-grid-tile>
         
         <md-grid-tile colspan="2">
             <md-input-container class="full-width">
-                <input mdInput placeholder="External ID (optional)"
-                       formControlName="externalId">
+                <input mdInput placeholder="Password" formControlName="password" type="password">
+                <md-error *ngIf="regForm.get('password').hasError('required')">
+                    Required
+                </md-error>
+                <md-error *ngIf="regForm.get('password').hasError('maxlength')">
+                    Very long, 100 characters maximum
+                </md-error>
             </md-input-container>
         </md-grid-tile>
         
         <md-grid-tile>
-            <button md-fab color="primary" (click)="onSubmit()" mdTooltip="Confirm"
-                    mdTooltipPosition="above">
+            <button md-fab color="primary" (click)="onSubmit()" mdTooltip="Confirm" mdTooltipPosition="above">
                 <md-icon>done</md-icon></button>
         </md-grid-tile>
         <md-grid-tile>

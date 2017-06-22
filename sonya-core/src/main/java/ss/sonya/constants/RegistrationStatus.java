@@ -26,5 +26,7 @@ public enum RegistrationStatus {
     /** Duplicate login. */
     DUPLICATE,
     /** Profile creation error. */
-    ERROR;
+    ERROR,
+    /** Allow only one profile restriction. */
+    ALLOW_ONLY_ONE;
 }

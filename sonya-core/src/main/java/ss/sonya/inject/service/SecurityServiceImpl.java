@@ -74,6 +74,10 @@ public class SecurityServiceImpl implements SonyaSecurity {
     }
     @Override
     public RegistrationStatus createProfile(final UserProfile profile) {
+        // allow only one profile.
+        if (!commonDAO.getAll(UserProfile.class).isEmpty()) {
+            return RegistrationStatus.ALLOW_ONLY_ONE;
+        }
         LOG.info("---------- create new user profile ------------------------");
         try {
             UserProfile exist = userProfileDAO.findByLogin(profile.getLogin());
@@ -128,6 +132,10 @@ public class SecurityServiceImpl implements SonyaSecurity {
         } else {
             return null;
         }
+    }
+    @Override
+    public int profilesCount() {
+        return commonDAO.getAll(UserProfile.class).size();
     }
 // ============================= PRIVATE ======================================
     /**

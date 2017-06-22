@@ -35,6 +35,11 @@ public interface SonyaSecurity extends UserDetailsService {
      */
     RegistrationStatus createProfile(UserProfile profile);
     /**
+     * Get profiles count.
+     * @return profiles count.
+     */
+    int profilesCount();
+    /**
      * Create principal from authentication token.
      * @param token authentication token.
      * @return principal or null if auth method not allowed.
