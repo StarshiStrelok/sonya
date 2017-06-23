@@ -28,6 +28,7 @@ import {SecurityService} from '../service/security.service';
 })
 export class RegistrationForm extends DialogContent implements OnInit {
     regForm: FormGroup;
+    private isRegistration: false;
     constructor(
         private fb: FormBuilder,
         private securityService: SecurityService
@@ -42,6 +43,7 @@ export class RegistrationForm extends DialogContent implements OnInit {
         });
     }
     setData(data: any): void {
+        this.isRegistration = data.isRegistration;
     }
     setDialogRef(dialogRef: MdDialogRef<Window>): void {
         this.dialogRef = dialogRef;
@@ -51,9 +53,14 @@ export class RegistrationForm extends DialogContent implements OnInit {
             return;
         }
         let values = this.regForm.value;
-        console.log(values);
-        this.securityService.createProfile(values).then(res => {
-            this.dialogRef.close(true);
-        });
+        if (this.isRegistration) {
+            this.securityService.createProfile(values).then(res => {
+                this.dialogRef.close(true);
+            });
+        } else {
+            this.securityService.authentication(values).then(res => {
+                this.dialogRef.close(true);
+            });
+        }
     }
 }

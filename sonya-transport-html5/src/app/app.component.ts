@@ -51,23 +51,35 @@ export class AppComponent {
         timeOut: 5000,
         maxStack: 4
     };
-    toControl() {
+    private toControl() {
         this.router.navigate([Links.PROFILE_LIST]);
     }
     signIn() {
         this.securityService.profilesCount().then(count => {
             if (Number(count) === 0) {
                 this.dialogService.openWindow('Please, register new admin user',
-                    '', '50%', RegistrationForm, {})
+                    '', '50%', RegistrationForm, {
+                        isRegistration: true
+                    })
                     .subscribe((res: boolean) => {
                         if (res) {
-                            console.log('registered');
+                            this.signInDialogOpen();
                         }
                     });
             } else {
-                console.log('open sign in');
+                this.signInDialogOpen();
             }
         });
+    }
+    private signInDialogOpen() {
+        this.dialogService.openWindow('Sign In',
+            '', '50%', RegistrationForm, {
+                isRegistration: false
+            }).subscribe((res: boolean) => {
+                if (res) {
+                    this.toControl();
+                }
+            });
     }
     toMain() {
         this.router.navigate(['']);

@@ -21,6 +21,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,5 +58,12 @@ public class PathWS extends DataWS<Path> {
     public List<Path> getPathsFromRoute(
             @PathVariable("id") Integer id) throws Exception {
         return transportService.getPathsFromRoute(id);
+    }
+    @RequestMapping(method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @Override
+    public Path update(@RequestBody Path path) throws Exception {
+        path.setSchedule(transportService.getSchedule(path.getId()));
+        return dataService.update(path);
     }
 }

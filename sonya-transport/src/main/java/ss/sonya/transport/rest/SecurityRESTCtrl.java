@@ -19,6 +19,7 @@ package ss.sonya.transport.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,5 +56,14 @@ public class SecurityRESTCtrl {
     public RegistrationStatus createProfile(
             @RequestBody final UserProfile profile) {
         return security.createProfile(profile);
+    }
+    /**
+     * Authentication for transport admin session.
+     * @param authToken authentication token.
+     */
+    @RequestMapping(value = "/authentication", method = RequestMethod.GET)
+    public void authentication(
+            @RequestHeader("authorization") final String authToken) {
+        security.authentication(authToken);
     }
 }

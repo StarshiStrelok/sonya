@@ -27,14 +27,25 @@ export class SecurityService {
     constructor(private http: Http) {}
     profilesCount(): Promise<string> {
         return this.http.get(this.url + '/profiles-count')
-        .toPromise()
+            .toPromise()
             .then(res => res.text() as string)
             .catch(this.handleError);
     }
     createProfile(data: any): Promise<string> {
         return this.http.post(this.url + '/new-account', JSON.stringify(data), {headers: this.headers})
-        .toPromise()
+            .toPromise()
             .then(res => res.text() as string)
+            .catch(this.handleError);
+    }
+    authentication(credentials: any): Promise<number> {
+        let token = credentials ? {
+            authorization: "Basic " + btoa(credentials.login
+                + ":" + credentials.password)
+        } : {};
+        let authheaders = new Headers(token);
+        return this.http.get(this.url + '/authentication', {headers: authheaders})
+            .toPromise()
+            .then(res => res.status as number)
             .catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {

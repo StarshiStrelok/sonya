@@ -16,6 +16,7 @@
  */
 package ss.sonya.inject.dao;
 
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -46,6 +47,7 @@ class UserProfileDAOImpl implements UserProfileDAO {
         Root<UserProfile> c = criteria.from(UserProfile.class);
         criteria.select(c).where(builder.equal(c.get("login"), login));
         Query query = em.createQuery(criteria);
-        return (UserProfile) query.getSingleResult();
+        List<UserProfile> list = query.getResultList();
+        return list.isEmpty() ? null : list.get(0);
     }
 }

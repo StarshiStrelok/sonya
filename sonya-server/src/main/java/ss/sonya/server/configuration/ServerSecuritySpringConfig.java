@@ -45,6 +45,10 @@ public class ServerSecuritySpringConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/rest/data/route/search")
                 .permitAll().and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST,
+                        "/rest/transport/security/new-account")
+                .permitAll().and()
                 .authorizeRequests().antMatchers(HttpMethod.POST, "/**")
                 .access("hasRole('ADMIN')").and()
                 .authorizeRequests().antMatchers(HttpMethod.PUT, "/**")
