@@ -45,6 +45,8 @@ public class SearchSettings {
     private int maxTransfers;
     /** Disabled route types. */
     private List<RouteProfile> disabledRouteTypes;
+    /** Use current day and time for calculate schedule. */
+    private boolean currentTimeAndDate;
     /**
      * @return the sLat
      */
@@ -164,5 +166,17 @@ public class SearchSettings {
      */
     public void setDisabledRouteTypes(List<RouteProfile> disabledRouteTypes) {
         this.disabledRouteTypes = disabledRouteTypes;
+    }
+    /**
+     * @return the currentTimeAndDate
+     */
+    public boolean isCurrentTimeAndDate() {
+        return currentTimeAndDate;
+    }
+    /**
+     * @param pCurrentTimeAndDate the currentTimeAndDate to set
+     */
+    public void setCurrentTimeAndDate(boolean pCurrentTimeAndDate) {
+        currentTimeAndDate = pCurrentTimeAndDate;
     }
 }

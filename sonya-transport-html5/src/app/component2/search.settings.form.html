@@ -20,19 +20,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <md-grid-list cols="1" rowHeight="58px;">
         
         <md-grid-tile *ngIf="mapComponent.activeProfile && mapComponent.activeProfile.hasSchedule">
+            <md-checkbox formControlName="currentTimeAndDate">
+                {{'transport-map.search-settings.current-date-time' | translate }}
+            </md-checkbox>    
+        </md-grid-tile>
+        
+        <md-grid-tile *ngIf="mapComponent.activeProfile && mapComponent.activeProfile.hasSchedule
+            && !settingsForm.get('currentTimeAndDate').value">
             <md-select placeholder="{{'transport-map.search-settings.day-of-trip' | translate }}"
                        formControlName="day" class="full-width">
-                <md-option [value]="2"><div [translate]="'common.day.monday'"></div></md-option>
-                <md-option [value]="3"><div [translate]="'common.day.tuesday'"></div></md-option>
-                <md-option [value]="4"><div [translate]="'common.day.wednesday'"></div></md-option>
-                <md-option [value]="5"><div [translate]="'common.day.thursday'"></div></md-option>
-                <md-option [value]="6"><div [translate]="'common.day.friday'"></div></md-option>
-                <md-option [value]="7"><div [translate]="'common.day.saturday'"></div></md-option>
-                <md-option [value]="1"><div [translate]="'common.day.sunday'"></div></md-option>
+                <md-option [value]="2">{{'common.day.monday' | translate}}</md-option>
+                <md-option [value]="3">{{'common.day.tuesday' | translate}}</md-option>
+                <md-option [value]="4">{{'common.day.wednesday' | translate}}</md-option>
+                <md-option [value]="5">{{'common.day.thursday' | translate}}</md-option>
+                <md-option [value]="6">{{'common.day.friday' | translate}}</md-option>
+                <md-option [value]="7">{{'common.day.saturday' | translate}}</md-option>
+                <md-option [value]="1">{{'common.day.sunday' | translate}}</md-option>
             </md-select>
         </md-grid-tile>
         
-        <md-grid-tile *ngIf="mapComponent.activeProfile && mapComponent.activeProfile.hasSchedule">
+        <md-grid-tile *ngIf="mapComponent.activeProfile && mapComponent.activeProfile.hasSchedule
+            && !settingsForm.get('currentTimeAndDate').value">
             <md-input-container class="full-width">
                 <input mdInput placeholder="{{'transport-map.search-settings.time-of-trip' | translate }}"
                        formControlName="time">

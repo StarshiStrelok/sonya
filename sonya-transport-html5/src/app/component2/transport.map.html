@@ -65,7 +65,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             mdTooltip="{{'transport-map.controls.profile' | translate }}"
             mdTooltipPosition="below" *ngIf="profiles && profiles.length > 1"
             [mdMenuTriggerFor]="cityMenu">
-        <md-icon>place</md-icon>
+        <md-icon>account_balance</md-icon>
     </button>
     <md-menu #cityMenu="mdMenu">
         <button md-menu-item *ngFor="let profile of profiles" (click)="switchProfile(profile)">

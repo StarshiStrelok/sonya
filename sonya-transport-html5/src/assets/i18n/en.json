@@ -47,7 +47,8 @@
             "max-results": "Show max results",
             "max-transfers": "Max transfers from route to route",
             "apply": "Apply",
-            "route-types": "Enable / disable transport types here"
+            "route-types": "Enable / disable transport types here",
+            "current-date-time": "Trip date & time: now"
         },
         "controls": {
             "hide": "Hide",

@@ -53,7 +53,8 @@ export class SearchSettingsForm implements OnInit {
             maxResults: ['', [Validators.required, minNumberValidator(0), maxNumberValidator(20)]],
             maxTransfers: ['', [Validators.required, minNumberValidator(0)]],
             day: ['', [Validators.required]],
-            time: ['', [Validators.required, Validators.pattern('^([01]?[0-9]|2[0-3]):[0-5][0-9]$')]]
+            time: ['', [Validators.required, Validators.pattern('^([01]?[0-9]|2[0-3]):[0-5][0-9]$')]],
+            currentTimeAndDate: [true, []]
         });
         let now = new Date();
         let curDay = now.getDay() + 1;

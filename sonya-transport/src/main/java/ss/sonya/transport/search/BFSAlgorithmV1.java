@@ -295,8 +295,19 @@ public class BFSAlgorithmV1 implements SearchEngine {
             throws Exception {
         if (profile.isHasSchedule()) {
             Graph graph = graphConstructor.findGraph(settings.getProfileId());
-            insertSchedule(result, settings.getTime(), settings.getDay(),
-                    graph);
+            String time;
+            int day;
+            if (settings.isCurrentTimeAndDate()) {
+                Date now = new Date();
+                Calendar c = new GregorianCalendar();
+                c.setTime(now);
+                time = new SimpleDateFormat("HH:mm").format(now);
+                day = c.get(Calendar.DAY_OF_WEEK);
+            } else {
+                time = settings.getTime();
+                day = settings.getDay();
+            }
+            insertSchedule(result, time, day, graph);
             Collections.sort(result, (OptimalPath o1, OptimalPath o2) -> {
                 if (o1.getTransfers() > o2.getTransfers()) {
                     return 1;
