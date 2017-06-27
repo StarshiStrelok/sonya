@@ -150,6 +150,21 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                     } else {
                         ways.add(sWay);
                     }
+
+//                    List<Integer[]> ways = new ArrayList<>();
+//                    if (v != sV) {
+//                        // if decisions exist, restrict all by length, exclude
+//                        // decisions which contains metro vertices
+//                        Integer restriction = result.isEmpty()
+//                                ? null : result.get(0).getWay().length;
+//                        ways.addAll(restoreDecisionWays(v, w, edgesTo, sV, depth - 1, restriction));
+//                    } else {
+//                        Integer[] sWay = new Integer[depth + 1];
+//                        sWay[sWay.length - 1] = w;
+//                        sWay[sWay.length - 2] = v;
+//                        ways.add(sWay);
+//                    }
+                    
                     for (Integer[] way : ways) {
                         for (BusStop startBs : startVertices.get(sV)) {
                             for (BusStop endBs : endVertices.get(w)) {
@@ -174,6 +189,7 @@ public class BFSTask implements Callable<List<OptimalPath>> {
     }
     /**
      * Restore one level of graph decision.
+     * Recursive! Slowly.
      * @param v current vertex.
      * @param edgesTo edges array.
      * @param path current path.
@@ -194,7 +210,7 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                 newMetroVCount = metroVCount
                         + (graph.metroVertices().contains(w) ? 1 : 0);
                 if (path.length >= restriction) {
-                    if ((path.length + 1) - newMetroVCount > restriction) {
+                    if (path.length - newMetroVCount > restriction) {
                         continue;
                     }
                 }
@@ -210,6 +226,62 @@ public class BFSTask implements Callable<List<OptimalPath>> {
                         depth - 1, restriction, newMetroVCount);
             }
         }
+    }
+    private List<Integer[]> restoreDecisionWays(final int v, final int eV,
+            final List<Integer>[][] edgesTo, final int sV, final int depth,
+            final Integer restriction) {
+        List<Integer[]> ways = new ArrayList<>();
+        Integer[] sWay = new Integer[2];
+        sWay[1] = eV;
+        sWay[0] = v;
+        ways.add(sWay);
+        int curV;
+        int curDepth = depth;
+        List<Integer> edges;
+        List<Integer[]> parentWays = new ArrayList<>();
+        Set<Integer> metroVertices = graph.metroVertices();
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(v);
+        while (curDepth > 0) {
+            curV = queue.poll();
+            edges = edgesTo[curDepth - 1][curV];
+            if (queue.isEmpty()) {
+                curDepth--;
+            }
+            parentWays.clear();
+            for (Integer[] subWay : ways) {
+                if (subWay[0] == curV) {
+                    parentWays.add(subWay);
+                }
+            }
+            for (Integer edge : edges) {
+                if (sV != edge) {
+                    queue.add(edge);
+                }
+                for (Integer[] parentWay : parentWays) {
+                    Integer[] copyWay = new Integer[parentWay.length + 1];
+                    for (int k = 1; k < copyWay.length; k++) {
+                        copyWay[k] = parentWay[k - 1];
+                    }
+                    copyWay[0] = edge;
+                    if (restriction != null && copyWay.length > restriction) {
+                        int metroCount = 0;
+                        for (Integer i : copyWay) {
+                            if (metroVertices.contains(i)) {
+                                metroCount++;
+                            }
+                        }
+                        if ((copyWay.length + 1) - metroCount <= restriction) {
+                            ways.add(copyWay);
+                        }
+                    } else {
+                        ways.add(copyWay);
+                    }
+                }
+            }
+            ways.removeAll(parentWays);
+        }
+        return ways;
     }
     /**
      * Transform found decisions to optimal paths.

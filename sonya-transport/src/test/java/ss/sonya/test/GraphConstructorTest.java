@@ -17,8 +17,10 @@
 package ss.sonya.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -54,14 +56,14 @@ public class GraphConstructorTest extends TestConfig {
     //@Ignore
     public void test() throws Exception {
         SearchSettings s = new SearchSettings();
-//        s.setStartLat(53.919455733816385);
-//        s.setStartLon(27.434507391390493);
-//        s.setEndLat(53.9641268043094);
-//        s.setEndLon(27.556245406084717);
-        s.setStartLat(53.926581218158006);
-        s.setStartLon(27.45414733886719);
-        s.setEndLat(53.902720016840476);
-        s.setEndLon(27.61997222900391);
+        s.setStartLat(53.919455733816385);
+        s.setStartLon(27.434507391390493);
+        s.setEndLat(53.9641268043094);
+        s.setEndLon(27.556245406084717);
+//        s.setStartLat(53.926581218158006);
+//        s.setStartLon(27.45414733886719);
+//        s.setEndLat(53.902720016840476);
+//        s.setEndLon(27.61997222900391);
         s.setProfileId(4);
         s.setMaxTransfers(3);
         s.setMaxResults(5);
@@ -157,5 +159,42 @@ public class GraphConstructorTest extends TestConfig {
         System.out.println("max time [" + max + "] ms");
         System.out.println("avg time [" + (System.currentTimeMillis() - start) / attempt + "]");
         System.out.println("empty [" + empty  + "]");
+    }
+    @Test
+    @Ignore
+    public void testBFS() {
+        List<Integer>[][] edgesTo = new List[3][21];
+        for (int g = 0; g < edgesTo.length; g++) {
+            for (int h = 0; h < edgesTo[g].length; h++) {
+                edgesTo[g][h] = new LinkedList<>();
+            }
+        }
+        edgesTo[0][1].add(0);
+        edgesTo[0][2].add(1);
+        edgesTo[0][3].add(1);
+        edgesTo[0][4].add(1);
+        edgesTo[1][5].addAll(Arrays.asList(new Integer[] {2, 3}));
+        edgesTo[1][6].addAll(Arrays.asList(new Integer[] {4, 3}));
+        edgesTo[1][8].add(4);
+        edgesTo[2][7].add(5);
+        List<Integer[]> ways = new ArrayList<>();
+        int endV = 7;
+        int startV = 1;
+        int depth = 2;
+        Integer[] way = new Integer[depth + 2];
+        way[depth + 1] = endV;
+//        ways.addAll(BFSTask.restoreDecisionWays(5, endV, edgesTo, startV, depth));
+//        edgesTo[2][7].add(6);
+//        ways.addAll(BFSTask.restoreDecisionWays(6, endV, edgesTo, startV, depth));
+//        edgesTo[2][7].add(8);
+//        ways.addAll(BFSTask.restoreDecisionWays(8, endV, edgesTo, startV, depth));
+        for (Integer[] decision : ways) {
+            StringBuilder sb = new StringBuilder();
+            for (Integer v : decision) {
+                sb.append("[").append(v).append("]-");
+            }
+            sb.setLength(sb.length() - 1);
+            System.out.println(sb.toString());
+        }
     }
 }
