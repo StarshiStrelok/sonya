@@ -41,7 +41,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <!-- CONTROLS -->
     <button md-fab color="primary" class="tm-map-control" style="top: 25px; left: 25px"
             (click)="openMenu()" *ngIf="!isMenuOpen"
-            mdTooltip="{{'transport-map.controls.search' | translate }}" mdTooltipPosition="below">
+            mdTooltip="{{'transport-map.controls.search' | translate }}" mdTooltipPosition="below"
+            [ngClass]="{'tm-control-mobile': isMobile()}">
         <md-icon>widgets</md-icon>
     </button>
 
@@ -49,7 +50,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                        direction="left" *ngIf="activeProfile && activeProfile.mapLayers && activeMapLayer.id != -1"
                        (selectAction)="changeMapLayer($event)">
         <md-fab-trigger mdTooltip="{{'transport-map.controls.layers' | translate }}"
-                        mdTooltipPosition="below">
+                        mdTooltipPosition="below"
+                        [ngClass]="{'tm-control-mobile': isMobile()}">
             <md-icon *ngIf="activeMapLayer">{{activeMapLayer.mdIcon}}</md-icon>
         </md-fab-trigger>
 
@@ -64,6 +66,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <button md-fab color="primary" class="tm-map-control" style="top: 25px; right: 25px"
             mdTooltip="{{'transport-map.controls.profile' | translate }}"
             mdTooltipPosition="below" *ngIf="profiles && profiles.length > 1"
+            [ngClass]="{'tm-control-mobile': isMobile()}"
             [mdMenuTriggerFor]="cityMenu">
         <md-icon>account_balance</md-icon>
     </button>

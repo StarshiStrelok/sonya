@@ -55,8 +55,7 @@ public abstract class DataWS<T> {
      */
     @RequestMapping(method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public T update(
-            @RequestBody T entity) throws Exception {
+    public T update(@RequestBody T entity) throws Exception {
         return dataService.update(entity);
     }
     /**
@@ -66,8 +65,7 @@ public abstract class DataWS<T> {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public void delete(@PathVariable("id") Integer id)
-            throws Exception {
+    public void delete(@PathVariable("id") Integer id) throws Exception {
         dataService.delete(id, type);
     }
     /**
@@ -88,8 +86,7 @@ public abstract class DataWS<T> {
      */
     @RequestMapping(value = "/all", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List getAll()
-            throws Exception {
+    public List getAll() throws Exception {
         return dataService.getAll(type);
     }
 }

@@ -45,3 +45,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     font-weight: bold;
     font-size: 12px;
 }
+.tm-control-mobile {
+    opacity: 0.35
+}
