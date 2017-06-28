@@ -118,6 +118,13 @@ public class BFSAlgorithmV1 implements SearchEngine {
         }
         LOG.info("#-bfs-# max transfers [" + settings.getMaxTransfers() + "]");
         if (settings.getMaxTransfers() > 0) {
+            // reverse search for performance
+            boolean isReverseSearch = startVertices.size() > endVertices.size();
+            LOG.info("#-bfs-# reverse search [" + isReverseSearch + "]");
+            Map<Integer, Set<BusStop>> pseudoStartVertices = isReverseSearch
+                    ? endVertices : startVertices;
+            Map<Integer, Set<BusStop>> pseudoEndVertices = isReverseSearch
+                    ? startVertices : endVertices;
             // multi-threading, using [physical processors]
             // or [physical processors] + [hyper-threading]
             int cores = Runtime.getRuntime().availableProcessors();
@@ -130,7 +137,7 @@ public class BFSAlgorithmV1 implements SearchEngine {
             for (int i = 0; i < cores; i++) {
                 portions[i] = new ArrayList<>();
             }
-            Iterator<Integer> itr = startVertices.keySet().iterator();
+            Iterator<Integer> itr = pseudoStartVertices.keySet().iterator();
             int counter = 0;
             while (itr.hasNext()) {
                 portions[counter % cores].add(itr.next());
@@ -138,8 +145,9 @@ public class BFSAlgorithmV1 implements SearchEngine {
             }
             for (List<Integer> portion : portions) {
                 futures.add(ex.submit(
-                        new BFSTask(portion, endVertices, startVertices, graph,
-                                settings.getMaxTransfers())
+                        new BFSTask(portion, pseudoEndVertices,
+                                pseudoStartVertices, graph,
+                                settings.getMaxTransfers(), isReverseSearch)
                 ));
             }
             // getting results

@@ -53,7 +53,7 @@ public class GraphConstructorTest extends TestConfig {
     @Autowired
     private Geometry geometry;
     @Test
-    //@Ignore
+    @Ignore
     public void test() throws Exception {
         SearchSettings s = new SearchSettings();
         s.setStartLat(53.919455733816385);
@@ -75,7 +75,7 @@ public class GraphConstructorTest extends TestConfig {
         }
     }
     @Test
-    @Ignore
+    //@Ignore
     public void test2() throws Exception {
         final int profileId = 4;
         double swLon = Double.MAX_VALUE;

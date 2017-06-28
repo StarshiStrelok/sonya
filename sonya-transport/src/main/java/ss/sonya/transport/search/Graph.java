@@ -17,6 +17,8 @@
  */
 package ss.sonya.transport.search;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -100,13 +102,38 @@ public class Graph {
      *        tInfo[3] vertex 2: path #2 bus stop (second transfer)...
      */
     public void addEdge(int v, int w, int[] tInfo) {
-        Integer[] e = new Integer[tInfo.length + 1];
-        e[IDX_W] = w;
-        for (int i = 0; i < tInfo.length; i++) {
-            e[i + 1] = tInfo[i];
+        List<Integer[]> adjV = adj[v];
+        Integer[] e = null;
+        for (Integer[] wt : adjV) {
+            if (wt[IDX_W] == w) {
+                e = wt;
+                break;
+            }
         }
-        adj[v].add(e);
-        edges++;
+        if (e == null) {    // create new adj for W
+            e = new Integer[tInfo.length + 1];
+            e[IDX_W] = w;
+            for (int i = 0; i < tInfo.length; i++) {
+                e[i + 1] = tInfo[i];
+            }
+            adjV.add(e);
+            edges++;
+        } else {    // append unique transfers to end adj W
+            Set<String> set = new HashSet<>();
+            for (int i = IDX_V_TRANSFER_1; i < e.length; i += 2) {
+                set.add(e[i] + ":" + e[i + 1]);
+            }
+            List<Integer> eList = new ArrayList<>();
+            eList.addAll(Arrays.asList(e));
+            for (int i = 0; i < tInfo.length; i += 2) {
+                String key = tInfo[i] + ":" + tInfo[i + 1];
+                if (!set.contains(key)) {
+                    eList.add(tInfo[i]);
+                    eList.add(tInfo[i + 1]);
+                }
+            }
+            e = eList.toArray(new Integer[0]);
+        }
     }
     /**
      * Check if way in graph exist.

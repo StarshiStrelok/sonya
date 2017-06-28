@@ -184,6 +184,7 @@ public class GraphConstructor {
                 // getting [path] - [transfer path] transfer bus stops
                 BusStop[] pairs = tMap.get(transferPath);
                 int[] tInfo = new int[pairs.length];
+                int[] rtInfo = new int[pairs.length];   // reverse transfers
                 // transfer from path to path
                 int tPathVertex = paths.indexOf(transferPath);
                 for (int i = 0; i < pairs.length; i += 2) {
@@ -194,8 +195,11 @@ public class GraphConstructor {
                             .indexOf(transferBs);
                     tInfo[i] = pathBsOrder;
                     tInfo[i + 1] = tPathBsOrder;
+                    rtInfo[i] = tPathBsOrder;
+                    rtInfo[i + 1] = pathBsOrder;
                 }
                 graph.addEdge(vertex, tPathVertex, tInfo);
+                graph.addEdge(tPathVertex, vertex, rtInfo);
             }
         }
         LOG.info("--- " + graph.toString());       // output graph
