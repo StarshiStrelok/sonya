@@ -142,3 +142,12 @@ export class BusStopTime {
         public time: number
     ) {}
 }
+
+export class Trip {
+    constructor(
+        public id: number,
+        public regular: string,
+        public irregular: string,
+        public days: string
+    ) {}
+}

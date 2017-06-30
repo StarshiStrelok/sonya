@@ -17,7 +17,7 @@
 
 import {SearchSettings, OptimalPath,
     Path, BusStop, RouteProfile} from '../model/abs.model';
-import {TransportMap} from './transport.map';
+import {TransportMap, SidenavItem} from './transport.map';
 import {OSRMResponse} from '../model/osrm.response';
 
 declare var L: any;
@@ -58,8 +58,8 @@ export class SearchRoute {
                 this.parent.searchTabs.searchResult.setResult(res);
                 this.parent.searchTabs.searchResult.closeDetails();
                 this.parent.searchTabs.tabGroup.selectedIndex = 0;
-                if (this.parent.component.isMobile() && !this.parent.component.isMenuOpen) {
-                    this.parent.component.openMenu();
+                if (!this.parent.component.isMenuOpen) {
+                    this.parent.component.openMenu(SidenavItem.SEARCH);
                 }
             });
     }

@@ -18,7 +18,7 @@
 import {Component, Input} from '@angular/core';
 
 import {TransportMap} from './transport.map';
-import {RouteProfile, Route, Path} from '../model/abs.model';
+import {RouteProfile, Route, Path, Trip, BusStop} from '../model/abs.model';
 import {DataService} from '../service/data.service';
 
 @Component({
@@ -29,6 +29,9 @@ import {DataService} from '../service/data.service';
                 margin: 10px;
                 padding: 10px;
             }
+            .sp-combo-box {
+                width: 90%;
+            }
             `]
 })
 export class SchedulePanel {
@@ -38,6 +41,7 @@ export class SchedulePanel {
     private selectedRoute: Route;
     private paths: Path[];
     private selectedPath: Path;
+    private schedule: string[][] = [][0];
     constructor(
         private dataService: DataService
     ) {}
@@ -74,7 +78,14 @@ export class SchedulePanel {
     }
     pathChanged() {
         if (this.selectedPath) {
-            console.log("PATH SELECTED");
+            this.dataService.getSchedule(this.selectedPath.id).then((res: Trip[]) => {
+                let way: BusStop[] = this.selectedPath.busstops;
+                let counter = 0;
+                res.forEach(trip => {
+                    
+                    counter++;
+                });
+            });
         }
     }
 }

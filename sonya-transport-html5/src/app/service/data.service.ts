@@ -17,7 +17,7 @@
 
 import {Injectable} from '@angular/core';
 import {AbsModel, Route, ModelClass, Path, ImportDataEvent,
-    SearchSettings, OptimalPath} from '../model/abs.model';
+    SearchSettings, OptimalPath, Trip} from '../model/abs.model';
 import {Http, Headers} from '@angular/http';
 import {NotificationsService} from 'angular2-notifications';
 import 'rxjs/add/operator/map';
@@ -96,6 +96,11 @@ export class DataService {
             this.dataUrl + ModelClass.TRANSPORT_PROFILE + '/route/marker/' + id, file, {}
         ).toPromise().then(res => res)
             .catch(err => this.handleErrorUI(err));
+    }
+    getSchedule(id: number): Promise<Trip[]> {
+        return this.http.get(
+            this.dataUrl + ModelClass.PATH + '/schedule/' + id, {headers: this.headers}
+        ).toPromise().then(res => res.json() as Trip[]).catch(err => this.handleErrorUI(err));
     }
     private handleErrorUI(error: any): Promise<any> {
         console.error('An error occurred', error);

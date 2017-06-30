@@ -56,7 +56,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     profiles: TransportProfile[];
     activeProfile: TransportProfile;
     layerEndpoint = new EndpointLayer();
-    isMenuOpen: boolean = !this.isMobile();
+    isMenuOpen: boolean = false;
     component: TransportMap = this;
     activeMapLayer: MapLayer;
     private activeLeafletLayer: any;
@@ -98,13 +98,8 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         }
         this.geocoder.reverseSearch(isStart, ll.lat, ll.lng);
     }
-    openMenu() {
-        this.currentSidenavItem = SidenavItem.SEARCH;
-        this.isMenuOpen = true;
-        this.sideNav.open().then(res => this.map.invalidateSize(true));
-    }
-    openMenu2() {
-        this.currentSidenavItem = SidenavItem.SCHEDULE;
+    openMenu(item: SidenavItem) {
+        this.currentSidenavItem = item;
         this.isMenuOpen = true;
         this.sideNav.open().then(res => this.map.invalidateSize(true));
     }

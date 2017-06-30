@@ -16,6 +16,7 @@
  */
 package ss.sonya.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,6 +57,7 @@ public class Trip implements Serializable {
     @Column(name = "days")
     private String days;
     /** Path. */
+    @JsonIgnore
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "path_id")

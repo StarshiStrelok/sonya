@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ss.sonya.entity.Path;
+import ss.sonya.entity.Trip;
 import ss.sonya.inject.rest.DataWS;
 import ss.sonya.transport.api.TransportDataService;
 
@@ -59,11 +60,23 @@ public class PathWS extends DataWS<Path> {
             @PathVariable("id") Integer id) throws Exception {
         return transportService.getPathsFromRoute(id);
     }
+    @Override
     @RequestMapping(method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @Override
     public Path update(@RequestBody Path path) throws Exception {
         path.setSchedule(transportService.getSchedule(path.getId()));
         return dataService.update(path);
+    }
+    /**
+     * Get path schedule.
+     * @param id path ID.
+     * @return path schedule.
+     * @throws Exception error.
+     */
+    @RequestMapping(value = "/schedule/{id}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<Trip> getSchedule(@PathVariable("id") final Integer id)
+            throws Exception {
+        return transportService.getSchedule(id);
     }
 }

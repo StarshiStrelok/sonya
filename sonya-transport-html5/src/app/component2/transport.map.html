@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <md-sidenav #sidenav opened="{{isMenuOpen}}" mode="side"
         [ngClass]="{'tm-sidenav': !isMobile(), 'tm-sidenav-mobile': isMobile() || currentSidenavItem === 'item-schedule', 'ss-shadow': true}">
 
-        <div *ngIf="currentSidenavItem === 'item-search'">
+        <div [hidden]="currentSidenavItem !== 'item-search'">
             <geocoder [parent]="this"></geocoder>
             <search-tab [mapComponent]="component"></search-tab>
             <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
@@ -28,8 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 *ngIf="currentSidenavItem === 'item-search'">
             <md-icon>chevron_left</md-icon></button>
         </div>
-        
-        <div *ngIf="currentSidenavItem === 'item-schedule'">
+        <!-- Next panels must be init only after init first panel (ngOnInit called twice) -->
+        <div *ngIf="activeProfile" [hidden]="currentSidenavItem !== 'item-schedule'">
             <schedule-panel [parent]="this"></schedule-panel>
             <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
                 (click)="closeMenu()"
@@ -50,14 +50,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <!-- CONTROLS -->
     <button md-fab color="primary" class="tm-map-control" style="top: 25px; left: 25px"
-            (click)="openMenu()" *ngIf="!isMenuOpen"
+            (click)="openMenu('item-search')" *ngIf="!isMenuOpen"
             mdTooltip="{{'transport-map.controls.search' | translate }}" mdTooltipPosition="below"
             [ngClass]="{'tm-control-mobile': isMobile()}">
         <md-icon>search</md-icon>
     </button>
     
     <button md-fab color="primary" class="tm-map-control" style="top: 100px; left: 25px"
-            (click)="openMenu2()" *ngIf="!isMenuOpen"
+            (click)="openMenu('item-schedule')" *ngIf="!isMenuOpen"
             mdTooltip="#Расписание" mdTooltipPosition="below"
             [ngClass]="{'tm-control-mobile': isMobile()}">
         <md-icon>alarm</md-icon>
