@@ -12,11 +12,11 @@
     <md-menu #menu="mdMenu" [overlapTrigger]="false">
         <button md-menu-item (click)="changeLanguage('en')">
             <img src="/assets/image/flag/en_32.png" class="lang-menu-icon">
-            <span>English</span>
+            <span>{{'lang.en' | translate}}</span>
         </button>
         <button md-menu-item (click)="changeLanguage('ru')">
             <img src="/assets/image/flag/ru_32.png" class="lang-menu-icon">
-            <span>Russian</span>
+            <span>{{'lang.ru' | translate}}</span>
         </button>
         <button md-menu-item (click)="signIn()" *ngIf="isControlVisible">
             <md-icon>account_circle</md-icon>

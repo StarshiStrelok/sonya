@@ -102,5 +102,9 @@
         "Streets": "Streets",
         "Dark": "Dark style",
         "Light": "Light style"
+    },
+    "lang": {
+        "en": "English",
+        "ru": "Russian"
     }
 }

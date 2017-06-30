@@ -31,6 +31,7 @@ import {GeoCoder} from './component2/geocoder';
 import {SearchTab} from './component2/search.tab';
 import {SearchSettingsForm} from './component2/search.settings.form';
 import {SearchResultList} from './component2/search.result.list';
+import {SchedulePanel} from './component2/schedule.panel';
 // ---------------------- Services --------------------------------------------
 import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
@@ -67,7 +68,8 @@ import 'hammerjs';
         GeoCoder,
         SearchTab,
         SearchSettingsForm,
-        SearchResultList
+        SearchResultList,
+        SchedulePanel
     ],
     imports: [
         BrowserModule,

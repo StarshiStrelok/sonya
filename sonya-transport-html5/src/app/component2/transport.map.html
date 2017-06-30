@@ -17,16 +17,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <md-sidenav-container>
     <md-sidenav #sidenav opened="{{isMenuOpen}}" mode="side"
-        [ngClass]="{'tm-sidenav': !isMobile(), 'tm-sidenav-mobile': isMobile(), 'ss-shadow': true}">
+        [ngClass]="{'tm-sidenav': !isMobile(), 'tm-sidenav-mobile': isMobile() || currentSidenavItem === 'item-schedule', 'ss-shadow': true}">
 
-        <geocoder [parent]="this"></geocoder>
-
-        <search-tab [mapComponent]="component"></search-tab>
-
-        <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
-                (click)="closeMenu()" *ngIf="isMenuOpen"
-                mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="below">
+        <div *ngIf="currentSidenavItem === 'item-search'">
+            <geocoder [parent]="this"></geocoder>
+            <search-tab [mapComponent]="component"></search-tab>
+            <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
+                (click)="closeMenu()"
+                mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="below"
+                *ngIf="currentSidenavItem === 'item-search'">
             <md-icon>chevron_left</md-icon></button>
+        </div>
+        
+        <div *ngIf="currentSidenavItem === 'item-schedule'">
+            <schedule-panel [parent]="this"></schedule-panel>
+            <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
+                (click)="closeMenu()"
+                mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="below"
+                *ngIf="currentSidenavItem === 'item-schedule'">
+            <md-icon>chevron_left</md-icon></button>
+        </div>
 
     </md-sidenav>
 
@@ -43,7 +53,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             (click)="openMenu()" *ngIf="!isMenuOpen"
             mdTooltip="{{'transport-map.controls.search' | translate }}" mdTooltipPosition="below"
             [ngClass]="{'tm-control-mobile': isMobile()}">
-        <md-icon>widgets</md-icon>
+        <md-icon>search</md-icon>
+    </button>
+    
+    <button md-fab color="primary" class="tm-map-control" style="top: 100px; left: 25px"
+            (click)="openMenu2()" *ngIf="!isMenuOpen"
+            mdTooltip="#Расписание" mdTooltipPosition="below"
+            [ngClass]="{'tm-control-mobile': isMobile()}">
+        <md-icon>alarm</md-icon>
     </button>
 
     <md-fab-speed-dial class="tm-map-control" style="top: 100px; right: 25px;"

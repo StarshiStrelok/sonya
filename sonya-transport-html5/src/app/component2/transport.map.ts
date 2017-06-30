@@ -33,6 +33,11 @@ import {EndpointLayer} from './endpoint.layer';
 
 declare var L: any;
 
+export class SidenavItem {
+    public static SEARCH = 'item-search';
+    public static SCHEDULE = 'item-schedule';
+}
+
 @Component({
     selector: 'transport-map',
     templateUrl: './transport.map.html',
@@ -55,6 +60,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     component: TransportMap = this;
     activeMapLayer: MapLayer;
     private activeLeafletLayer: any;
+    private currentSidenavItem: SidenavItem = SidenavItem.SEARCH;
     constructor(
         public dataService: DataService,
         public notificationService: NotificationsService,
@@ -93,6 +99,12 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         this.geocoder.reverseSearch(isStart, ll.lat, ll.lng);
     }
     openMenu() {
+        this.currentSidenavItem = SidenavItem.SEARCH;
+        this.isMenuOpen = true;
+        this.sideNav.open().then(res => this.map.invalidateSize(true));
+    }
+    openMenu2() {
+        this.currentSidenavItem = SidenavItem.SCHEDULE;
         this.isMenuOpen = true;
         this.sideNav.open().then(res => this.map.invalidateSize(true));
     }
