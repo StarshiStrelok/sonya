@@ -43,6 +43,8 @@ export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http);
 }
 
+import 'hammerjs';
+
 @NgModule({
     declarations: [
         AppComponent,
