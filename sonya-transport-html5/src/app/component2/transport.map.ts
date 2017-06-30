@@ -51,7 +51,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     profiles: TransportProfile[];
     activeProfile: TransportProfile;
     layerEndpoint = new EndpointLayer();
-    isMenuOpen: boolean = true;
+    isMenuOpen: boolean = !this.isMobile();
     component: TransportMap = this;
     activeMapLayer: MapLayer;
     private activeLeafletLayer: any;

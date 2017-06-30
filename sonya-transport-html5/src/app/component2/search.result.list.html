@@ -39,15 +39,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 [translate]="'transport-map.search-result.found-results'" [translateParams]="{count: result.length}"></h3>
             <md-list-item *ngFor="let op of result" class="srl-item" (click)="showPath(op)"
                 [@flyInOut]="op.animationTrigger">
-                <md-icon md-list-icon [ngClass]="{'srl-selected-path': op === activePath}">chevron_right</md-icon>
+                <md-icon *ngIf="!mapComponent.isMobile()" md-list-icon
+                    [ngClass]="{'srl-selected-path': op === activePath}">chevron_right</md-icon>
                 <p md-line style="line-height: 30px;">
                     <span *ngFor="let path of op.path" class="srl-route-label"
                         [style.background-color]="path.route.type.lineColor"
+                        [style.font-size]="mapComponent.isMobile() ? '12px' : null"
                         mdTooltip="{{path.description}}" mdTooltipPosition="above">{{path.route.namePrefix}}{{path.route.namePostfix}}</span>
                     <span class="srl-time-lbl">{{tripPeriod(op)}}</span>
                 </p>
                 <md-icon mdTooltip="{{'transport-map.search-result.open-details' | translate }}"
                      mdTooltipPosition="above" (click)="openDetails(op, $event)"
+                     style="margin-left: 5px"
                      [ngClass]="{'srl-selected-path': op === activePath}">access_time</md-icon>
             </md-list-item>
         </md-list>
@@ -73,31 +76,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <hr/>
             
             <div *ngFor="let p of activePath.path; let i = index;">
-                <md-grid-list cols="8" rowHeight="50px">
+                <md-grid-list cols="10" rowHeight="50px">
                     
-                    <md-grid-tile>
+                    <md-grid-tile colspan="2">
                         <img [src]="'/rest/data/transport-profile/route/marker/' + p.route.type.id">
                     </md-grid-tile>
-                    <md-grid-tile colspan="5" class="srl-details-item"
+                    <md-grid-tile colspan="6" class="srl-details-item"
                                   (click)="flyToBusStop(activePath.way[i][0])">
                         <p class="srl-d-bs-lbl">{{activePath.way[i][0].name}}</p>
                     </md-grid-tile>
                     <md-grid-tile colspan="2">{{getBusStopTime(i, 'start')}}</md-grid-tile>
                     
-                    <md-grid-tile>
+                    <md-grid-tile colspan="2">
                         <span class="srl-route-label"
                             [style.background-color]="p.route.type.lineColor">{{p.route.namePrefix}}{{p.route.namePostfix}}</span>
                     </md-grid-tile>
-                    <md-grid-tile colspan="5" class="srl-details-item"
+                    <md-grid-tile colspan="6" class="srl-details-item"
                                   (click)="flyToWay(activePath.way[i])">
                         <p class="srl-d-bs-lbl">{{p.description}}</p>
                     </md-grid-tile>
                     <md-grid-tile colspan="2">{{pathTripDuration(i, p)}}</md-grid-tile>
                     
-                    <md-grid-tile>
+                    <md-grid-tile colspan="2">
                         <img [src]="'/rest/data/transport-profile/route/marker/' + p.route.type.id">
                     </md-grid-tile>
-                    <md-grid-tile colspan="5" class="srl-details-item"
+                    <md-grid-tile colspan="6" class="srl-details-item"
                                   (click)="flyToBusStop(activePath.way[i][activePath.way[i].length - 1])">
                         <p class="srl-d-bs-lbl">{{activePath.way[i][activePath.way[i].length - 1].name}}</p>
                     </md-grid-tile>

@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -310,8 +311,13 @@ class ImportDataServiceImpl implements ImportDataService {
                     wayChanged = true;
                 } else {
                     for (int i = 0; i < pathBusStops.size(); i++) {
-                        if (!pathBusStops.get(i)
-                                .equals(persistBusStops.get(i))) {
+                        BusStop pathBS = pathBusStops.get(i);
+                        BusStop persistBS = persistBusStops.get(i);
+                        if (!pathBS.getName().equals(persistBS.getName())
+                                || !Objects.equals(pathBS.getLatitude(),
+                                        persistBS.getLatitude())
+                                || !Objects.equals(pathBS.getLongitude(),
+                                        persistBS.getLongitude())) {
                             wayChanged = true;
                             break;
                         }

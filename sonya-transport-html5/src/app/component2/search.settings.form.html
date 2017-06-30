@@ -15,8 +15,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
+<h4 style="text-align: center;"
+        [translate]="'transport-map.search-settings.title'"></h4>
 <form [formGroup]="settingsForm" novalidate>
-    <div class="ssf-spacer"></div>
+    
+    <h5 *ngIf="mapComponent.activeProfile && mapComponent.activeProfile.hasSchedule"
+        [translate]="'transport-map.search-settings.trip-plan'"></h5>
+    
     <md-grid-list cols="1" rowHeight="58px;">
         
         <md-grid-tile *ngIf="mapComponent.activeProfile && mapComponent.activeProfile.hasSchedule">

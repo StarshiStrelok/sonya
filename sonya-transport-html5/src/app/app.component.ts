@@ -21,6 +21,9 @@ import {CookieService, CookieKey} from './service/cookie.service';
             .lang-menu-icon {
                 vertical-align: middle;
             }
+            .title-text {
+                font-weight: bold;
+            }
             `]
 })
 export class AppComponent {
@@ -87,6 +90,9 @@ export class AppComponent {
     changeLanguage(lang: string) {
         this.translate.use(lang);
         this.cookieService.setCookie(CookieKey.LANG, lang);
+    }
+    isMobile(): boolean {
+        return window.innerWidth <= 600;
     }
 }
 

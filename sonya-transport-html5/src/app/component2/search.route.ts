@@ -58,6 +58,9 @@ export class SearchRoute {
                 this.parent.searchTabs.searchResult.setResult(res);
                 this.parent.searchTabs.searchResult.closeDetails();
                 this.parent.searchTabs.tabGroup.selectedIndex = 0;
+                if (this.parent.component.isMobile() && !this.parent.component.isMenuOpen) {
+                    this.parent.component.openMenu();
+                }
             });
     }
     clearRoutes() {

@@ -187,11 +187,12 @@ public class Path implements Serializable, ExternalRef {
     }
     @Override
     public String toString() {
-        String route = getRoute() == null ? "" : getRoute().getNamePrefix()
+        String routeTxt = getRoute() == null ? "" : getRoute().getNamePrefix()
                 + (getRoute().getNamePostfix() == null
                 ? "" : getRoute().getNamePostfix()) + " "
-                + getRoute().getType().getName();
+                + (getRoute().getType() != null
+                ? getRoute().getType().getName() : "");
         return "ss.sonya.entity.Path[ id=" + getId()
-                + ", name=" + getDescription() + ", route=" + route + " ]";
+                + ", name=" + getDescription() + ", route=" + routeTxt + " ]";
     }
 }

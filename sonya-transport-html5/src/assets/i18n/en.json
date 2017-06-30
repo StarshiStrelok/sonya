@@ -42,6 +42,8 @@
             "settings-tab": "Search settings"
         },
         "search-settings": {
+            "title": "Search settings",
+            "trip-plan": "If you planning trip later, you can turn off checkbox and set trip day and time",
             "day-of-trip": "Day of trip",
             "time-of-trip": "Time of trip (24h format)",
             "max-results": "Show max results",
@@ -90,5 +92,15 @@
     "profile": {
         "Brest": "Brest",
         "Minsk": "Minsk"
+    },
+    "toolbar": {
+        "title": "Public transport search web-service",
+        "title-mobile": "Public transport WS"
+    },
+    "map": {
+        "OpenStreetMaps": "Standard",
+        "Streets": "Streets",
+        "Dark": "Dark style",
+        "Light": "Light style"
     }
 }

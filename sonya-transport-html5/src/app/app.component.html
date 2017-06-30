@@ -1,6 +1,7 @@
 <md-toolbar color="primary" class="app-toolbar ss-shadow">
     <button md-button (click)="toMain()">
-            <md-icon>stars</md-icon> TODO
+            <md-icon>stars</md-icon> <span class="title-text"
+            [translate]="!isMobile() ? 'toolbar.title' : 'toolbar.title-mobile'"></span>
     </button>
     
     <span class="spacer"></span>

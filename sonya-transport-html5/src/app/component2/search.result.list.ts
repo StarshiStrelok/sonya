@@ -135,13 +135,22 @@ export class SearchResultList {
         }
     }
     showPath(op: OptimalPath) {
+        if (this.mapComponent.isMobile()) {
+            this.mapComponent.closeMenu();
+        }
         this.activePath = op;
         this.mapComponent.layerEndpoint.searchRouteCtrl.drawRoute(op);
     }
     flyToBusStop(bs: BusStop) {
+        if (this.mapComponent.isMobile()) {
+            this.mapComponent.closeMenu();
+        }
         this.mapComponent.layerEndpoint.moveToMarker(bs.latitude, bs.longitude);
     }
     flyToWay(way: BusStop[]) {
+        if (this.mapComponent.isMobile()) {
+            this.mapComponent.closeMenu();
+        }
         this.mapComponent.layerEndpoint.searchRouteCtrl.flyToBounds(way, 0);
     }
     private convertMSToTime(ms: number) {

@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <md-sidenav-container>
-    <md-sidenav #sidenav opened="true" mode="side"
+    <md-sidenav #sidenav opened="{{isMenuOpen}}" mode="side"
         [ngClass]="{'tm-sidenav': !isMobile(), 'tm-sidenav-mobile': isMobile(), 'ss-shadow': true}">
 
         <geocoder [parent]="this"></geocoder>
@@ -57,7 +57,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <md-fab-actions>
             <md-fab-action *ngFor="let layer of activeProfile.mapLayers"
-                mdTooltip="{{layer.name}}" mdTooltipPosition="below">
+                mdTooltip="{{'map.' + layer.name | translate}}" mdTooltipPosition="below">
                 <md-icon>{{layer.mdIcon}}</md-icon>
             </md-fab-action>
         </md-fab-actions>
@@ -72,7 +72,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </button>
     <md-menu #cityMenu="mdMenu">
         <button md-menu-item *ngFor="let profile of profiles" (click)="switchProfile(profile)">
-                <span [translate]="'profile.' + profile.name"></span>
+                <md-icon>account_balance</md-icon> <span [translate]="'profile.' + profile.name"></span>
         </button>
     </md-menu>
 
