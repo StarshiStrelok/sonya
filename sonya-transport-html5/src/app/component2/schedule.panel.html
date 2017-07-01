@@ -78,7 +78,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     {{convertDays(days)}}
                 </ng-template>
 
-                <table class="sp-schedule-table">
+                <p *ngIf="isIrregular">{{schedule[days]}}</p>
+                
+                <table class="sp-schedule-table" *ngIf="!isIrregular">
                     <tr *ngFor="let row of schedule[days] | filterBs: filterByBusStop;">
                         <td *ngFor="let col of row; let i = index;"
                             [ngClass]="{'sp-schedule-table-fixed': i === 0, 'sp-schedule-table-second-col': i === 1}">
@@ -86,6 +88,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td>
                     </tr>
                 </table>
+                
             </md-tab>
         </md-tab-group>
     </md-card-content>

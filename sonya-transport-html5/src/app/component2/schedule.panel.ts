@@ -86,7 +86,6 @@ export class SchedulePanel {
         }
     }
     private irregularSchedule(res: Trip[]) {
-        this.isIrregular = true;
         this.filterByBusStop = this.ALL_BS_FILTER;
         let daysMap: any = {};
         res.forEach(trip => {
@@ -99,11 +98,41 @@ export class SchedulePanel {
             }
             timeArray.push(trip.irregular);
         });
-        console.log(daysMap);
         let tableData: any = {};
         let daysData = new Array();
+        for (let days in daysMap) {
+            daysData.push(days);
+            let sb = this.selectedPath.busstops[0].name + ': ';
+            let irr = daysMap[days];
+            let irrO = JSON.parse(irr);
+            let times = irrO.time;
+            let intervals = irrO.interval;
+            if (times && times.length > 0) {
+                for (let i = 0; i < times.length; i++) {
+                    sb += times[i];
+                    if (i + 1 < times.length) {
+                        sb += ', ';
+                    }
+                }
+                sb += '. '
+            }
+            if (intervals && intervals.length > 0) {
+                sb += '#Интервалы движения: ';
+                for (let i = 0; i < intervals.length; i++) {
+                    let interval = intervals[i].replace("=", " #интервал ");
+                    interval = interval.replace("-", " - ");
+                    interval += " #мин";
+                    sb += interval;
+                    if (i + 1 < interval.length) {
+                        sb += ', ';
+                    }
+                }
+            }
+            tableData[days] = sb;
+        }
         this.schedule = tableData;
         this.scheduleDays = daysData;
+        this.isIrregular = true;
     }
     private regularSchedule(res: Trip[]) {
         this.isIrregular = false;
