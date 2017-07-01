@@ -56,13 +56,25 @@
             "hide": "Hide",
             "search": "Search routes",
             "layers": "Layers",
-            "profile": "City"
+            "profile": "City",
+            "schedule": "Schedule"
         },
         "map": {
             "ctx-menu": {
                 "start-point": "Departure point",
                 "end-point": "Destination point"
             }
+        },
+        "schedule": {
+            "title": "Public transport schedule",
+            "title-desc": "Choose route type, then route name and route direction for displaying schedule",
+            "choose-route-type": "Choose route type",
+            "choose-route-name": "Choose route name",
+            "choose-direction": "Choose direction",
+            "bs-filter": "Filter by bus stop",
+            "all-bs": "Show all bus stops",
+            "interval": "Interval of movement",
+            "interval2": "interval"
         }
     },
     "common": {
@@ -74,6 +86,21 @@
             "friday": "Friday",
             "saturday": "Saturday",
             "sunday": "Sunday"
+        },
+        "day-short": {
+            "monday": "Mo",
+            "tuesday": "Tu",
+            "wednesday": "We",
+            "thursday": "Th",
+            "friday": "Fr",
+            "saturday": "Sa",
+            "sunday": "Su",
+            "weekdays": "weekdays",
+            "weekend": "weekend",
+            "everydays": "everydays"
+        },
+        "time": {
+            "min": "min"
         }
     },
     "validator": {

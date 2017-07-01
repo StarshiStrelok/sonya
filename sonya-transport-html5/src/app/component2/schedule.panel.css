@@ -26,10 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .sp-combo-box {
     width: 90%;
 }
-.sp-schedule-table-bs {
-    font-weight: bold;
-    margin-right: 10px;
-}
 .sp-schedule-table {
     display: block;
     overflow-x: auto;
@@ -37,22 +33,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .sp-filter-bs-combo {
     margin-top: 10px;
 }
-.sp-schedule-table-fixed {
-    position: absolute;
-    min-width: 220px;
-    width: 220px;
-    background-color: #424242;
-    margin-left: -2px;
-}
-.sp-schedule-table-second-col {
-    min-width: 220px;
-    width: 220px;
-    text-aligh: right;
-}
 .sp-route-label {
     padding: .2em .6em .3em;
     border-radius: 2px;
     font-weight: bold;
     margin-left: 5px;
     border: 1px solid white;
+}
+
+.table-div {
+    overflow-x: auto;
+    margin-left: 220px;
+    padding: 0;
+}
+
+.headcol {
+    position: absolute;
+    width: 220px;
+    left: 0;
+    top: auto;
 }

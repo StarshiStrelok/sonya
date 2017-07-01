@@ -81,7 +81,6 @@ export class PathForm extends DialogContent implements OnInit {
     setData(data: any): void {
         this.profileId = data.profileId;
         this.routeId = data.routeId;
-        console.log('#path form# profile ID [' + this.profileId + '], route ID [' + this.routeId + ']');
         this.path = data.model;
     }
 }

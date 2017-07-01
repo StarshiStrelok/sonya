@@ -18,9 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <md-card class="schedule-panel">
     
     <md-card-header>
-        <md-card-title><h3>#Расписание</h3></md-card-title>
-        <md-card-subtitle>#Выберите тип маршрута, его название и направление движения,
-            чтобы увидеть расписание</md-card-subtitle>
+        <md-card-title><h3>{{'transport-map.schedule.title' | translate}}</h3></md-card-title>
+        <md-card-subtitle>{{'transport-map.schedule.title-desc' | translate}}</md-card-subtitle>
     </md-card-header>
     
     <md-card-content>
@@ -28,7 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             
             <md-grid-tile>
                 <md-select class="sp-combo-box" [(ngModel)]="selectedType"
-                       placeholder="#Выберите тип" (change)="typeChanged()">
+                       placeholder="{{'transport-map.schedule.choose-route-type' | translate}}"
+                       (change)="typeChanged()">
                     <md-option *ngFor="let rp of parent.activeProfile.routeProfiles" [value]="rp">
                         {{'route-type.' + rp.name | translate}}</md-option>
                 </md-select>
@@ -36,7 +36,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             
             <md-grid-tile *ngIf="selectedType">
                 <md-select class="sp-combo-box" [(ngModel)]="selectedRoute"
-                       placeholder="#Выберите маршрут" (change)="routeChanged()">
+                       placeholder="{{'transport-map.schedule.choose-route-name' | translate}}"
+                       (change)="routeChanged()">
                     <md-option *ngFor="let route of routes" [value]="route">
                         {{route.namePrefix}}{{route.namePostfix}}</md-option>
                 </md-select>
@@ -44,7 +45,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             
             <md-grid-tile *ngIf="selectedRoute && selectedType">
                 <md-select class="sp-combo-box" [(ngModel)]="selectedPath"
-                       placeholder="#Выберите направление" (change)="pathChanged()">
+                       placeholder="{{'transport-map.schedule.choose-direction' | translate}}"
+                       (change)="pathChanged()">
                     <md-option *ngFor="let path of paths" [value]="path">
                         {{path.description}}</md-option>
                 </md-select>
@@ -66,7 +68,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
         <md-select *ngIf="!isIrregular" class="sp-filter-bs-combo full-width"
                 [(ngModel)]="filterByBusStop"
-                placeholder="#Фильтровать по остановке">
+                placeholder="{{'transport-map.schedule.bs-filter' | translate}}">
+            <md-option [value]="null">
+                    {{'transport-map.schedule.all-bs' | translate}}
+            </md-option>
             <md-option *ngFor="let bs of filterBusStopsArray()" [value]="bs">
                     {{bs.name}}
             </md-option>
@@ -80,14 +85,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 <p *ngIf="isIrregular">{{schedule[days]}}</p>
                 
-                <table class="sp-schedule-table" *ngIf="!isIrregular">
-                    <tr *ngFor="let row of schedule[days] | filterBs: filterByBusStop;">
-                        <td *ngFor="let col of row; let i = index;"
-                            [ngClass]="{'sp-schedule-table-fixed': i === 0, 'sp-schedule-table-second-col': i === 1}">
-                            {{col}}
-                        <td>
-                    </tr>
-                </table>
+                <div class="table-div">
+                    <table *ngIf="!isIrregular">
+                        <tr *ngFor="let row of schedule[days] | filterBs: filterByBusStop;">
+                            <td *ngFor="let col of row; let i = index;"
+                                [ngClass]="{'headcol': i === 0}">
+                                {{col}}
+                            <td>
+                        </tr>
+                    </table>
+                </div>
                 
             </md-tab>
         </md-tab-group>

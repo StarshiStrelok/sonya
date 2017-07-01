@@ -58,7 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     <button md-fab color="primary" class="tm-map-control" style="top: 100px; left: 25px"
             (click)="openMenu('item-schedule')" *ngIf="!isMenuOpen"
-            mdTooltip="#Расписание" mdTooltipPosition="below"
+            mdTooltip="{{'transport-map.controls.schedule' | translate }}" mdTooltipPosition="below"
             [ngClass]="{'tm-control-mobile': isMobile()}">
         <md-icon>alarm</md-icon>
     </button>

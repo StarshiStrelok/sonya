@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, Pipe, PipeTransform} from '@angular/core';
+import {Component, Input, Pipe, PipeTransform, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 
 import {TransportMap} from './transport.map';
 import {RouteProfile, Route, Path, Trip, BusStop} from '../model/abs.model';
@@ -26,8 +27,7 @@ import {DataService} from '../service/data.service';
     templateUrl: './schedule.panel.html',
     styleUrls: ['./schedule.panel.css']
 })
-export class SchedulePanel {
-    private ALL_BS_FILTER: BusStop = new BusStop(-1, '#Все остановки', null, null, null);
+export class SchedulePanel implements OnInit {
     @Input() parent: TransportMap;
     private selectedType: RouteProfile;
     private routes: Route[];
@@ -37,10 +37,14 @@ export class SchedulePanel {
     private schedule: any;
     private scheduleDays: any = [];
     private isIrregular = false;
-    filterByBusStop: BusStop = this.ALL_BS_FILTER;
+    filterByBusStop: BusStop;
     constructor(
-        private dataService: DataService
+        private dataService: DataService,
+        private translate: TranslateService
     ) {}
+    ngOnInit() {
+        
+    }
     typeChanged() {
         this.selectedRoute = null;
         this.selectedPath = null;
@@ -86,7 +90,6 @@ export class SchedulePanel {
         }
     }
     private irregularSchedule(res: Trip[]) {
-        this.filterByBusStop = this.ALL_BS_FILTER;
         let daysMap: any = {};
         res.forEach(trip => {
             let timeArray: string[];
@@ -117,11 +120,13 @@ export class SchedulePanel {
                 sb += '. '
             }
             if (intervals && intervals.length > 0) {
-                sb += '#Интервалы движения: ';
+                sb += this.translate.instant('transport-map.schedule.interval') + ": ";
+                let intStr = this.translate.instant('transport-map.schedule.interval2');
+                let minStr = this.translate.instant('common.time.min');
                 for (let i = 0; i < intervals.length; i++) {
-                    let interval = intervals[i].replace("=", " #интервал ");
+                    let interval = intervals[i].replace("=", " " + intStr + " ");
                     interval = interval.replace("-", " - ");
-                    interval += " #мин";
+                    interval += " " + minStr;
                     sb += interval;
                     if (i + 1 < interval.length) {
                         sb += ', ';
@@ -169,29 +174,29 @@ export class SchedulePanel {
     }
     convertDays(days: string) {
         if ('1,7' === days) {
-            return '#вых';
+            return this.translate.instant('common.day-short.weekend');
         } else if ('2,3,4,5,6' === days) {
-            return '#раб';
+            return this.translate.instant('common.day-short.weekdays');
         } else if ('1,2,3,4,5,6,7' === days) {
-            return '#еж'
+            return this.translate.instant('common.day-short.everydays');
         } else {
             let sb = '';
             let dayArr: string[] = days.split(',');
             for (let i = 0; i < dayArr.length; i++) {
                 if (dayArr[i] === '1') {
-                    sb += '#пн';
+                    sb += this.translate.instant('common.day-short.sunday');
                 } else if (dayArr[i] === '2') {
-                    sb += '#пн';
+                    sb += this.translate.instant('common.day-short.monday');
                 } else if (dayArr[i] === '3') {
-                    sb += '#пн';
+                    sb += this.translate.instant('common.day-short.tuesday');
                 } else if (dayArr[i] === '4') {
-                    sb += '#пн';
+                    sb += this.translate.instant('common.day-short.wednesday');
                 } else if (dayArr[i] === '5') {
-                    sb += '#пн';
+                    sb += this.translate.instant('common.day-short.thursday');
                 } else if (dayArr[i] === '6') {
-                    sb += '#пн';
+                    sb += this.translate.instant('common.day-short.friday');
                 } else if (dayArr[i] === '7') {
-                    sb += '#пн';
+                    sb += this.translate.instant('common.day-short.saturday');
                 }
                 if (i + 1 < dayArr.length) {
                     sb += ',';
@@ -202,7 +207,6 @@ export class SchedulePanel {
     }
     filterBusStopsArray() {
         let result: BusStop[] = [];
-        result.push(this.ALL_BS_FILTER);
         if (this.selectedPath && this.selectedPath.busstops) {
             this.selectedPath.busstops.forEach(bs => {
                 result.push(bs);
@@ -213,7 +217,6 @@ export class SchedulePanel {
     clearData(full: boolean) {
         this.scheduleDays = [];
         this.schedule = [];
-        this.filterByBusStop = this.ALL_BS_FILTER;
         this.selectedPath = null;
         if (full) {
             this.selectedType = null;

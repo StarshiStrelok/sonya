@@ -62,7 +62,6 @@ export class BusStopForm extends DialogContent implements OnInit {
             }
         );
         this.busStop['transportProfile'] = {id: this.profileId};
-        console.log(JSON.stringify(this.busStop));
         if (this.busStop.id) {
             this.dataService.update<BusStop>(this.busStop, ModelClass.BUS_STOP)
                 .then((bs: BusStop) => {
@@ -81,7 +80,6 @@ export class BusStopForm extends DialogContent implements OnInit {
     }
     setData(data: any): void {
         this.profileId = data.profileId;
-        console.log('#bus stop form# profile id [' + this.profileId + ']');
         this.busStop = data.model;
     }
 }

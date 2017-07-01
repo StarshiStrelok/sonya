@@ -56,13 +56,25 @@
             "hide": "Скрыть",
             "search": "Поиск маршрутов",
             "layers": "Карта",
-            "profile": "Город"
+            "profile": "Город",
+            "schedule": "Расписание"
         },
         "map": {
             "ctx-menu": {
                 "start-point": "Начальная точка",
                 "end-point": "Конечная точка"
             }
+        },
+        "schedule": {
+            "title": "Расписание общественного транспорта",
+            "title-desc": "Для просмотра расписания выберите тип маршрута, его название и направление",
+            "choose-route-type": "Выберите тип маршрута",
+            "choose-route-name": "Выберите маршрут",
+            "choose-direction": "Выберите направление",
+            "bs-filter": "Фильтровать по остановке",
+            "all-bs": "Показать все остановки",
+            "interval": "Интервалы движения",
+            "interval2": "интервал"
         }
     },
     "common": {
@@ -74,6 +86,21 @@
             "friday": "Пятница",
             "saturday": "Суббота",
             "sunday": "Воскресенье"
+        },
+        "day-short": {
+            "monday": "Пн",
+            "tuesday": "Вт",
+            "wednesday": "Ср",
+            "thursday": "Чт",
+            "friday": "Пт",
+            "saturday": "Сб",
+            "sunday": "Вс",
+            "weekdays": "раб",
+            "weekend": "вых",
+            "everydays": "еж"
+        },
+        "time": {
+            "min": "мин"
         }
     },
     "validator": {

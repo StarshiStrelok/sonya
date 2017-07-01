@@ -95,7 +95,6 @@ export class RouteForm extends DialogContent implements OnInit {
     }
     setData(data: any): void {
         this.profileId = data.profileId;
-        console.log('#route form# profile id [' + this.profileId + ']');
         this.route = data.model;
     }
 }
