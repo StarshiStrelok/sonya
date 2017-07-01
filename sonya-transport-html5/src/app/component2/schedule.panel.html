@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <md-card class="schedule-panel">
     
     <md-card-header>
-        <md-card-title>#Расписание</md-card-title>
+        <md-card-title><h3>#Расписание</h3></md-card-title>
         <md-card-subtitle>#Выберите тип маршрута, его название и направление движения,
             чтобы увидеть расписание</md-card-subtitle>
     </md-card-header>
@@ -56,16 +56,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <md-card class="schedule-panel" style="margin-top: 10px;" *ngIf="selectedPath">
     
     <md-card-header>
-        <md-card-title>{{'route-type.' + selectedType.name | translate}} {{selectedRoute.namePrefix}}
-            {{selectedRoute.namePostfix}} ({{selectedPath.description}})</md-card-title>
+        <md-card-title><h3><span class="sp-route-label"
+                    [style.background-color]="selectedType.lineColor">
+                    {{selectedRoute.namePrefix}}{{selectedRoute.namePostfix}}</span> {{selectedPath.description}}
+            </h3></md-card-title>
     </md-card-header>
     
     <md-card-content>
-        <md-grid-list cols="1" rowHeight="40px">
-            <md-grid-tile *ngFor="let bs of selectedPath.busstops">
-                {{bs.name}}
-            </md-grid-tile>
-        </md-grid-list>
+        
+        <md-select *ngIf="!isIrregular" class="sp-filter-bs-combo full-width"
+                [(ngModel)]="filterByBusStop"
+                placeholder="#Фильтровать по остановке">
+            <md-option *ngFor="let bs of filterBusStopsArray()" [value]="bs">
+                    {{bs.name}}
+            </md-option>
+        </md-select>
+        
+        <md-tab-group dynamicHeight="true">
+            <md-tab *ngFor="let days of scheduleDays">
+                <ng-template md-tab-label>
+                    {{convertDays(days)}}
+                </ng-template>
+
+                <table class="sp-schedule-table">
+                    <tr *ngFor="let row of schedule[days] | filterBs: filterByBusStop;">
+                        <td *ngFor="let col of row; let i = index;"
+                            [ngClass]="{'sp-schedule-table-fixed': i === 0, 'sp-schedule-table-second-col': i === 1}">
+                            {{col}}
+                        <td>
+                    </tr>
+                </table>
+            </md-tab>
+        </md-tab-group>
     </md-card-content>
     
 </md-card>

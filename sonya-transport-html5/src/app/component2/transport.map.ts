@@ -30,6 +30,7 @@ import {SearchTab} from './search.tab';
 import {Waiting} from '../lib/material/waiting';
 import {OSRMService} from '../service/osrm.service';
 import {EndpointLayer} from './endpoint.layer';
+import {SchedulePanel} from './schedule.panel';
 
 declare var L: any;
 
@@ -51,6 +52,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     @ViewChild(GeoCoder) geocoder: GeoCoder;
     @ViewChild(SearchTab) searchTabs: SearchTab;
     @ViewChild(Waiting) waiting: Waiting;
+    @ViewChild(SchedulePanel) schedulePanel: SchedulePanel;
     map: any;
     mapMenu: any
     profiles: TransportProfile[];
@@ -104,6 +106,9 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         this.sideNav.open().then(res => this.map.invalidateSize(true));
     }
     closeMenu() {
+        if (this.currentSidenavItem = SidenavItem.SCHEDULE) {
+            this.schedulePanel.clearData(false);
+        }
         this.isMenuOpen = false;
         this.sideNav.close().then(res => this.map.invalidateSize(true));
     }
@@ -120,6 +125,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         this.cookieService.setCookie(CookieKey.PROFILE, profile.id);
         this.geocoder.clearStart();
         this.geocoder.clearEnd();
+        this.schedulePanel.clearData(true);
         this.initProfile();
     }
     readUserProfile() {

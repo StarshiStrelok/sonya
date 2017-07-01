@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, Pipe, PipeTransform} from '@angular/core';
 
 import {TransportMap} from './transport.map';
 import {RouteProfile, Route, Path, Trip, BusStop} from '../model/abs.model';
@@ -24,24 +24,20 @@ import {DataService} from '../service/data.service';
 @Component({
     selector: 'schedule-panel',
     templateUrl: './schedule.panel.html',
-    styles: [`
-            .schedule-panel {
-                margin: 10px;
-                padding: 10px;
-            }
-            .sp-combo-box {
-                width: 90%;
-            }
-            `]
+    styleUrls: ['./schedule.panel.css']
 })
 export class SchedulePanel {
+    private ALL_BS_FILTER: BusStop = new BusStop(-1, '#Все остановки', null, null, null);
     @Input() parent: TransportMap;
     private selectedType: RouteProfile;
     private routes: Route[];
     private selectedRoute: Route;
     private paths: Path[];
     private selectedPath: Path;
-    private schedule: string[][] = [][0];
+    private schedule: any;
+    private scheduleDays: any = [];
+    private isIrregular = false;
+    filterByBusStop: BusStop = this.ALL_BS_FILTER;
     constructor(
         private dataService: DataService
     ) {}
@@ -79,13 +75,134 @@ export class SchedulePanel {
     pathChanged() {
         if (this.selectedPath) {
             this.dataService.getSchedule(this.selectedPath.id).then((res: Trip[]) => {
-                let way: BusStop[] = this.selectedPath.busstops;
-                let counter = 0;
-                res.forEach(trip => {
-                    
-                    counter++;
-                });
+                if (res && res.length > 0) {
+                    if (res[0].regular) {
+                        this.regularSchedule(res);
+                    } else if (res[0].irregular) {
+                        this.irregularSchedule(res);
+                    }
+                }
             });
         }
     }
+    private irregularSchedule(res: Trip[]) {
+        this.isIrregular = true;
+        this.filterByBusStop = this.ALL_BS_FILTER;
+        let daysMap: any = {};
+        res.forEach(trip => {
+            let timeArray: string[];
+            if (daysMap[trip.days]) {
+                timeArray = daysMap[trip.days];
+            } else {
+                timeArray = new Array();
+                daysMap[trip.days] = timeArray;
+            }
+            timeArray.push(trip.irregular);
+        });
+        console.log(daysMap);
+        let tableData: any = {};
+        let daysData = new Array();
+        this.schedule = tableData;
+        this.scheduleDays = daysData;
+    }
+    private regularSchedule(res: Trip[]) {
+        this.isIrregular = false;
+        let way: BusStop[] = this.selectedPath.busstops;
+        let daysMap: any = {};
+        res.forEach(trip => {
+            let timeArray: string[][];
+            if (daysMap[trip.days]) {
+                timeArray = daysMap[trip.days];
+            } else {
+                timeArray = new Array();
+                daysMap[trip.days] = timeArray;
+            }
+            timeArray.push(trip.regular.split(','));
+        });
+        let tableData: any = {};
+        let daysData = new Array();
+        for (let days in daysMap) {
+            daysData.push(days);
+            let dayTrips = daysMap[days];
+            let table = new Array();
+            for (let i = 0; i < way.length; i++) {
+                let row = new Array();
+                row.push(way[i].name);
+                for (let j = 0; j < dayTrips.length; j++) {
+                    row.push(dayTrips[j][i]);
+                }
+                table.push(row);
+            }
+            tableData[days] = table;
+        }
+        this.schedule = tableData;
+        this.scheduleDays = daysData;
+    }
+    convertDays(days: string) {
+        if ('1,7' === days) {
+            return '#вых';
+        } else if ('2,3,4,5,6' === days) {
+            return '#раб';
+        } else if ('1,2,3,4,5,6,7' === days) {
+            return '#еж'
+        } else {
+            let sb = '';
+            let dayArr: string[] = days.split(',');
+            for (let i = 0; i < dayArr.length; i++) {
+                if (dayArr[i] === '1') {
+                    sb += '#пн';
+                } else if (dayArr[i] === '2') {
+                    sb += '#пн';
+                } else if (dayArr[i] === '3') {
+                    sb += '#пн';
+                } else if (dayArr[i] === '4') {
+                    sb += '#пн';
+                } else if (dayArr[i] === '5') {
+                    sb += '#пн';
+                } else if (dayArr[i] === '6') {
+                    sb += '#пн';
+                } else if (dayArr[i] === '7') {
+                    sb += '#пн';
+                }
+                if (i + 1 < dayArr.length) {
+                    sb += ',';
+                }
+            }
+            return sb
+        }
+    }
+    filterBusStopsArray() {
+        let result: BusStop[] = [];
+        result.push(this.ALL_BS_FILTER);
+        if (this.selectedPath && this.selectedPath.busstops) {
+            this.selectedPath.busstops.forEach(bs => {
+                result.push(bs);
+            });
+        }
+        return result;
+    }
+    clearData(full: boolean) {
+        this.scheduleDays = [];
+        this.schedule = [];
+        this.filterByBusStop = this.ALL_BS_FILTER;
+        this.selectedPath = null;
+        if (full) {
+            this.selectedType = null;
+            this.selectedRoute = null;
+        }
+    }
 }
+
+@Pipe({
+    name: 'filterBs',
+    pure: false
+})
+export class FilterByBusStopPipe implements PipeTransform {
+    transform(items: string[], filter: BusStop): any {
+        if (!items || !filter || filter.id === -1) {
+            return items;
+        }
+        return items.filter(item => item[0] === filter.name);
+    }
+}
+
