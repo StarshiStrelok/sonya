@@ -2,3 +2,4 @@
 /sonya-transport/build/
 /sonya-server/build/
 .gradle
+/.nb-gradle/

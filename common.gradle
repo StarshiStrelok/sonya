@@ -6,7 +6,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 String mavenGroupId = 'ss.sonya'
-String mavenVersion = '1.0-SNAPSHOT'
+String mavenVersion = '1.0'
 
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -16,11 +16,6 @@ repositories {
     // You may define additional repositories, or even remove "mavenCentral()".
     // Read more about repositories here:
     //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:repositories
-}
-
-dependencies {
-    // Adding dependencies here will add the dependencies to each subproject.
-    testCompile group: 'junit', name: 'junit', version: '4.10'
 }
 
 String mavenArtifactId = name
@@ -53,4 +48,69 @@ task createFolders(description: 'Creates the source folders if they do not exist
             srcDir.mkdirs()
         }
     }
+}
+
+def vSpring = '4.3.7.RELEASE'
+def vSpringSecurity = '4.2.2.RELEASE'
+def vHibernate = '5.2.9.Final'
+def vHibernateValidator = '5.4.1.Final'
+def vMySQLConnector = '6.0.6'
+def vDBCP2 = '2.1.1'
+def vLog4j = '1.2.17'
+def vJavaxEl = '3.0.1-b08'
+def vJavaxWeb = '7.0'
+def vOrgJson = '20160810'
+def vJackson = '2.9.0.pr2'
+def vApacheFileUpload = '1.3.2'
+
+def vJUnit = '4.12'
+
+ext.libraries = [
+    spring: [
+        'org.springframework:spring-context:' + vSpring,
+        'org.springframework:spring-tx:' + vSpring,
+        'org.springframework:spring-orm:' + vSpring,
+        'org.springframework:spring-webmvc:' + vSpring
+    ],
+    spring_security: [
+        'org.springframework.security:spring-security-core:' + vSpringSecurity,
+        'org.springframework.security:spring-security-web:' + vSpringSecurity,
+        'org.springframework.security:spring-security-config:' + vSpringSecurity
+    ],
+    test: [
+        'org.springframework:spring-test:' + vSpring,
+        'junit:junit:' + vJUnit
+    ],
+    hibernate: [
+        'org.hibernate:hibernate-core:' + vHibernate,
+        'org.hibernate:hibernate-c3p0:' + vHibernate,
+        'org.hibernate:hibernate-validator:' + vHibernateValidator
+    ],
+    jdbc: [
+        'mysql:mysql-connector-java:' + vMySQLConnector,
+        'org.apache.commons:commons-dbcp2:' + vDBCP2
+    ],
+    logging: [
+        'log4j:log4j:' + vLog4j
+    ],
+    javax: [
+        'org.glassfish:javax.el:' + vJavaxEl,
+        'javax:javaee-web-api:' + vJavaxWeb
+    ],
+    json: [
+        'org.json:json:' + vOrgJson
+    ],
+    jackson: [
+        'com.fasterxml.jackson.core:jackson-core:' + vJackson,
+        'com.fasterxml.jackson.core:jackson-annotations:' + vJackson,
+        'com.fasterxml.jackson.core:jackson-databind:' + vJackson
+    ],
+    apache_commons: [
+        'commons-fileupload:commons-fileupload:' + vApacheFileUpload
+    ]
+]
+
+dependencies {
+    // Adding dependencies here will add the dependencies to each subproject.
+    testCompile libraries.test
 }
