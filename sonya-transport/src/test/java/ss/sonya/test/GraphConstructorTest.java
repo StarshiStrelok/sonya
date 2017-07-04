@@ -75,7 +75,7 @@ public class GraphConstructorTest extends TestConfig {
         }
     }
     @Test
-    //@Ignore
+    @Ignore
     public void test2() throws Exception {
         final int profileId = 4;
         double swLon = Double.MAX_VALUE;
