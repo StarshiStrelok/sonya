@@ -1,0 +1,9 @@
+description = 'html5-client'
+
+task angularCli(type:Exec) {
+    println 'Webpack creation start...'
+    workingDir '.'
+    commandLine "ng", "build", "--prod"
+    println commandLine
+}
+build.finalizedBy(angularCli)

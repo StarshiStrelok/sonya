@@ -29,11 +29,11 @@ import {DataService} from '../service/data.service';
 })
 export class SchedulePanel implements OnInit {
     @Input() parent: TransportMap;
-    private selectedType: RouteProfile;
+    selectedType: RouteProfile;
     private routes: Route[];
-    private selectedRoute: Route;
+    selectedRoute: Route;
     private paths: Path[];
-    private selectedPath: Path;
+    selectedPath: Path;
     private schedule: any;
     private scheduleDays: any = [];
     private isIrregular = false;

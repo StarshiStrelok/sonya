@@ -62,7 +62,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     component: TransportMap = this;
     activeMapLayer: MapLayer;
     private activeLeafletLayer: any;
-    private currentSidenavItem: SidenavItem = SidenavItem.SEARCH;
+    currentSidenavItem: SidenavItem = SidenavItem.SEARCH;
     constructor(
         public dataService: DataService,
         public notificationService: NotificationsService,

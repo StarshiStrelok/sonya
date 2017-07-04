@@ -114,3 +114,17 @@ dependencies {
     // Adding dependencies here will add the dependencies to each subproject.
     testCompile libraries.test
 }
+
+if (!hasProperty('profile')) ext.profile = 'development';
+println 'PROFILE [' + profile + ']'
+if (profile == 'development') {
+    afterEvaluate{ project -> 
+        project.getTasks().each{ task -> 
+            if (task.name == 'test' || task.name == 'compileTestJava'
+                    || task.name == 'processTestResources' || task.name == 'testClasses') {
+                task.enabled = false
+                //println task.name + ' disabled';
+            }
+        }
+    }
+}

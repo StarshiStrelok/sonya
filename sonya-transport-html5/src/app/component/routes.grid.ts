@@ -37,7 +37,7 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
     @ViewChild(MdMenuTrigger) ctxMenuTrigger: MdMenuTrigger;
     public profileId: number;
     public mapComponent: TransportProfileMap;
-    private routeProfiles: RouteProfile[] = [];
+    routeProfiles: RouteProfile[] = [];
     selectedType: RouteProfile;
     routes: Route[] = [];
     selectedRoute: Route;

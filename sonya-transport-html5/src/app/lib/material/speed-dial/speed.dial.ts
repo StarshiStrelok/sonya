@@ -56,7 +56,7 @@ const rotateAnim: any =
 })
 export class MdFabTrigger implements AfterContentInit {
     private parent: MdFabSpeedDial;
-    private animationState: string = 'close';
+    animationState: string = 'close';
     setParent(p: MdFabSpeedDial) {
         this.parent = p;
     }
@@ -83,7 +83,7 @@ export class MdFabTrigger implements AfterContentInit {
 })
 export class MdFabActionButton implements AfterContentInit {
     private parent: MdFabActions;
-    private state: string = 'hide';
+    state: string = 'hide';
     private items: QueryList<MdFabActionButton>;
     private curIndex: number;
     private isOpen: boolean;
@@ -106,7 +106,7 @@ export class MdFabActionButton implements AfterContentInit {
     setParent(p: MdFabActions) {
         this.parent = p;
     }
-    startAnimation() {
+    startAnimation(event: any) {
         let _comp = this;
         setTimeout(function () {
             _comp.triggerNextAnimation(_comp);
@@ -168,7 +168,7 @@ export class MdFabSpeedDial implements AfterContentInit {
     @ContentChild(MdFabActions) actions: MdFabActions;
     @ContentChild(MdFabTrigger) trigger: MdFabTrigger;
     @Output() selectAction: EventEmitter<any> = new EventEmitter();
-    private directionClass = 'md-up';
+    directionClass = 'md-up';
     @Input()
     get direction() {
         return this.directionClass;

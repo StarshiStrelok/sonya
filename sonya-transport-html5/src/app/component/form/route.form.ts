@@ -29,7 +29,7 @@ import {Window, DialogContent} from '../window';
 })
 export class RouteForm extends DialogContent implements OnInit {
     private profileId: number;
-    private selectedRouteType: number;
+    selectedRouteType: number;
     routeProfiles: RouteProfile[] = [];
     routeForm: FormGroup;
     route: Route = new Route(null, null, null, null, null);

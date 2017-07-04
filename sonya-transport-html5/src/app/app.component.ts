@@ -27,7 +27,7 @@ import {CookieService, CookieKey} from './service/cookie.service';
             `]
 })
 export class AppComponent {
-    private isControlVisible = false;
+    isControlVisible = false;
     @HostListener('window:keydown', ['$event'])
     showControl(event: KeyboardEvent) {
         if (event.keyCode === 9) {  // TAB

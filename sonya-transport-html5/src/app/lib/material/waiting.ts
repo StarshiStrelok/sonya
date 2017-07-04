@@ -48,8 +48,8 @@ import {Component} from '@angular/core';
     `]
 })
 export class Waiting {
-    private isOpen = false;
-    private offset = 100;
+    isOpen = false;
+    offset = 100;
     open() {
         this.offset = window.innerHeight / 2 - 50 - 30;
         this.isOpen = true;
