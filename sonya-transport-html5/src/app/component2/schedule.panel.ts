@@ -15,11 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, Pipe, PipeTransform, OnInit} from '@angular/core';
+import {Component, Input, Pipe, PipeTransform, OnInit, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
+import {MdTabGroup} from '@angular/material';
 
 import {TransportMap} from './transport.map';
-import {RouteProfile, Route, Path, Trip, BusStop} from '../model/abs.model';
+import {RouteProfile, Route, Path, Trip, BusStop, OptimalPath} from '../model/abs.model';
 import {DataService} from '../service/data.service';
 
 @Component({
@@ -29,6 +30,7 @@ import {DataService} from '../service/data.service';
 })
 export class SchedulePanel implements OnInit {
     @Input() parent: TransportMap;
+    @ViewChild(MdTabGroup) tabGroup: MdTabGroup;
     selectedType: RouteProfile;
     private routes: Route[];
     selectedRoute: Route;
@@ -142,6 +144,8 @@ export class SchedulePanel implements OnInit {
     }
     private regularSchedule(res: Trip[]) {
         this.isIrregular = false;
+        let now = new Date();
+        let curDay = (now.getDay() + 1) + '';
         let way: BusStop[] = this.selectedPath.busstops;
         let daysMap: any = {};
         res.forEach(trip => {
@@ -156,7 +160,12 @@ export class SchedulePanel implements OnInit {
         });
         let tableData: any = {};
         let daysData = new Array();
+        let tabIndex = 0;
+        let counter = 0;
         for (let days in daysMap) {
+            if (days.indexOf(curDay) !== -1) {
+                tabIndex = counter;
+            }
             daysData.push(days);
             let dayTrips = daysMap[days];
             let table = new Array();
@@ -169,9 +178,12 @@ export class SchedulePanel implements OnInit {
                 table.push(row);
             }
             tableData[days] = table;
+            counter++;
         }
         this.schedule = tableData;
         this.scheduleDays = daysData;
+        // set cur day as default
+        this.tabGroup.selectedIndex = tabIndex;
     }
     convertDays(days: string) {
         if ('1,7' === days) {
@@ -238,6 +250,17 @@ export class SchedulePanel implements OnInit {
             }
             return dd + '.' + mm + '.' + yyyy;
         }
+    }
+    showRouteOnMap() {
+        this.parent.layerEndpoint.searchRouteCtrl.clearRoutes();
+        this.parent.layerEndpoint.searchRouteCtrl.drawRoute(new OptimalPath(
+            [this.selectedPath],
+            [this.selectedPath.busstops],
+            0,
+            0,
+            null
+        ));
+        this.parent.closeMenu();
     }
 }
 

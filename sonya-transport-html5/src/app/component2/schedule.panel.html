@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </md-card-header>
     
     <md-card-content>
-        <md-grid-list cols="{{parent.isMobile() ? '1' : '3'}}" rowHeight="60px">
+        <md-grid-list cols="{{parent.isMobile() ? '1' : '4'}}" rowHeight="60px">
             
             <md-grid-tile>
                 <md-select class="sp-combo-box" [(ngModel)]="selectedType"
@@ -56,6 +56,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <md-option *ngFor="let path of paths" [value]="path">
                         {{path.description}}</md-option>
                 </md-select>
+            </md-grid-tile>
+            <md-grid-tile *ngIf="selectedRoute && selectedType && selectedPath">
+                <button md-raised-button class="full-width" (click)="showRouteOnMap()">
+                    <md-icon>public</md-icon> {{'transport-map.schedule.show-on-map' | translate}}</button>
             </md-grid-tile>
         </md-grid-list>
     </md-card-content>

@@ -102,13 +102,13 @@ export class TransportMap extends AnimatedSlide implements OnInit {
     }
     openMenu(item: SidenavItem) {
         this.currentSidenavItem = item;
+        if (this.currentSidenavItem !== SidenavItem.SCHEDULE) {
+            this.schedulePanel.clearData(false);
+        }
         this.isMenuOpen = true;
         this.sideNav.open().then(res => this.map.invalidateSize(true));
     }
     closeMenu() {
-        if (this.currentSidenavItem = SidenavItem.SCHEDULE) {
-            this.schedulePanel.clearData(false);
-        }
         this.isMenuOpen = false;
         this.sideNav.close().then(res => this.map.invalidateSize(true));
     }

@@ -75,7 +75,8 @@
             "all-bs": "Show all bus stops",
             "interval": "Interval of movement",
             "interval2": "interval",
-            "was-updated": "Schedule was updated"
+            "was-updated": "Schedule was updated",
+            "show-on-map": "Show route on map"
         }
     },
     "common": {

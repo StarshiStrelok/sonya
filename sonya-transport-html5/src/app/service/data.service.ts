@@ -45,13 +45,13 @@ export class DataService {
         ).toPromise().then(res => res.json() as T).catch(err => this.handleErrorUI(err));
     }
     getAll<T extends AbsModel>(clazz: string): Promise<T[]> {
-        console.info('get all [' + clazz + '] start...');
+        //console.info('get all [' + clazz + '] start...');
         return this.http.get(
             this.dataUrl + clazz + '/all', {headers: this.headers}
         ).toPromise().then(res => res.json() as T[]).catch(err => this.handleErrorUI(err));
     }
     findById<T extends AbsModel>(id: number, clazz: string): Promise<T> {
-        console.log('get by id [' + id + '] [' + clazz + ']');
+        //console.log('get by id [' + id + '] [' + clazz + ']');
         return this.http.get(
             this.dataUrl + clazz + '/' + id, {headers: this.headers}
         ).toPromise().then(res => res.json() as T).catch(err => this.handleErrorUI(err));
@@ -63,7 +63,7 @@ export class DataService {
         ).toPromise().then(res => true).catch(err => this.handleErrorUI(err));
     }
     getFromProfile<T extends AbsModel>(id: number, clazz: string): Promise<T[]> {
-        console.log('get from profile [' + id + '] [' + clazz + ']');
+        // console.log('get from profile [' + id + '] [' + clazz + ']');
         return this.http.get(
             this.dataUrl + clazz + '/from-profile/' + id, {headers: this.headers}
         ).toPromise().then(res => res.json() as T[]).catch(err => this.handleErrorUI(err));
@@ -85,7 +85,7 @@ export class DataService {
             .catch(err => this.handleErrorUI(err));
     }
     searchRoutes(settings: SearchSettings, waiting: Waiting): Promise<OptimalPath[]> {
-        console.log(settings);
+        //console.log(settings);
         return this.http.post(
             this.dataUrl + ModelClass.ROUTE + '/search', JSON.stringify(settings), {headers: this.headers}
         ).toPromise().then(res => res.json() as OptimalPath[]

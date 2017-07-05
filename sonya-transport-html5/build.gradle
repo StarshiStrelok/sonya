@@ -33,7 +33,7 @@ task zipProduction(type: Zip) {
     archiveName 'sonya.war'
     destinationDir(file('../production/'))
     doLast {
-        delete '../production/sonya'
+        //delete '../production/sonya'
     }
 }
 if (profile == 'production') {
