@@ -28,8 +28,6 @@ task copyWebpack(type: Copy) {
 task zipProduction(type: Zip) {
     dependsOn copyWebpack
     from '../production/sonya'
-    include '*'
-    include '*/*'
     archiveName 'sonya.war'
     destinationDir(file('../production/'))
     doLast {

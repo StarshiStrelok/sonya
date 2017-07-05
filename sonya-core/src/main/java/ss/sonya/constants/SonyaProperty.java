@@ -42,13 +42,7 @@ public enum SonyaProperty {
     /** Hibernate. Connection timeout.*/
     H_C3P0_TIMEOUT("hibernate.c3p0.timeout"),
     /** Hibernate. Pool max statements for caching. */
-    H_C3P0_MAX_STATEMENTS("hibernate.c3p0.max_statements"),
-    /** Is production server. */
-    IS_PRODUCTION_SERVER("is.production"),
-    /** Processor cores. Parallel calculations multiplexer. */
-    PROCESSOR_CORES("processor.cores"),
-    /** Mapbox access key. */
-    MAPBOX_KEY("mapbox.access.token");
+    H_C3P0_MAX_STATEMENTS("hibernate.c3p0.max_statements");
     /** Property key. */
     private final String key;
     /**
