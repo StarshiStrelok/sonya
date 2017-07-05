@@ -53,3 +53,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     left: 0;
     top: auto;
 }
+.sp-upd-sch {
+    color: orangered;
+    font-weight: bold;
+}

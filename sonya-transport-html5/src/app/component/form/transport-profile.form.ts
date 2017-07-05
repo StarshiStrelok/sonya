@@ -81,7 +81,6 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
         delete this.profile.mapLayers;
         this.transportProfileForm.patchValue(this.profile);
         _routeProfiles.forEach((profile) => {
-            delete profile.lastUpdate;
             let rpGroup = this.addRouteProfileGroup();
             rpGroup.setValue(profile);
         });
@@ -98,7 +97,8 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
             avgSpeed: ['', [Validators.required, minNumberValidator(1), maxNumberValidator(500)]],
             lineColor: ['', [Validators.maxLength(10)]],
             routingURL: ['', [Validators.maxLength(100), Validators.pattern('^(https?|ftp|file):'
-                + '//[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]')]]
+                + '//[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]')]],
+            lastUpdate: ['']
         });
         this.transportProfileForm.addControl(groupName, routeGroup);
         this.routeProfiles.push(routeGroup);

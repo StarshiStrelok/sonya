@@ -74,7 +74,8 @@
             "bs-filter": "Filter by bus stop",
             "all-bs": "Show all bus stops",
             "interval": "Interval of movement",
-            "interval2": "interval"
+            "interval2": "interval",
+            "was-updated": "Schedule was updated"
         }
     },
     "common": {

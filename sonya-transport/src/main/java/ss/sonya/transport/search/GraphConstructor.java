@@ -134,7 +134,7 @@ public class GraphConstructor {
      * @return graph.
      * @throws Exception error.
      */
-    private Graph buildGraph(final TransportProfile profile) throws Exception {
+    public Graph buildGraph(final TransportProfile profile) throws Exception {
         LOG.info("--------------- GRAPH (" + profile + ") -------------------");
         long start = System.currentTimeMillis();
         List<Path> paths = transportService
@@ -454,7 +454,7 @@ public class GraphConstructor {
      * @return - object model <days, times>.
      * @throws Exception - operation error.
      */
-    public Map<String, List<List<String>>> buildSchedule(
+    private Map<String, List<List<String>>> buildSchedule(
             final List<Trip> schedule) throws Exception {
         Map<String, List<List<String>>> tripMap = new HashMap<>();
         for (Trip trip : schedule) {

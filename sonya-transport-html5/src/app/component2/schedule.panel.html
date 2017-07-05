@@ -18,8 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <md-card class="schedule-panel">
     
     <md-card-header>
-        <md-card-title><h3>{{'transport-map.schedule.title' | translate}}</h3></md-card-title>
+        <md-card-title>
+            <h2>{{'profile.' + parent.activeProfile.name | translate}}</h2>
+            <h3>{{'transport-map.schedule.title' | translate}}</h3>
+        </md-card-title>
         <md-card-subtitle>{{'transport-map.schedule.title-desc' | translate}}</md-card-subtitle>
+        <md-card-subtitle *ngIf="selectedType && selectedType.lastUpdate"
+            class="sp-upd-sch">{{'transport-map.schedule.was-updated' | translate}} {{selectedType.formattedDate}}
+        </md-card-subtitle>
     </md-card-header>
     
     <md-card-content>

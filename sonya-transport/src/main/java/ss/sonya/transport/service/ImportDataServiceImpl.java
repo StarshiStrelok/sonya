@@ -45,6 +45,7 @@ import ss.sonya.transport.constants.ImportInfoKey;
 import ss.sonya.transport.exception.EmptyFieldException;
 import ss.sonya.transport.exception.ImportDataException;
 import ss.sonya.transport.iface.ExternalRef;
+import ss.sonya.transport.search.GraphConstructor;
 
 /**
  * Import data service implementation.
@@ -64,6 +65,9 @@ class ImportDataServiceImpl implements ImportDataService {
     /** Transport service. */
     @Autowired
     private TransportDataService transportService;
+    /** Graph constructor. */
+    @Autowired
+    private GraphConstructor graphConstructor;
     @Override
     public List<ImportDataEvent> importData(final MultipartFile file,
             final Integer tpId, final Integer rpId, final boolean isPersist)
@@ -104,6 +108,7 @@ class ImportDataServiceImpl implements ImportDataService {
             if (isPersist) {
                 rProfile.setLastUpdate(new Date());
                 dataService.update(rProfile);
+                graphConstructor.buildGraph(tProfile);
             }
             LOG.info("==========> finish import");
             return events;

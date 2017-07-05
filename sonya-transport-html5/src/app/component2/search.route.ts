@@ -15,8 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {SearchSettings, OptimalPath,
-    Path, BusStop, RouteProfile} from '../model/abs.model';
+import {
+    SearchSettings, OptimalPath,
+    Path, BusStop, RouteProfile
+} from '../model/abs.model';
 import {TransportMap, SidenavItem} from './transport.map';
 import {OSRMResponse} from '../model/osrm.response';
 
@@ -75,7 +77,7 @@ export class SearchRoute {
         let all: BusStop[] = [];
         optimalPath.way.forEach(w => {
             w.forEach(bs => {
-                all.push(bs); 
+                all.push(bs);
             });
         });
         this.flyToBounds(all, 0);
@@ -115,15 +117,15 @@ export class SearchRoute {
                 snaking: true
             }];
             if (prevPath !== null && path.route.type.name === prevPath.route.type.name
-                    && !prevPath['dashed']) {
+                && !prevPath['dashed']) {
                 opts[2].dashArray = '5,5';
                 path['dashed'] = true;
             }
-//            if (prevPath != null) {
-//                opts.forEach((options: any) => {
-//                    groupD.push(L.circleMarker(new L.LatLng(way[0].latitude, way[0].longitude), options));
-//                });
-//            }
+            //            if (prevPath != null) {
+            //                opts.forEach((options: any) => {
+            //                    groupD.push(L.circleMarker(new L.LatLng(way[0].latitude, way[0].longitude), options));
+            //                });
+            //            }
             for (let i = 0; i < opts.length; i++) {
                 if (opts[i].snaking) {
                     groupD.push(L.polyline(reverseCoords, opts[i]));
@@ -353,6 +355,12 @@ L.Polyline.include({
 L.Polyline.mergeOptions({
     snakingSpeed: 200	// In pixels/sec
 });
+
+
+L.Polyline._flat = function (latlngs) {
+    // true if it's a flat array of latlngs; false if nested
+    return !L.Util.isArray(latlngs[0]) || (typeof latlngs[0][0] !== 'object' && typeof latlngs[0][0] !== 'undefined');
+};
 
 L.LayerGroup.include({
     _snakingLayers: [],

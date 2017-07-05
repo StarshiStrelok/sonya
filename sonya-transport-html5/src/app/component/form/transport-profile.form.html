@@ -153,6 +153,7 @@
                     <md-grid-list cols="12" rowHeight="56px;" *ngFor="let rp of routeProfiles"
                                   [formGroup]="rp">
                                   <input type="number" hidden="true" formControlName="id"/>
+                        <input hidden="true" formControlName="lastUpdate"/>
                         <md-grid-tile colspan="2">
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Route type name" formControlName="name">

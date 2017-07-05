@@ -43,12 +43,13 @@ export class SchedulePanel implements OnInit {
         private translate: TranslateService
     ) {}
     ngOnInit() {
-        
+
     }
     typeChanged() {
         this.selectedRoute = null;
         this.selectedPath = null;
         if (this.selectedType) {
+            this.selectedType['formattedDate'] = this.formatDate(this.selectedType.lastUpdate);
             this.dataService.getRoutesFromSameType(this.selectedType.id)
                 .then((routes: Route[]) => {
                     routes.sort(function (a, b) {
@@ -221,6 +222,21 @@ export class SchedulePanel implements OnInit {
         if (full) {
             this.selectedType = null;
             this.selectedRoute = null;
+        }
+    }
+    private formatDate(date: Date) {
+        date = new Date(date);
+        if (date) {
+            let dd: any = date.getDate();
+            let mm: any = date.getMonth() + 1;
+            let yyyy = date.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            return dd + '.' + mm + '.' + yyyy;
         }
     }
 }
