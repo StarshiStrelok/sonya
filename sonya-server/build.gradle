@@ -5,3 +5,18 @@ description = 'sonya-server'
 dependencies {
     compile project(':sonya-transport')
 }
+
+task(unpackWAR, type: Copy) {
+    dependsOn build
+    def zipFile = file('build/libs/sonya-server-1.0.war')
+    def outputDir = file('build/libs/sonya-server-1.0')
+    includeEmptyDirs = true
+    from zipTree(zipFile)
+    into outputDir
+    doLast {
+        println 'Unzipped....'
+    }
+}
+if (profile == 'development') {
+    build.finalizedBy(unpackWAR)
+}

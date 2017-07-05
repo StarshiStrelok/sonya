@@ -1,9 +1,41 @@
 description = 'html5-client'
 
 task angularCli(type:Exec) {
-    println 'Webpack creation start...'
+    dependsOn build
+    // compile angular 2 project & webpack
     workingDir '.'
     commandLine "ng", "build", "--prod"
-    println commandLine
+    doFirst {
+        println 'Start build production...'
+        delete '../production'
+        println 'old build folder deleted'
+    }
 }
-build.finalizedBy(angularCli)
+task unpackWARProd(type: Copy) {
+    dependsOn angularCli
+    def zipFile = file('../sonya-server/build/libs/sonya-server-1.0.war')
+    def outputDir = file('../production/sonya')
+    from zipTree(zipFile)
+    into outputDir
+}
+task copyWebpack(type: Copy) {
+    dependsOn unpackWARProd
+    def webpackDir = file('../sonya-transport-html5/dist');
+    def warDir = file('../production/sonya');
+    from webpackDir
+    into warDir
+}
+task zipProduction(type: Zip) {
+    dependsOn copyWebpack
+    from '../production/sonya'
+    include '*'
+    include '*/*'
+    archiveName 'sonya.war'
+    destinationDir(file('../production/'))
+    doLast {
+        delete '../production/sonya'
+    }
+}
+if (profile == 'production') {
+    build.finalizedBy(zipProduction)
+}
