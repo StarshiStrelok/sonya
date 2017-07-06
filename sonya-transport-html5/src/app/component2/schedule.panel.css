@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     margin-top: 10px;
 }
 .sp-route-label {
-    padding: .2em .6em .3em;
+    padding: .1em .6em .1em;
     border-radius: 2px;
     font-weight: bold;
     margin-left: 5px;
@@ -56,4 +56,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .sp-upd-sch {
     color: #62ff62;
     font-weight: bold;
+}
+.sp-end > .mat-figure {
+    justify-content: flex-end;
 }

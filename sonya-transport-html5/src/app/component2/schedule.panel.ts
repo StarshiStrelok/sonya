@@ -262,6 +262,9 @@ export class SchedulePanel implements OnInit {
         ));
         this.parent.closeMenu();
     }
+    resetFilter() {
+        this.filterByBusStop = null;
+    }
 }
 
 @Pipe({

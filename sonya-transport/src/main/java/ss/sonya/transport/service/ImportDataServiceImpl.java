@@ -276,7 +276,7 @@ class ImportDataServiceImpl implements ImportDataService {
                 if (bs.getExternalId() == null) {
                     throw new EmptyFieldException("externalId", bs);
                 }
-                if (!bsMap.containsKey(bs.getExternalId())) {
+                if (!bsMap.containsKey(bs.getExternalId()) && isPersist) {
                     throw new IllegalArgumentException("bus stop with "
                             + "external ID [" + bs.getExternalId()
                             + "] not found!");

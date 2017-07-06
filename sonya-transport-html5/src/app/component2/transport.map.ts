@@ -152,8 +152,10 @@ export class TransportMap extends AnimatedSlide implements OnInit {
             .then((profiles: TransportProfile[]) => {
                 this.profiles = profiles;
                 this.readUserProfile();
-                this.createMap(this.activeProfile);
-                this.createContextMenu();
+                if (this.activeProfile) {
+                    this.createMap(this.activeProfile);
+                    this.createContextMenu();
+                }
             });
     }
     private createMap(profile: TransportProfile) {

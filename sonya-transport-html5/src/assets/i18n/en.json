@@ -76,7 +76,8 @@
             "interval": "Interval of movement",
             "interval2": "interval",
             "was-updated": "Schedule was updated",
-            "show-on-map": "Show route on map"
+            "show-on-map": "Show route on map",
+            "clear-filter": "Clear filter"
         }
     },
     "common": {

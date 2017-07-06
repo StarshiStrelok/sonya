@@ -58,7 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </md-select>
             </md-grid-tile>
             <md-grid-tile *ngIf="selectedRoute && selectedType && selectedPath">
-                <button md-raised-button class="full-width" (click)="showRouteOnMap()">
+                <button md-button class="full-width" (click)="showRouteOnMap()">
                     <md-icon>public</md-icon> {{'transport-map.schedule.show-on-map' | translate}}</button>
             </md-grid-tile>
         </md-grid-list>
@@ -76,16 +76,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     <md-card-content>
         
-        <md-select *ngIf="!isIrregular" class="sp-filter-bs-combo full-width"
-                [(ngModel)]="filterByBusStop"
-                placeholder="{{'transport-map.schedule.bs-filter' | translate}}">
-            <md-option [value]="null">
-                    {{'transport-map.schedule.all-bs' | translate}}
-            </md-option>
-            <md-option *ngFor="let bs of filterBusStopsArray()" [value]="bs">
-                    {{bs.name}}
-            </md-option>
-        </md-select>
+        <md-grid-list cols="4" rowHeight="60px" *ngIf="!isIrregular">
+            <md-grid-tile colspan="3">
+                <md-select class="sp-filter-bs-combo full-width"
+                        [(ngModel)]="filterByBusStop"
+                        placeholder="{{'transport-map.schedule.bs-filter' | translate}}">
+                    <md-option [value]="null">
+                            {{'transport-map.schedule.all-bs' | translate}}
+                    </md-option>
+                    <md-option *ngFor="let bs of filterBusStopsArray()" [value]="bs">
+                            {{bs.name}}
+                    </md-option>
+                </md-select>
+            </md-grid-tile>
+            <md-grid-tile>
+                <button md-mini-fab (click)="resetFilter()"
+                        mdTooltip="{{'transport-map.schedule.clear-filter' | translate}}">
+                    <md-icon>close</md-icon>
+                </button>
+            </md-grid-tile>
+        </md-grid-list>
         
         <md-tab-group dynamicHeight="true">
             <md-tab *ngFor="let days of scheduleDays">
