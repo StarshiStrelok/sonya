@@ -154,6 +154,7 @@ public class BFSAlgorithmV1 implements SearchEngine {
             for (Future<List<OptimalPath>> f : futures) {
                 result.addAll(f.get());
             }
+            ex.shutdown();
             LOG.info("#-bfs-# total number of decisions ["
                     + (result.size() - straight.size()) + "], BFS time ["
                     + (System.currentTimeMillis() - startBfs) + "] ms");
@@ -483,6 +484,7 @@ public class BFSAlgorithmV1 implements SearchEngine {
                 LOG.error("insert schedule task error!", ex1);
             }
         }
+        ex.shutdown();
         List<OptimalPath> withSchedule = new ArrayList<>();
         opList.stream().forEach(op -> {
             if (op.getSchedule() != null) {
