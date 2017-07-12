@@ -33,8 +33,12 @@ export class EndpointLayer {
         this.searchRouteCtrl.init(this.parent);
         this.layerEndpoint = L.layerGroup([]);
         this.layerEndpoint.addTo(map);
-        this.startMarker = this.createMarker(true);
-        this.endMarker = this.createMarker(false);
+        this.parent.translate.get('transport-map.map.endpoints.start').subscribe(val => 
+            this.startMarker = this.createMarker(true, val)
+        );
+        this.parent.translate.get('transport-map.map.endpoints.end').subscribe(val => 
+            this.endMarker = this.createMarker(false, val)
+        );
     }
     showStartMarker(lat: number, lon: number, isMove: boolean) {
         this.startMarker.setLatLng(new L.LatLng(lat, lon));
@@ -76,13 +80,13 @@ export class EndpointLayer {
             }
         }
     }
-    private createMarker(isStart: boolean): any {
+    private createMarker(isStart: boolean, title: string): any {
         var marker = L.marker(new L.LatLng(0, 0), {
             icon: isStart
                 ? this.createIcon('start') : this.createIcon('end'),
             clickable: true,
             draggable: true,
-            title: isStart ? 'Start' : 'Finish',
+            title: title,
             isStart: isStart
         });
         var comp = this;

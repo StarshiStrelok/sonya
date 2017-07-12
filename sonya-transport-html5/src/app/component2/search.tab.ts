@@ -40,4 +40,9 @@ export class SearchTab {
     @ViewChild(SearchResultList) searchResult: SearchResultList;
     @ViewChild(MdTabGroup) tabGroup: MdTabGroup;
     @Input() mapComponent: TransportMap;
+    tabChanged(event: any) {
+        if (event.index === 0) {
+            this.mapComponent.layerEndpoint.searchRouteCtrl.search();
+        }
+    }
 }

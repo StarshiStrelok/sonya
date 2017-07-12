@@ -152,6 +152,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
                 if (this.activeProfile) {
                     this.createMap(this.activeProfile);
                     this.createContextMenu();
+                    this.layerEndpoint.init(this.map, this);
                 }
             });
     }

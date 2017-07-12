@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <search-tab [mapComponent]="component"></search-tab>
             <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
                 (click)="closeMenu()"
-                mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="below"
+                mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="above"
                 *ngIf="currentSidenavItem === 'item-search'">
             <md-icon>chevron_left</md-icon></button>
         </div>
@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <schedule-panel [parent]="this"></schedule-panel>
             <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
                 (click)="closeMenu()"
-                mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="below"
+                mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="above"
                 *ngIf="currentSidenavItem === 'item-schedule'">
             <md-icon>chevron_left</md-icon></button>
         </div>
@@ -51,14 +51,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <!-- CONTROLS -->
     <button md-fab color="primary" class="tm-map-control" style="top: 25px; left: 25px"
             (click)="openMenu('item-search')" *ngIf="!isMenuOpen"
-            mdTooltip="{{'transport-map.controls.search' | translate }}" mdTooltipPosition="below"
+            mdTooltip="{{'transport-map.controls.search' | translate }}" mdTooltipPosition="above"
             [ngClass]="{'tm-control-mobile': isMobile()}">
         <md-icon>search</md-icon>
     </button>
     
     <button md-fab color="primary" class="tm-map-control" style="top: 100px; left: 25px"
             (click)="openMenu('item-schedule')" *ngIf="!isMenuOpen"
-            mdTooltip="{{'transport-map.controls.schedule' | translate }}" mdTooltipPosition="below"
+            mdTooltip="{{'transport-map.controls.schedule' | translate }}" mdTooltipPosition="above"
             [ngClass]="{'tm-control-mobile': isMobile()}">
         <md-icon>alarm</md-icon>
     </button>
@@ -67,14 +67,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                        direction="left" *ngIf="activeProfile && activeProfile.mapLayers && activeMapLayer.id != -1"
                        (selectAction)="changeMapLayer($event)">
         <md-fab-trigger mdTooltip="{{'transport-map.controls.layers' | translate }}"
-                        mdTooltipPosition="below"
+                        mdTooltipPosition="above"
                         [ngClass]="{'tm-control-mobile': isMobile()}">
             <md-icon *ngIf="activeMapLayer">{{activeMapLayer.mdIcon}}</md-icon>
         </md-fab-trigger>
 
         <md-fab-actions>
             <md-fab-action *ngFor="let layer of activeProfile.mapLayers"
-                mdTooltip="{{'map.' + layer.name | translate}}" mdTooltipPosition="below">
+                mdTooltip="{{'map.' + layer.name | translate}}" mdTooltipPosition="above">
                 <md-icon>{{layer.mdIcon}}</md-icon>
             </md-fab-action>
         </md-fab-actions>
@@ -82,7 +82,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     <button md-fab color="primary" class="tm-map-control" style="top: 25px; right: 25px"
             mdTooltip="{{'transport-map.controls.profile' | translate }}"
-            mdTooltipPosition="below" *ngIf="profiles && profiles.length > 1"
+            mdTooltipPosition="above" *ngIf="profiles && profiles.length > 1"
             [ngClass]="{'tm-control-mobile': isMobile()}"
             [mdMenuTriggerFor]="cityMenu">
         <md-icon>account_balance</md-icon>

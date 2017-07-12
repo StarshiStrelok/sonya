@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         [translate]="'transport-map.search-result.no-result-desc'"></h5>
     <h5 [hidden]="result.length > 0"
         [translate]="'transport-map.search-result.no-result-geocoder'"></h5>
+    <h5 [hidden]="result.length > 0"
+        [translate]="'transport-map.search-result.no-result-tooltip'"></h5>
     
     <md-list *ngIf="mapComponent.activeProfile && result.length === 0">
         <h3 md-subheader class="srl-result-h"
@@ -134,7 +136,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 
             </md-grid-list>
             
-            <button md-raised-button (click)="closeDetails()" color="primary" class="full-width">
+            <button md-raised-button (click)="closeDetails()" class="full-width">
                     <md-icon>chevron_left</md-icon> {{'transport-map.search-result.back-to-summary' | translate }}
             </button>
             
