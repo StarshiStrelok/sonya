@@ -76,8 +76,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     <md-card-content>
         
-        <md-grid-list cols="4" rowHeight="60px" *ngIf="!isIrregular">
-            <md-grid-tile colspan="3">
+        <md-grid-list cols="1" rowHeight="60px" *ngIf="!isIrregular">
+            <md-grid-tile colspan="1">
                 <md-select class="sp-filter-bs-combo full-width"
                         [(ngModel)]="filterByBusStop"
                         placeholder="{{'transport-map.schedule.bs-filter' | translate}}">
@@ -88,12 +88,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             {{bs.name}}
                     </md-option>
                 </md-select>
-            </md-grid-tile>
-            <md-grid-tile>
-                <button md-mini-fab (click)="resetFilter()"
-                        mdTooltip="{{'transport-map.schedule.clear-filter' | translate}}">
-                    <md-icon>close</md-icon>
-                </button>
             </md-grid-tile>
         </md-grid-list>
         
@@ -109,7 +103,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <table *ngIf="!isIrregular">
                         <tr *ngFor="let row of schedule[days] | filterBs: filterByBusStop;">
                             <td *ngFor="let col of row; let i = index;"
-                                [ngClass]="{'headcol': i === 0}">
+                                [ngClass]="{'headcol': i === 0, 'sp-sch-row': i !== 0}">
                                 {{col}}
                             <td>
                         </tr>

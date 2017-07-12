@@ -172,9 +172,16 @@ export class SchedulePanel implements OnInit {
             for (let i = 0; i < way.length; i++) {
                 let row = new Array();
                 row.push(way[i].name);
+                let sb = '';
                 for (let j = 0; j < dayTrips.length; j++) {
-                    row.push(dayTrips[j][i]);
+                    let time = dayTrips[j][i];
+                    if (time.length === 0) {
+                        sb += '------- ';
+                    } else {
+                        sb += time + ' ';
+                    }
                 }
+                row.push(sb);
                 table.push(row);
             }
             tableData[days] = table;
@@ -261,9 +268,6 @@ export class SchedulePanel implements OnInit {
             null
         ));
         this.parent.closeMenu();
-    }
-    resetFilter() {
-        this.filterByBusStop = null;
     }
 }
 

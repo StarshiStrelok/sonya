@@ -60,3 +60,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .sp-end > .mat-figure {
     justify-content: flex-end;
 }
+.sp-sch-row {
+    white-space: nowrap;
+}
