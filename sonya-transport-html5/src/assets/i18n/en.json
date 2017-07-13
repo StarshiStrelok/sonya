@@ -130,7 +130,9 @@
     },
     "toolbar": {
         "title": "Public transport search web-service",
-        "title-mobile": "Public transport WS"
+        "title-mobile": "Public transport WS",
+        "select-theme": "Select theme!",
+        "select-lang": "Select language"
     },
     "map": {
         "OpenStreetMaps": "Standard",
@@ -141,5 +143,11 @@
     "lang": {
         "en": "English",
         "ru": "Russian"
+    },
+    "skin": {
+        "deeppurple-amber": "Deeppurple amber",
+        "indigo-pink": "Indigo pink",
+        "pink-bluegrey": "Pink bluegrey",
+        "purple-green": "Purple green"
     }
 }

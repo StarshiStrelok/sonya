@@ -5,19 +5,43 @@
     </button>
     
     <span class="spacer"></span>
-
-    <button md-icon-button [mdMenuTriggerFor]="menu">
-            <md-icon>menu</md-icon>
+    
+    <button md-icon-button [mdMenuTriggerFor]="themeMenu"
+            mdTooltip="{{'toolbar.select-theme'| translate}}">
+            <md-icon>format_color_fill</md-icon>
     </button>
-    <md-menu #menu="mdMenu" [overlapTrigger]="false">
-        <button md-menu-item (click)="changeLanguage('en')">
-            <img src="/assets/image/flag/en_32.png" class="lang-menu-icon">
-            <span>{{'lang.en' | translate}}</span>
-        </button>
-        <button md-menu-item (click)="changeLanguage('ru')">
-            <img src="/assets/image/flag/ru_32.png" class="lang-menu-icon">
-            <span>{{'lang.ru' | translate}}</span>
-        </button>
+    <md-menu #themeMenu="mdMenu" [overlapTrigger]="false">
+        <md-grid-list cols="2">
+            <md-grid-tile *ngFor="let theme of themes">
+                <button md-mini-fab mdTooltip="{{'skin.' + theme.id | translate}}"
+                        [style.background-color]="theme.color"
+                        (click)="changeSkin(theme, false)">
+                    <md-icon>{{theme === activeTheme ? 'check_circle' : 'fiber_manual_record'}}</md-icon>
+                </button>
+            </md-grid-tile>
+        </md-grid-list>
+    </md-menu>
+    
+    <button md-icon-button [mdMenuTriggerFor]="langMenu"
+            mdTooltip="{{'toolbar.select-lang'| translate}}">
+            <md-icon>language</md-icon>
+    </button>
+    <md-menu #langMenu="mdMenu" [overlapTrigger]="false">
+        <md-grid-list cols="2">
+            <md-grid-tile>
+                <button md-button (click)="changeLanguage('en')"
+                        mdTooltip="{{'lang.en' | translate}}">
+                    <img src="/assets/image/flag/en_32.png" class="lang-menu-icon">
+                </button>
+            </md-grid-tile>
+            <md-grid-tile>
+                <button md-button (click)="changeLanguage('ru')"
+                        mdTooltip="{{'lang.ru' | translate}}">
+                    <img src="/assets/image/flag/ru_32.png" class="lang-menu-icon">
+                </button>
+            </md-grid-tile>
+        </md-grid-list>
+        
         <button md-menu-item (click)="signIn()" *ngIf="isControlVisible">
             <md-icon>security</md-icon>
             <span>Sign In</span>

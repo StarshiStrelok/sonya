@@ -74,7 +74,7 @@ export class MdFabTrigger implements AfterContentInit {
 
 @Component({
     selector: 'md-fab-action',
-    template: `<button md-mini-fab color="warn" [@scaleAnim]="state"
+    template: `<button md-mini-fab [@scaleAnim]="state"
                     (@scaleAnim.start)="startAnimation($event)" (click)="select()">
                 <ng-content></ng-content>
             </button>`,

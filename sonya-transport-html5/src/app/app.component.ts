@@ -12,22 +12,12 @@ import {CookieService, CookieKey} from './service/cookie.service';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styles: [`.app-toolbar {
-                min-height: 50px;
-                height: 50px;
-                position: relative;
-                z-index: 1;
-            }
-            .lang-menu-icon {
-                vertical-align: middle;
-            }
-            .title-text {
-                font-weight: bold;
-            }
-            `]
+    styleUrls: ['./app.component.css']
 })
 export class AppComponent {
     isControlVisible = false;
+    themes: any = [];
+    activeTheme: any;
     @HostListener('window:keydown', ['$event'])
     showControl(event: KeyboardEvent) {
         if (event.keyCode === 9) {  // TAB
@@ -41,6 +31,7 @@ export class AppComponent {
         private dialogService: DialogService,
         private securityService: SecurityService
     ) {
+        this.initSkins();
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.setDefaultLang('en');
         // the lang to use, if the lang isn't available, it will use the current loader to get them
@@ -49,6 +40,7 @@ export class AppComponent {
         console.log('language [' + lang + ']');
         translate.use(lang);
     }
+    // notifications
     options = {
         position: ["top", "right"],
         timeOut: 5000,
@@ -56,6 +48,22 @@ export class AppComponent {
     };
     private toControl() {
         this.router.navigate([Links.PROFILE_LIST]);
+    }
+    private initSkins() {
+        // skin
+        this.themes = [{
+            id: 'deeppurple-amber',
+            color: '#673ab7'
+        }, {
+            id: 'indigo-pink',
+            color: '#3f51b5'
+        }, {
+            id: 'purple-green',
+            color: '#7b1fa2'
+        }, {
+            id: 'pink-bluegrey',
+            color: '#c2185b'
+        }]
     }
     signIn() {
         this.securityService.profilesCount().then(count => {
@@ -93,6 +101,19 @@ export class AppComponent {
     }
     isMobile(): boolean {
         return window.innerWidth <= 600;
+    }
+    changeSkin(skin: any) {
+        console.log('apply skin [' + skin.id + ']');
+        var oldlink = document.getElementsByTagName("link").item(0);
+        var newlink = document.createElement("link");
+        newlink.setAttribute("rel", "stylesheet");
+        newlink.setAttribute("type", "text/css");
+        newlink.setAttribute("href", 'assets/skins/' + skin.id + '.css');
+        this.cookieService.setCookie(CookieKey.SKIN, skin.id);
+        this.activeTheme = skin;
+        setTimeout(function () {
+                document.getElementsByTagName("head").item(0).replaceChild(newlink, oldlink);
+            }, 1000);
     }
 }
 

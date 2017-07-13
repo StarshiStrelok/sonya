@@ -42,7 +42,7 @@ export class SearchTab {
     @Input() mapComponent: TransportMap;
     tabChanged(event: any) {
         if (event.index === 0) {
-            this.mapComponent.layerEndpoint.searchRouteCtrl.search();
+            this.mapComponent.layerEndpoint.checkSearchConditions();
         }
     }
 }

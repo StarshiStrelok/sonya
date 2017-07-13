@@ -62,4 +62,5 @@ export class CookieKey {
     public static MAP = 'ss-map';
     public static LANG = 'ss-lang';
     public static PROFILE = 'ss-profile';
+    public static SKIN = 'ss-skin';
 }
