@@ -64,6 +64,13 @@ export class AppComponent {
             id: 'pink-bluegrey',
             color: '#c2185b'
         }]
+        let skin = this.cookieService.getCookie(CookieKey.SKIN);
+        for (let theme of this.themes) {
+            if (theme.id === skin) {
+                this.activeTheme = theme;
+                break;
+            }
+        }
     }
     signIn() {
         this.securityService.profilesCount().then(count => {
@@ -112,8 +119,8 @@ export class AppComponent {
         this.cookieService.setCookie(CookieKey.SKIN, skin.id);
         this.activeTheme = skin;
         setTimeout(function () {
-                document.getElementsByTagName("head").item(0).replaceChild(newlink, oldlink);
-            }, 1000);
+            document.getElementsByTagName("head").item(0).replaceChild(newlink, oldlink);
+        }, 1000);
     }
 }
 
