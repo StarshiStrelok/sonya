@@ -1,0 +1,72 @@
+/*
+Copyright (C) 2017 ss
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/* 
+    Created on : Apr 18, 2017, 1:41:02 PM
+    Author     : ss
+*/
+.l-context-menu-button {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background-color: white;
+    color: #585858;
+}
+.l-context-menu-button:hover {
+    cursor: pointer;
+    background-color: #e8ecec;
+    color: black;
+}
+.l-context-menu-button span {
+    font-size: 14px;
+    line-height: 30px;
+    font-family: Helvetica;
+}
+.l-context-menu-button i {
+    min-width: 20px;
+    height: 26px;
+    vertical-align: middle;
+}
+.l-ctx-menu {
+}
+.l-ctx-menu > .leaflet-popup-content-wrapper > .leaflet-popup-content {
+    margin: 0px;
+}
+.l-ctx-menu > .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+    padding: 0;
+}
+.l-ctx-menu-offset {
+}
+.l-ctx-menu-offset > .leaflet-popup-tip-container {
+    display: none;
+}
+.letter-a {
+    color: orangered;
+    text-shadow: 1px 1px 1px lightgrey;
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 7px;
+    margin-left: 5px;
+}
+.letter-b {
+    color: green;
+    text-shadow: 1px 1px 1px lightgrey;
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 7px;
+    margin-left: 5px;
+}

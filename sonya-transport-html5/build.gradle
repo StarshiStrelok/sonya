@@ -25,8 +25,19 @@ task copyWebpack(type: Copy) {
     from webpackDir
     into warDir
 }
+task copyWebpackCordova(type: Copy) {
+    dependsOn unpackWARProd
+    def webpackDir = file('../sonya-transport-html5/dist');
+    def warDir = file('../sonya-transport-cordova/www');
+    from webpackDir
+    into warDir
+    doLast {
+        println 'Copy for cordova created...'
+    }
+}
 task zipProduction(type: Zip) {
     dependsOn copyWebpack
+    dependsOn copyWebpackCordova
     from '../production/sonya'
     archiveName 'sonya.war'
     destinationDir(file('../production/'))
