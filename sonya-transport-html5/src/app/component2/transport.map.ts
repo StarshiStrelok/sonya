@@ -154,6 +154,8 @@ export class TransportMap extends AnimatedSlide implements OnInit {
                 this.profiles = profiles;
                 this.readUserProfile();
                 if (this.activeProfile) {
+                    document.title = this.translate.instant('profile.' + this.activeProfile.name)
+                        + ' | ' + this.translate.instant('toolbar.title');
                     this.createMap(this.activeProfile);
                     this.createContextMenu();
                     this.layerEndpoint.init(this.map, this);

@@ -42,8 +42,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </md-autocomplete>
             </md-grid-tile>
         <md-grid-tile>
-            <md-icon class="geo-btn-i" mdTooltip="{{'transport-map.geocoder.clear' | translate }}"
-                     (click)="clearStart()">close</md-icon>
+            <button md-icon-button mdTooltip="{{'transport-map.geocoder.clear' | translate }}"
+                     (click)="clearStart()">
+                <md-icon>close</md-icon>
+            </button>
         </md-grid-tile>
 
         <md-grid-tile>
@@ -64,8 +66,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </md-autocomplete>
         </md-grid-tile>
         <md-grid-tile>
-            <md-icon class="geo-btn-i" mdTooltip="{{'transport-map.geocoder.clear' | translate }}"
-                     (click)="clearEnd()">close</md-icon>
+            <button md-icon-button mdTooltip="{{'transport-map.geocoder.clear' | translate }}"
+                     (click)="clearEnd()">
+                <md-icon>close</md-icon>
+            </button>
         </md-grid-tile>
     </md-grid-list>
 </md-card-content>

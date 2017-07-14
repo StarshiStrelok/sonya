@@ -110,9 +110,9 @@ export class SearchResultList {
         } else {
             var d = new Date(this.activePath.schedule.duration);
             if (d.getHours() !== 0) {
-                return d.getHours() + ' h ' + d.getMinutes() + ' min';
+                return d.getHours() + ' h ' + d.getMinutes();
             } else {
-                return d.getMinutes() + ' min';
+                return d.getMinutes();
             }
         }
     }

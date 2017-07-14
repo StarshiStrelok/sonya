@@ -109,6 +109,9 @@
         },
         "time": {
             "min": "min"
+        },
+        "unit": {
+            "km": "km"
         }
     },
     "validator": {

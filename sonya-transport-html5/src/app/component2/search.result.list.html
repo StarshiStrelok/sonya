@@ -60,7 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <!-- DETAILS -->
         
         <div *ngIf="flags.isDetailsOpen" [@flyInOut]="detailsTrigger">
-            <md-grid-list cols="7" rowHeight="40px" >
+            <md-grid-list cols="7" rowHeight="50px" >
                 <md-grid-tile>
                     <md-icon>schedule</md-icon>
                 </md-grid-tile>
@@ -68,7 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <h3 class="srl-details-h" [translate]="'transport-map.search-result.trip-details'"></h3>
                 </md-grid-tile>
                 <md-grid-tile>
-                    <button md-button mdTooltip="{{'transport-map.search-result.back-to-summary' | translate }}"
+                    <button md-mini-fab mdTooltip="{{'transport-map.search-result.back-to-summary' | translate }}"
                             mdTooltipPosition="above" (click)="closeDetails()" color="accent">
                         <md-icon>close</md-icon>
                     </button>
@@ -121,7 +121,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <p class="srl-d-bs-lbl" [translate]="'transport-map.search-result.full-distance'"></p>
                 </md-grid-tile>
                 <md-grid-tile colspan="2">
-                    {{summaryDistance()}} km
+                    {{summaryDistance()}} {{'common.unit.km' | translate}}
                 </md-grid-tile>
                 
                 <md-grid-tile>
@@ -131,7 +131,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <p class="srl-d-bs-lbl" [translate]="'transport-map.search-result.full-time'"></p>
                 </md-grid-tile>
                 <md-grid-tile colspan="2">
-                    {{summaryTime()}}
+                    {{summaryTime()}} {{'common.time.min' | translate}}
                 </md-grid-tile>
                 
             </md-grid-list>

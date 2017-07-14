@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <geocoder [parent]="this"></geocoder>
             <search-tab [mapComponent]="component"></search-tab>
             <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
-                (click)="closeMenu()"
+                (click)="closeMenu()" color="accent"
                 mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="above"
                 *ngIf="currentSidenavItem === 'item-search'">
             <md-icon>chevron_left</md-icon></button>
@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div *ngIf="activeProfile" [hidden]="currentSidenavItem !== 'item-schedule'">
             <schedule-panel [parent]="this"></schedule-panel>
             <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
-                (click)="closeMenu()"
+                (click)="closeMenu()" color="accent"
                 mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="above"
                 *ngIf="currentSidenavItem === 'item-schedule'">
             <md-icon>chevron_left</md-icon></button>
