@@ -37,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <md-icon>add</md-icon></button>
         </md-grid-tile>
     </md-grid-list>
-    <md-grid-list cols="7" rowHeight="56px;">
+    <md-grid-list cols="7" rowHeight="56px">
         <md-grid-tile *ngFor="let route of routes">
             <button md-button (click)="openPathsGrid(route)" (contextmenu)="openCtxMenu(route, $event)">
                 {{route.namePrefix}}{{route.namePostfix}}</button>

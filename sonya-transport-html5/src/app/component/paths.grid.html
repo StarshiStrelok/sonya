@@ -39,9 +39,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </md-grid-tile>
 
     </md-grid-list>
-    <md-grid-list cols="1" rowHeight="56px;">
+    <md-grid-list cols="1" rowHeight="56px">
         <md-grid-tile *ngFor="let path of paths">
-            <md-grid-list cols="7" rowHeight="56px;" class="full-width">
+            <md-grid-list cols="7" rowHeight="56px" class="full-width">
                 <md-grid-tile colspan="5">
                     <button md-button (click)="openBusStopGrid(path)" class="pg-button">
                             {{path.description}}</button>

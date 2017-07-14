@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div style="min-height: 100px;" [style.overflow]="result.length > 0 ? 'auto' : 'hidden'">
+<div style="min-height: 100px;">
     <h4 [hidden]="result.length > 0" style="text-align: center;"
         [translate]="'transport-map.search-result.no-result'"></h4>
     <h5 [hidden]="result.length > 0"
@@ -43,7 +43,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 [@flyInOut]="op.animationTrigger">
                 <md-icon *ngIf="!mapComponent.isMobile()" md-list-icon
                     [ngClass]="{'srl-selected-path': op === activePath}">chevron_right</md-icon>
-                <p md-line style="line-height: 30px;">
+                <p md-line style="line-height: 30px; height: 30px;">
                     <span *ngFor="let path of op.path" class="srl-route-label"
                         [style.background-color]="path.route.type.lineColor"
                         [style.font-size]="mapComponent.isMobile() ? '12px' : null"
@@ -60,7 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <!-- DETAILS -->
         
         <div *ngIf="flags.isDetailsOpen" [@flyInOut]="detailsTrigger">
-            <md-grid-list cols="7" rowHeight="50px" >
+            <md-grid-list cols="7" rowHeight="56px" >
                 <md-grid-tile>
                     <md-icon>schedule</md-icon>
                 </md-grid-tile>

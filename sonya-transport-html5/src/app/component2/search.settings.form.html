@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <h5 *ngIf="mapComponent.activeProfile && mapComponent.activeProfile.hasSchedule"
         [translate]="'transport-map.search-settings.trip-plan'"></h5>
     
-    <md-grid-list cols="1" rowHeight="58px;">
+    <md-grid-list cols="1" rowHeight="58px">
         
         <md-grid-tile *ngIf="mapComponent.activeProfile && mapComponent.activeProfile.hasSchedule">
             <md-checkbox formControlName="currentTimeAndDate">
