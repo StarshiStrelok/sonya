@@ -20,6 +20,7 @@ import {AbsModel, Route, ModelClass, Path, ImportDataEvent,
     SearchSettings, OptimalPath, Trip} from '../model/abs.model';
 import {Http, Headers} from '@angular/http';
 import {NotificationsService} from 'angular2-notifications';
+import {GAService, EventCategory, EventAction} from './ga.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
@@ -31,7 +32,11 @@ export class DataService {
     private dataUrl: string = '/rest/data/';
     private headers = new Headers({'Content-Type': 'application/json'});
 
-    constructor(private http: Http, private notificationService: NotificationsService) {}
+    constructor(
+        private http: Http,
+        private notificationService: NotificationsService,
+        private ga: GAService
+    ) {}
     create<T extends AbsModel>(model: T, clazz: string): Promise<T> {
         console.log('create model [' + clazz + '] start...');
         return this.http.post(
@@ -85,7 +90,7 @@ export class DataService {
             .catch(err => this.handleErrorUI(err));
     }
     searchRoutes(settings: SearchSettings, waiting: Waiting): Promise<OptimalPath[]> {
-        //console.log(settings);
+        this.ga.sendEvent(EventCategory.TRANSPORT, EventAction.ROUTES_SEARCH);
         return this.http.post(
             this.dataUrl + ModelClass.ROUTE + '/search', JSON.stringify(settings), {headers: this.headers}
         ).toPromise().then(res => res.json() as OptimalPath[]

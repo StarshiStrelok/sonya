@@ -2,6 +2,7 @@ import {Component, HostBinding, HostListener} from '@angular/core';
 import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {TranslateService} from '@ngx-translate/core';
+import {GAService, EventCategory, EventAction} from './service/ga.service';
 import {DialogService} from './service/dialog.service';
 import {SecurityService} from './service/security.service';
 import {RegistrationForm} from './security/registration.form';
@@ -29,7 +30,8 @@ export class AppComponent {
         private router: Router,
         private cookieService: CookieService,
         private dialogService: DialogService,
-        private securityService: SecurityService
+        private securityService: SecurityService,
+        private ga: GAService
     ) {
         this.initSkins();
         // this language will be used as a fallback when a translation isn't found in the current language
@@ -105,6 +107,7 @@ export class AppComponent {
     changeLanguage(lang: string) {
         this.translate.use(lang);
         this.cookieService.setCookie(CookieKey.LANG, lang);
+        this.ga.sendEvent(EventCategory.INTERFACE, EventAction.SWITCH_LANG);
     }
     isMobile(): boolean {
         return window.innerWidth <= 600;
@@ -121,6 +124,7 @@ export class AppComponent {
         setTimeout(function () {
             document.getElementsByTagName("head").item(0).replaceChild(newlink, oldlink);
         }, 1000);
+        this.ga.sendEvent(EventCategory.INTERFACE, EventAction.SWITCH_THEME);
     }
 }
 

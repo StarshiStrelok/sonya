@@ -22,6 +22,7 @@ import {MdTabGroup} from '@angular/material';
 import {TransportMap} from './transport.map';
 import {RouteProfile, Route, Path, Trip, BusStop, OptimalPath} from '../model/abs.model';
 import {DataService} from '../service/data.service';
+import {GAService, EventCategory, EventAction} from '../service/ga.service';
 
 @Component({
     selector: 'schedule-panel',
@@ -42,7 +43,8 @@ export class SchedulePanel implements OnInit {
     filterByBusStop: BusStop;
     constructor(
         private dataService: DataService,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private ga: GAService
     ) {}
     ngOnInit() {
 
@@ -89,6 +91,7 @@ export class SchedulePanel implements OnInit {
                         this.irregularSchedule(res);
                     }
                 }
+                this.ga.sendEvent(EventCategory.TRANSPORT, EventAction.SHOW_SCHEDULE_TABLE);
             });
         }
     }

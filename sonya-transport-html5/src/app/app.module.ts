@@ -38,6 +38,7 @@ import {DialogService} from './service/dialog.service';
 import {OSRMService} from './service/osrm.service'
 import {CookieService} from './service/cookie.service';
 import {SecurityService} from './service/security.service';
+import {GAService} from './service/ga.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
@@ -94,7 +95,7 @@ import 'hammerjs';
         Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm, BusStopGrid, ConfirmImport,
         RegistrationForm
     ],
-    providers: [DataService, DialogService, OSRMService, CookieService, SecurityService],
+    providers: [DataService, DialogService, OSRMService, CookieService, SecurityService, GAService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

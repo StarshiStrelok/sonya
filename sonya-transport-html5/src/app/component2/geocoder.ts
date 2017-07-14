@@ -19,6 +19,7 @@ import {Component, OnInit, Input} from '@angular/core';
 import {Http} from '@angular/http';
 import {NotificationsService} from 'angular2-notifications';
 import {TranslateService} from '@ngx-translate/core';
+import {GAService, EventCategory, EventAction} from '../service/ga.service';
 
 import {TransportMap} from './transport.map';
 
@@ -38,7 +39,8 @@ export class GeoCoder implements OnInit {
     constructor(
         private http: Http,
         private notificationService: NotificationsService,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private ga: GAService
     ) {}
     ngOnInit() {
 
@@ -94,7 +96,9 @@ export class GeoCoder implements OnInit {
         } else {
             text = this.end;
         }
+        this.ga.sendEvent(EventCategory.TRANSPORT, EventAction.GEOCODER_SEARCH);
         this.geocoderStraightSearch(text).then(res => {
+            
             if (res.length === 0) {
                 this.notificationService.info(
                     this.translate.instant('transport-map.geocoder.notify.not-found.header'),

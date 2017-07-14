@@ -31,6 +31,7 @@ import {Waiting} from '../lib/material/waiting';
 import {OSRMService} from '../service/osrm.service';
 import {EndpointLayer} from './endpoint.layer';
 import {SchedulePanel} from './schedule.panel';
+import {GAService, EventCategory, EventAction} from '../service/ga.service';
 
 declare var L: any;
 
@@ -68,7 +69,8 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         public notificationService: NotificationsService,
         public osrmService: OSRMService,
         public translate: TranslateService,
-        private cookieService: CookieService
+        private cookieService: CookieService,
+        private ga: GAService
     ) {
         super();
     }
@@ -114,10 +116,10 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         return window.innerWidth <= 600;
     }
     changeMapLayer(event: number) {
-        console.log('new map layer index [' + event + ']');
         this.activeMapLayer = this.activeProfile.mapLayers[event];
         this.setMapLayer();
         this.cookieService.setCookie(CookieKey.MAP + this.activeProfile.id, this.activeMapLayer.id);
+        this.ga.sendEvent(EventCategory.INTERFACE, EventAction.SWITCH_MAP_LAYER);
     }
     switchProfile(profile: TransportProfile) {
         this.cookieService.setCookie(CookieKey.PROFILE, profile.id);
@@ -125,6 +127,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         this.geocoder.clearEnd();
         this.schedulePanel.clearData(true);
         this.initProfile();
+        this.ga.sendEvent(EventCategory.TRANSPORT, EventAction.SWITCH_PROFILE);
     }
     readUserProfile() {
         let pid = Number(this.cookieService.getCookie(CookieKey.PROFILE));
