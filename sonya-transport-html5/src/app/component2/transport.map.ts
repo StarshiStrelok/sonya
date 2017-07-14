@@ -73,6 +73,7 @@ export class TransportMap extends AnimatedSlide implements OnInit {
         super();
     }
     ngOnInit() {
+        this.isMenuOpen = !this.isMobile();
         this.initProfile();
     }
     createContextMenu() {
