@@ -63,14 +63,14 @@ export class GeoCoder implements OnInit {
     }
     selectStartAlt(event: any) {
         let filter: Response[] = this.startPositions.filter(pos => pos.display_name === this.start);
-        if (filter.length === 1) {
+        if (filter.length > 1) {
             let pos = filter[0];
             this.parent.layerEndpoint.showStartMarker(pos.lat, pos.lon, true);
         }
     }
     selectEndAlt(event: any) {
         let filter: Response[] = this.endPositions.filter(pos => pos.display_name === this.end);
-        if (filter.length === 1) {
+        if (filter.length > 1) {
             let pos = filter[0];
             this.parent.layerEndpoint.showEndMarker(pos.lat, pos.lon, true);
         }
