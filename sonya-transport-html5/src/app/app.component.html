@@ -40,12 +40,13 @@
                     <img src="/assets/image/flag/ru_32.png" class="lang-menu-icon">
                 </button>
             </md-grid-tile>
+            <md-grid-tile *ngIf="isControlVisible">
+                <button md-button (click)="signIn()" 
+                        mdTooltip="Sign In">
+                    <md-icon>security</md-icon>
+                </button>
+            </md-grid-tile>
         </md-grid-list>
-        
-        <button md-menu-item (click)="signIn()" *ngIf="isControlVisible">
-            <md-icon>security</md-icon>
-            <span>Sign In</span>
-        </button>
     </md-menu>
 </md-toolbar>
 <router-outlet></router-outlet>

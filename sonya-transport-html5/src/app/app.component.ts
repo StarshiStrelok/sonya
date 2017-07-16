@@ -6,6 +6,7 @@ import {GAService, EventCategory, EventAction} from './service/ga.service';
 import {DialogService} from './service/dialog.service';
 import {SecurityService} from './service/security.service';
 import {RegistrationForm} from './security/registration.form';
+import {StatFilterPanel} from './security/stat.filter.panel';
 
 import {Links} from './links';
 import {CookieService, CookieKey} from './service/cookie.service';
@@ -23,6 +24,8 @@ export class AppComponent {
     showControl(event: KeyboardEvent) {
         if (event.keyCode === 9) {  // TAB
             this.isControlVisible = !this.isControlVisible;
+        } else if (event.altKey === true && event.keyCode === 83) {     // Alt+S
+            this.openRequestStatistic();
         }
     }
     constructor(
@@ -90,6 +93,10 @@ export class AppComponent {
                 this.signInDialogOpen();
             }
         });
+    }
+    openRequestStatistic() {
+        this.dialogService.openWindow('StatFilter',
+            '', '50%', StatFilterPanel, {})
     }
     private signInDialogOpen() {
         this.dialogService.openWindow('Sign In',
