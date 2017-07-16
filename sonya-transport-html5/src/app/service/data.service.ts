@@ -108,7 +108,7 @@ export class DataService {
         ).toPromise().then(res => res.json() as Trip[]).catch(err => this.handleErrorUI(err));
     }
     statFilter(): Promise<string> {
-        return this.http.get(this.dataUrl + '/statistic'
+        return this.http.get(this.dataUrl + 'statistic'
         ).toPromise().then(res => res.text())
         .catch(err => this.handleErrorUI(err));
     }
