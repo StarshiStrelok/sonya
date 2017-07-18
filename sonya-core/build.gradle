@@ -10,6 +10,7 @@ dependencies {
         libraries.javax,
         libraries.json,
         libraries.jackson,
-        libraries.apache_commons
+        libraries.apache_commons,
+        libraries.apache_poi
     )
 }
