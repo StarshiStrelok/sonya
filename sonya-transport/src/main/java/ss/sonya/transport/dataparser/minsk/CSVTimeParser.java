@@ -20,6 +20,7 @@ package ss.sonya.transport.dataparser.minsk;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,8 +50,8 @@ class CSVTimeParser {
     /** Time format. */
     private static final SimpleDateFormat SDF_TIME = new SimpleDateFormat(
             "HH:mm");
-    /** CSV resource. */
-    private static final String FILE = "/ss/kira/data/minsk/times.csv";
+//    /** CSV resource. */
+//    private static final String FILE = "/ss/kira/data/minsk/times.csv";
     /** Errors count. */
     protected int errors = 0;
     /**
@@ -386,8 +387,9 @@ class CSVTimeParser {
     private Map<String, Map<Integer, List<List<String>>>> parse()
             throws Exception {
         LOG.info("######### start parsing...");
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                    getClass().getResourceAsStream(FILE)))) {
+        URL url = new URL("http://www.minsktrans.by/city/minsk/times.txt");
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(url.openStream()))) {
             String line;
             String decoded;
             String altId;

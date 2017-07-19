@@ -56,7 +56,7 @@ class MetroScheduleDP {
     public Map<Path, List<Trip>> extract(final List<Route> routes) {
         try {
             return parse(getClass().getResourceAsStream(
-                    "/ss/kira/data/minsk/metro.schedule.properties"), routes);
+                    "/ss/sonya/data/minsk/metro.schedule.properties"), routes);
         } catch (Exception e) {
             LOG.error("extract metro schedule data fail!", e);
             return Collections.emptyMap();

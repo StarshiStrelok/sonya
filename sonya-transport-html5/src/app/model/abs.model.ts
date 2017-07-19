@@ -81,7 +81,8 @@ export class Route implements AbsModel {
         public type: RouteProfile,
         public namePrefix: string,
         public namePostfix: string,
-        public externalId: number
+        public externalId: number,
+        public parserName: string
     ) {}
 }
 

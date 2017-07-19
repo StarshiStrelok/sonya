@@ -98,7 +98,8 @@ export class TransportProfileForm extends AnimatedSlide implements OnInit {
             lineColor: ['', [Validators.maxLength(10)]],
             routingURL: ['', [Validators.maxLength(100), Validators.pattern('^(https?|ftp|file):'
                 + '//[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]')]],
-            lastUpdate: ['']
+            lastUpdate: [''],
+            parserName: ['', [Validators.maxLength(100)]]
         });
         this.transportProfileForm.addControl(groupName, routeGroup);
         this.routeProfiles.push(routeGroup);

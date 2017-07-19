@@ -167,6 +167,14 @@
                         </md-grid-tile>
                         <md-grid-tile colspan="2">
                             <md-input-container class="full-width">
+                                <input mdInput placeholder="Data parser name" formControlName="parserName">
+                                <md-error *ngIf="rp.get('parserName').hasError('maxlength')">
+                                    Very long string, 100 characters maximum
+                                </md-error>
+                            </md-input-container>
+                        </md-grid-tile>
+                        <md-grid-tile colspan="1">
+                            <md-input-container class="full-width">
                                 <input mdInput placeholder="Average speed, km/h"
                                        formControlName="avgSpeed">
                                 <md-error *ngIf="rp.get('avgSpeed').hasError('required')">
@@ -192,7 +200,7 @@
                                 </md-error>
                             </md-input-container>
                         </md-grid-tile>
-                        <md-grid-tile colspan="2">
+                        <md-grid-tile colspan="1">
                             <md-input-container class="full-width">
                                 <input mdInput placeholder="Line color (CSS-format)"
                                        formControlName="lineColor">

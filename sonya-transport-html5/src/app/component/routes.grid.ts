@@ -96,7 +96,7 @@ export class RoutesGrid implements OnInit, AfterViewInit, SwitchedContent {
     openCreateRouteDialog() {
         this.dialogService.openWindow('New route', '', '50%', RouteForm, {
             profileId: this.profileId,
-            model: new Route(null, null, null, null, null)
+            model: new Route(null, null, null, null, null, null)
         }).subscribe((res: boolean) => {
             if (res) {
                 this.typeChanged();

@@ -7,6 +7,7 @@ package ss.sonya.transport.dataparser.minsk;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +26,8 @@ import ss.sonya.transport.api.TransportDataService;
 class BusStopCSVParser {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(BusStopCSVParser.class);
-    /** CSV resource. */
-    private static final String FILE = "/ss/kira/data/minsk/busstops.csv";
+//    /** CSV resource. */
+//    private static final String FILE = "/ss/kira/data/minsk/busstops.csv";
     /** Transport service. */
     @Autowired
     private TransportDataService transportService;
@@ -43,10 +44,10 @@ class BusStopCSVParser {
             bsMap.put(b.getExternalId(), b);
         }
         int fakeId = 0;
+        URL url = new URL("http://www.minsktrans.by/city/minsk/stops.txt");
         List<BusStop> bsList = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(
-                    new InputStreamReader(
-                            getClass().getResourceAsStream(FILE)))) {
+                    new InputStreamReader(url.openStream()))) {
             String line;
             String lastName = "";
             while ((line = br.readLine()) != null) {
@@ -54,7 +55,7 @@ class BusStopCSVParser {
                     continue;
                 }
                 String[] row = line.split(";");
-                if ("ID".equals(row[0])) {
+                if ("ID".equals(row[0].trim()) || "﻿ID".equals(row[0])) {
                     continue;
                 }
                 if (row[4].isEmpty()) {

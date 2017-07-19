@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
@@ -46,6 +47,7 @@ public class ImportDataTest extends TestConfig {
     @Autowired
     private ImportDataService importDataService;
     @Test
+    @Ignore
     public void test() throws Exception {
         TransportProfile tp = createValidTransportProfile();
         tp = dataService.create(tp);
@@ -80,8 +82,13 @@ public class ImportDataTest extends TestConfig {
         byte[] binData = serializer.serialize(data);
         MultipartFile file = new MockMultipartFile("file", binData);
         List<ImportDataEvent> events = importDataService.importData(
-                file, tp.getId(),
+                file.getBytes(), tp.getId(),
                 tp.getRouteProfiles().iterator().next().getId(), false);
         Assert.assertTrue(!events.isEmpty());
+    }
+    @Test
+    public void test2() {
+        System.out.println("TEST------------------>");
+        importDataService.globalUpdate();
     }
 }

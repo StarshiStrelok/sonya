@@ -32,7 +32,7 @@ export class RouteForm extends DialogContent implements OnInit {
     selectedRouteType: number;
     routeProfiles: RouteProfile[] = [];
     routeForm: FormGroup;
-    route: Route = new Route(null, null, null, null, null);
+    route: Route = new Route(null, null, null, null, null, null);
     constructor(
         private fb: FormBuilder,
         private dataService: DataService,

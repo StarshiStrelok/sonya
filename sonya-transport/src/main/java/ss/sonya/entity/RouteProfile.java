@@ -83,6 +83,10 @@ public class RouteProfile implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true,
             mappedBy = "profile")
     private RouteProfileMarkerImage image;
+    /** Data parser name. */
+    @Size(max = 100)
+    @Column(name = "parser_name", length = 100)
+    private String parserName;
 // ============================= SET & GET ====================================
     /**
      * @return the id
@@ -179,6 +183,18 @@ public class RouteProfile implements Serializable {
      */
     public void setImage(RouteProfileMarkerImage image) {
         this.image = image;
+    }
+    /**
+     * @return the parserName
+     */
+    public String getParserName() {
+        return parserName;
+    }
+    /**
+     * @param parserName the parserName to set
+     */
+    public void setParserName(String parserName) {
+        this.parserName = parserName;
     }
 // ============================================================================
     @Override

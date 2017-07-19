@@ -37,6 +37,7 @@ public abstract class TestConfig {
     @BeforeClass
     public static void initTest() {
         // put test sonya.properties to /home/ss/kira/testing/conf
+        //System.setProperty("catalina.base", "/home/ss/kira/apache-tomcat-9.0.0.M19");
         System.setProperty("catalina.base", "/home/ss/kira/testing");
     }
     @Autowired

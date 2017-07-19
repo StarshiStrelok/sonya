@@ -8,6 +8,7 @@ package ss.sonya.transport.dataparser.minsk;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,15 +28,16 @@ import ss.sonya.transport.dataparser.RouteType;
 class RouteCSVParser {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(RouteCSVParser.class);
-    /** CSV resource. */
-    private static final String FILE = "/ss/kira/data/minsk/routes.csv";
+//    /** CSV resource. */
+//    private static final String FILE = "/ss/kira/data/minsk/routes.csv";
     /**
      * Parse CSV.
      * @param bsList all bus stops.
      * @param rt route type.
      * @return routes.
      */
-    public List<Route> parse(final List<BusStop> bsList, RouteType rt) {
+    public List<Route> parse(final List<BusStop> bsList, RouteType rt)
+            throws Exception {
         LOG.info("######### start parsing... route type [" + rt + "]");
         Map<Long, BusStop> bsMap = new HashMap<>();
         Map<String, Route> routeMap = new HashMap<>();
@@ -45,8 +47,9 @@ class RouteCSVParser {
         int skipped = 0;
         int routes = 0;
         int fakeId = 0;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                    getClass().getResourceAsStream(FILE)))) {
+        URL url = new URL("http://www.minsktrans.by/city/minsk/routes.txt");
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(url.openStream()))) {
             String line;
             String lastName = "";
             String lastType = "";
@@ -56,6 +59,9 @@ class RouteCSVParser {
                 }
                 String[] row = line.split(";");
                 if ("RouteNum".equals(row[0])) {
+                    continue;
+                }
+                if (row.length > 12 && "RouteID".equals(row[12])) {
                     continue;
                 }
                 if (row[0].isEmpty()) {

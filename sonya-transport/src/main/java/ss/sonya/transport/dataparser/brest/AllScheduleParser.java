@@ -18,6 +18,7 @@
 package ss.sonya.transport.dataparser.brest;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,7 +99,16 @@ class AllScheduleParser {
     
     public ImportData parse(RouteType type) throws Exception {
         List<Table> tables = new ArrayList<>();
-        tables.addAll(parseXls(type == RouteType.bus ? "autobus.xls" : "alltransport.xls"));
+        boolean isBus = type == RouteType.bus;
+        InputStream is;
+        URL url;
+        if (isBus) {
+            url = new URL("http://ap1.brest.by/images/files/___2017.07.15.xls");
+        } else {
+            url = new URL("http://brestgortrans.by/download/alltransport.xls");
+        }
+        is = url.openStream();
+        tables.addAll(parseXls(is, isBus));
         LOG.info("total tables [" + tables.size() + "]");
         //setAltID(tables);
         return createData(tables, type);
@@ -278,12 +288,9 @@ class AllScheduleParser {
      * @return tables.
      * @throws Exception method error.
      */
-    private List<Table> parseXls(final String file) throws Exception {
-        LOG.info("------- start parse XLS (" + file + ") --------------------");
-        boolean isBus = "autobus.xls".equals(file);
+    private List<Table> parseXls(final InputStream is, boolean isBus) throws Exception {
+        LOG.info("------- start parse XLS --------------------");
         List<Table> tables = new ArrayList<>();
-        InputStream is = getClass().getResourceAsStream(
-                "/ss/kira/data/brest/" + file);
         HSSFWorkbook workbook = new HSSFWorkbook(is);
         HSSFSheet sheet = workbook.getSheetAt(0);
         int lastRowNum = sheet.getLastRowNum();

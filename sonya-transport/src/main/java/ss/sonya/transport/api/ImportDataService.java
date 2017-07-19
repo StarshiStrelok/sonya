@@ -17,7 +17,6 @@
 package ss.sonya.transport.api;
 
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 import ss.sonya.transport.component.ImportDataEvent;
 import ss.sonya.transport.exception.ImportDataException;
 
@@ -35,7 +34,12 @@ public interface ImportDataService {
      * @return list changes.
      * @throws ImportDataException import error.
      */
-    List<ImportDataEvent> importData(MultipartFile file,
+    List<ImportDataEvent> importData(byte[] file,
             Integer tpId, Integer rtID, boolean isPersist)
             throws ImportDataException;
+    /**
+     * Global data update.
+     * May be run as scheduled.
+     */
+    void globalUpdate();
 }

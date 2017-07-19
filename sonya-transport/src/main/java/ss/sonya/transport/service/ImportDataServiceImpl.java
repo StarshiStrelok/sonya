@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import ss.sonya.transport.constants.TransportConst;
 import ss.sonya.entity.BusStop;
 import ss.sonya.entity.Path;
@@ -42,6 +41,7 @@ import ss.sonya.transport.api.TransportDataService;
 import ss.sonya.transport.component.ImportDataEvent;
 import ss.sonya.transport.constants.ImportDataEventType;
 import ss.sonya.transport.constants.ImportInfoKey;
+import ss.sonya.transport.dataparser.DataParser;
 import ss.sonya.transport.exception.EmptyFieldException;
 import ss.sonya.transport.exception.ImportDataException;
 import ss.sonya.transport.iface.ExternalRef;
@@ -68,8 +68,11 @@ class ImportDataServiceImpl implements ImportDataService {
     /** Graph constructor. */
     @Autowired
     private GraphConstructor graphConstructor;
+    /** All parsers. */
+    @Autowired
+    private List<DataParser> parsers;
     @Override
-    public List<ImportDataEvent> importData(final MultipartFile file,
+    public List<ImportDataEvent> importData(final byte[] file,
             final Integer tpId, final Integer rpId, final boolean isPersist)
             throws ImportDataException {
         LOG.info("==========> start import, transport profile [" + tpId
@@ -80,7 +83,7 @@ class ImportDataServiceImpl implements ImportDataService {
                     .findById(tpId, TransportProfile.class);
             RouteProfile rProfile = dataService
                     .findById(rpId, RouteProfile.class);
-            ImportData data = serializer.deserialize(file.getBytes(),
+            ImportData data = serializer.deserialize(file,
                     tProfile, rProfile);
             // ---------------------- bus stops -------------------------------
             List<BusStop> busstops = data.busstops();
@@ -115,6 +118,42 @@ class ImportDataServiceImpl implements ImportDataService {
         } catch (Exception e) {
             LOG.error("import data error!", e);
             throw new ImportDataException("import data error!", e);
+        }
+    }
+    @Override
+    public void globalUpdate() {
+        try {
+            Map<String, DataParser> parserMap = new HashMap<>();
+            parsers.forEach(parser -> {
+                parserMap.put(parser.name(), parser);
+            });
+            List<TransportProfile> profiles = dataService
+                    .getAll(TransportProfile.class);
+            for (TransportProfile profile : profiles) {
+                for (RouteProfile routeType : profile.getRouteProfiles()) {
+                    String parserName = routeType.getParserName();
+                    if (parserName != null
+                            && parserMap.containsKey(parserName)) {
+                        try {
+                            ImportData data = parserMap.get(parserName).parse();
+                            byte[] binData = serializer.serialize(data);
+                            List<ImportDataEvent> events = this
+                                    .importData(binData, profile.getId(),
+                                    routeType.getId(), false);
+                            LOG.info(parserName + " - events [" + events.size()
+                                    + "]");
+//                            if (!events.isEmpty()) {
+//                                this.importData(binData, profile.getId(),
+//                                        routeType.getId(), true);
+//                            }
+                        } catch (Exception e) {
+                            LOG.error(parserName + " update error!", e);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("global update fail!", e);
         }
     }
 // ================================== PRIVATE =================================

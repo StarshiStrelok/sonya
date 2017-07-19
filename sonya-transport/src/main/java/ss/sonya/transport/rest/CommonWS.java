@@ -52,6 +52,6 @@ public class CommonWS {
             @PathVariable("rid") Integer rid,
             @PathVariable("persist") boolean persist,
             @RequestBody MultipartFile file) throws Exception {
-        return importDataService.importData(file, tid, rid, persist);
+        return importDataService.importData(file.getBytes(), tid, rid, persist);
     }
 }
