@@ -19,6 +19,8 @@ package ss.sonya.transport.config;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import ss.sonya.configuration.SpringConfig;
 
 /**
@@ -27,6 +29,8 @@ import ss.sonya.configuration.SpringConfig;
  */
 @Configuration
 @Import(SpringConfig.class)
+@EnableAsync
+@EnableScheduling
 @ComponentScan("ss.sonya.transport")
 public class TransportSpringConfig {
 }

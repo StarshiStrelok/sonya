@@ -135,7 +135,8 @@ class AllScheduleParser {
             long externalId;
             if (RouteType.bus == rt) {
                 externalId = (table.getName()
-                        + "#" + table.getDescription()).hashCode();
+                        + "#" + table.getDescription() + "#"
+                        + table.getBusstops().size()).hashCode();
             } else {
                 externalId = getTrolExternalID(table);
             }
@@ -349,6 +350,7 @@ class AllScheduleParser {
                                         "corrupted table: " + table);
                                 }
                             }
+                            LOG.debug(table.toString());
                             if (isBus) {
                                 tables.addAll(splitTable(table));
                             } else {

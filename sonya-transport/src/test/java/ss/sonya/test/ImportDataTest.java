@@ -87,6 +87,7 @@ public class ImportDataTest extends TestConfig {
         Assert.assertTrue(!events.isEmpty());
     }
     @Test
+    @Ignore
     public void test2() {
         System.out.println("TEST------------------>");
         importDataService.globalUpdate();

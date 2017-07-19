@@ -18,6 +18,7 @@
 import {Component, Input, Pipe, PipeTransform, OnInit, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {MdTabGroup} from '@angular/material';
+import {DomSanitizer} from '@angular/platform-browser';
 
 import {TransportMap} from './transport.map';
 import {RouteProfile, Route, Path, Trip, BusStop, OptimalPath} from '../model/abs.model';
@@ -179,7 +180,7 @@ export class SchedulePanel implements OnInit {
                 for (let j = 0; j < dayTrips.length; j++) {
                     let time = dayTrips[j][i];
                     if (time.length === 0) {
-                        sb += '------- ';
+                        sb += '<span style="opacity: 0;">00:00</span> ';
                     } else {
                         sb += time + ' ';
                     }
@@ -284,6 +285,14 @@ export class FilterByBusStopPipe implements PipeTransform {
             return items;
         }
         return items.filter(item => item[0] === filter.name);
+    }
+}
+
+@Pipe({name: 'safeHtml'})
+export class SafeHtmlPipe implements PipeTransform {
+    constructor(private sanitized: DomSanitizer) {}
+    transform(value: any) {
+        return this.sanitized.bypassSecurityTrustHtml(value);
     }
 }
 

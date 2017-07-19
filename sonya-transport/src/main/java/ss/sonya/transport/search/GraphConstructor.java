@@ -83,7 +83,7 @@ public class GraphConstructor {
     private VirtualScheduleBuilder virtualScheduleBuilder;
     /** Initialization. */
     @PostConstruct
-    protected void init() {
+    public void init() {
         LOG.info("======================= GRAPHS INITIALIZATION =============");
         try {
             List<TransportProfile> profiles = dataService

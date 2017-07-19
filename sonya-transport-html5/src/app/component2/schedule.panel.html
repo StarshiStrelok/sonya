@@ -103,8 +103,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <table *ngIf="!isIrregular">
                         <tr *ngFor="let row of schedule[days] | filterBs: filterByBusStop;">
                             <td *ngFor="let col of row; let i = index;"
-                                [ngClass]="{'headcol': i === 0, 'sp-sch-row': i !== 0}">
-                                {{col}}
+                                [ngClass]="{'headcol': i === 0, 'sp-sch-row': i !== 0}"
+                                [innerHtml]="col | safeHtml">
                             <td>
                         </tr>
                     </table>

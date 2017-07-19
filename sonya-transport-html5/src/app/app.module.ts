@@ -31,7 +31,7 @@ import {GeoCoder} from './component2/geocoder';
 import {SearchTab} from './component2/search.tab';
 import {SearchSettingsForm} from './component2/search.settings.form';
 import {SearchResultList} from './component2/search.result.list';
-import {SchedulePanel, FilterByBusStopPipe} from './component2/schedule.panel';
+import {SchedulePanel, FilterByBusStopPipe, SafeHtmlPipe} from './component2/schedule.panel';
 import {StatFilterPanel} from './security/stat.filter.panel';
 // ---------------------- Services --------------------------------------------
 import {DataService} from './service/data.service';
@@ -73,7 +73,8 @@ import 'hammerjs';
         SearchSettingsForm,
         SearchResultList,
         SchedulePanel,
-        FilterByBusStopPipe
+        FilterByBusStopPipe,
+        SafeHtmlPipe
     ],
     imports: [
         BrowserModule,

@@ -400,6 +400,7 @@ class CSVTimeParser {
                 }
                 decoded = line.substring(line.indexOf(",") + 1);
                 altId = line.substring(0, line.indexOf(","));
+                altId = Integer.valueOf(altId.replace("﻿", "")) + "";
                 LOG.debug("---------------------- " + altId + " -------------");
                 map.put(altId, decode(decoded));
             }

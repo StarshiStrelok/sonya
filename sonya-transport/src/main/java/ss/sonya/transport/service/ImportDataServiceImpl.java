@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ss.sonya.transport.constants.TransportConst;
 import ss.sonya.entity.BusStop;
@@ -121,7 +122,9 @@ class ImportDataServiceImpl implements ImportDataService {
         }
     }
     @Override
+    @Scheduled(cron = "0 0 3 * * *")    // 3 hours of night
     public void globalUpdate() {
+        StringBuilder report = new StringBuilder();
         try {
             Map<String, DataParser> parserMap = new HashMap<>();
             parsers.forEach(parser -> {
@@ -140,18 +143,22 @@ class ImportDataServiceImpl implements ImportDataService {
                             List<ImportDataEvent> events = this
                                     .importData(binData, profile.getId(),
                                     routeType.getId(), false);
-                            LOG.info(parserName + " - events [" + events.size()
-                                    + "]");
-//                            if (!events.isEmpty()) {
-//                                this.importData(binData, profile.getId(),
-//                                        routeType.getId(), true);
-//                            }
+                            report.append(parserName).append(" - events [")
+                                    .append(events.size()).append("]\n");
+                            if (!events.isEmpty()) {
+                                this.importData(binData, profile.getId(),
+                                        routeType.getId(), true);
+                            }
                         } catch (Exception e) {
+                            report.append(parserName).append(" update error: ")
+                                    .append(e.getMessage()).append("\n");
                             LOG.error(parserName + " update error!", e);
                         }
                     }
                 }
             }
+            LOG.info("report: \n\n" + report.toString());
+            graphConstructor.init();
         } catch (Exception e) {
             LOG.error("global update fail!", e);
         }
