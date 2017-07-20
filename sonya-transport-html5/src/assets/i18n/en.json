@@ -133,7 +133,6 @@
     },
     "toolbar": {
         "title": "Public transport search web-service",
-        "title-mobile": "Public transport WS",
         "select-theme": "Select theme!",
         "select-lang": "Select language"
     },

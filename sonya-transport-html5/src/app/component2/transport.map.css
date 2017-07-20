@@ -48,3 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .tm-control-mobile {
     opacity: 0.35
 }
+.tm-profile {
+    margin: 10px;
+    padding: 0 0 0 10px;
+}

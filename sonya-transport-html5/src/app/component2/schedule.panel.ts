@@ -180,9 +180,9 @@ export class SchedulePanel implements OnInit {
                 for (let j = 0; j < dayTrips.length; j++) {
                     let time = dayTrips[j][i];
                     if (time.length === 0) {
-                        sb += '<span style="opacity: 0;">00:00</span> ';
+                        sb += '<span style="opacity: 0;">00:00</span>\xa0\xa0\xa0';
                     } else {
-                        sb += time + ' ';
+                        sb += time + '\xa0\xa0\xa0';
                     }
                 }
                 row.push(sb);

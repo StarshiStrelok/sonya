@@ -53,26 +53,35 @@ public class GraphConstructorTest extends TestConfig {
     @Autowired
     private Geometry geometry;
     @Test
-    @Ignore
+    //@Ignore
     public void test() throws Exception {
-        SearchSettings s = new SearchSettings();
-        s.setStartLat(53.919455733816385);
-        s.setStartLon(27.434507391390493);
-        s.setEndLat(53.9641268043094);
-        s.setEndLon(27.556245406084717);
-//        s.setStartLat(53.926581218158006);
-//        s.setStartLon(27.45414733886719);
-//        s.setEndLat(53.902720016840476);
-//        s.setEndLon(27.61997222900391);
-        s.setProfileId(4);
-        s.setMaxTransfers(3);
-        s.setMaxResults(5);
-        s.setTime("19:59");
-        s.setDay(1);
-        s.setDisabledRouteTypes(Collections.emptyList());
-        for (OptimalPath op : searchEngine.search(s)) {
-            System.out.println(op.toString());
-        }
+//        for (int i = 0; i < 20; i++) {
+//            new Thread(() -> {
+                SearchSettings s = new SearchSettings();
+//                s.setStartLat(53.919455733816385);
+//                s.setStartLon(27.434507391390493);
+//                s.setEndLat(53.9641268043094);
+//                s.setEndLon(27.556245406084717);
+                s.setStartLat(53.926581218158006);
+                s.setStartLon(27.45414733886719);
+                s.setEndLat(53.902720016840476);
+                s.setEndLon(27.61997222900391);
+                s.setProfileId(4);
+                s.setMaxTransfers(3);
+                s.setMaxResults(5);
+                s.setTime("19:59");
+                s.setDay(1);
+                s.setDisabledRouteTypes(Collections.emptyList());
+                try {
+                    for (OptimalPath op : searchEngine.search(s)) {
+                        //System.out.println(op.toString());
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+//            }).start();
+//        }
+//        Thread.sleep(1000 * 120);
     }
     @Test
     @Ignore

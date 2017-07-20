@@ -20,9 +20,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         [ngClass]="{'tm-sidenav': !isMobile(), 'tm-sidenav-mobile': isMobile() || currentSidenavItem === 'item-schedule', 'ss-shadow': true}">
 
         <div [hidden]="currentSidenavItem !== 'item-search'">
+            <md-card *ngIf="activeProfile" class="tm-profile">
+                <md-card-header>
+                    <md-card-title>
+                        <h2>{{'profile.' + activeProfile.name | translate}}</h2>
+                    </md-card-title>
+                    <md-card-subtitle>
+                        <h5>{{'toolbar.title' | translate}}</h5>            
+                    </md-card-subtitle>
+                </md-card-header>
+            </md-card>
+            
             <geocoder [parent]="this"></geocoder>
             <search-tab [mapComponent]="component"></search-tab>
-            <button md-mini-fab color="primary" class="tm-map-control" style="top: 20px; right: 20px"
+            <button md-mini-fab color="primary" class="tm-map-control" style="top: 30px; right: 20px"
                 (click)="closeMenu()" color="accent"
                 mdTooltip="{{'transport-map.controls.hide' | translate }}" mdTooltipPosition="above"
                 *ngIf="currentSidenavItem === 'item-search'">
