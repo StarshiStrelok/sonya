@@ -106,7 +106,7 @@ Do remember button 'Update data for all profiles' in main panel of admin session
 
 Also data can be filled / corrected manually through admin session interface, but I advise to use data parsers way.
 
-## Search engine.
+## Search engine
 Some words about search engine.
 
 It based on breadth-first search algorithm with restriction by depth and not optimized to end yet.
