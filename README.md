@@ -1,6 +1,8 @@
 # Public transport web-service
 Configurable public transport web-service for multiple locations. OSM / OSRM-based
 
+![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport-html5/src/assets/image/screenshots/0.png)
+
 ## About
 Web-service represent OSM-map for search public transport routes in any locality.
 Allows to configure several locations simultaneously and easy switch between them.
@@ -55,12 +57,23 @@ In first you must create Administrator for future work.
 After running application you will see black screen and toolbar. Entrance into admin session is hidden in language menu.
 Press 'Tab' button and open 'language menu'. Then press on 'Sign In' button and register new user. Sign in after successful registration. You are in admin session now.
 
+![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport-html5/src/assets/image/screenshots/1.png)
+
 For creating new transport profile press 'Create new transport profile button' and fill form:
+
+![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport-html5/src/assets/image/screenshots/2.png)
 
 - Profile name (Locality name in English)
 - Map settings. Leaflet map settings, bounds and zoom restrictions, it's very simple.
+![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport-html5/src/assets/image/screenshots/3.png)
+
 - Map layers. If you want using only standard OSM layer skip this section. Also has opportunity apply MapBox maps.
+
+![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport-html5/src/assets/image/screenshots/4.png)
+
 - Route types. Very important section.
+
+![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport-html5/src/assets/image/screenshots/5.png)
 
   Define your route types here, for example 'Autobus', 'Metro', 'Trolleybus', 'Tram', 'Route taxi' etc.
   
