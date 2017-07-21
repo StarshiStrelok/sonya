@@ -33,3 +33,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .deeppurple-amber {
     background-color: rgb(103, 58, 183);
 }
+.github-link {
+    width: 40px;
+    height: 40px;
+}
+.github-img {
+    width: 24px;
+    height: 24px;
+    margin-top: 8px;
+    margin-left: 8px;
+}
