@@ -73,8 +73,6 @@ For creating new transport profile press 'Create new transport profile button' a
 
 - Route types. Very important section.
 
-![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport-html5/src/assets/image/screenshots/5.png)
-
   Define your route types here, for example 'Autobus', 'Metro', 'Trolleybus', 'Tram', 'Route taxi' etc.
   
   Line color - route line color, define as CSS color.
@@ -86,6 +84,8 @@ For creating new transport profile press 'Create new transport profile button' a
   Bus stop marker image required! Upload own marker image, default image only for example. Available only after creating route type (save form and open again).
   
   Data parser - data parser name for this route type (Optional), about data parsing see below.
+
+![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport-html5/src/assets/image/screenshots/5.png)
 
 - Search settings.
 
