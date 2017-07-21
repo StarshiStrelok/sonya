@@ -113,4 +113,10 @@ It based on breadth-first search algorithm with restriction by depth and not opt
 
 Parallel computing is critical. Calculation perform on central processor (threads count = processor cores + hyperthreading) and for big data may take a long time (several seconds for 123K graph edges on Intel Core i3 x2) if processor is weak.
 
+## At the end
 
+I suppose that this code may be useful for someone, but it's only experimental software.
+
+I created it, because I live in Brest (Belarus) and here before there was no convenient application for the search for public transport routes.
+
+For technical questions, please contact my email, starshistrelok@gmail.com
