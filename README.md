@@ -102,7 +102,7 @@ Note that the data parser name stored in route type special field in transport p
 
 You can write own data parsers and connect it's for route types.
 
-Remember button 'Update data for all profiles' in main panel of admin session? All connected data parsers triggered after click on this button. Also all data parsers triggered every day in 03:00 by default and your data will be actual always.
+Do remember button 'Update data for all profiles' in main panel of admin session? All connected data parsers triggered after click on this button. Also all data parsers triggered every day in 03:00 by default and your data will be actual always.
 
 Also data can be filled / corrected manually through admin session interface, but I advise to use data parsers way.
 
