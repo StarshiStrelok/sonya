@@ -96,7 +96,7 @@ For creating new transport profile press 'Create new transport profile button' a
   Bus stop limit near point (integer) - mean how many bus stops use for search near start and destination point. Recommend use 4. The higher the slower but more accurate.
 
 ## Data
-Best way for import transport data - write data parser, which must be implement DataParser interface. Examples can be found here: [for Brest autobuses](![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport/src/main/java/ss/sonya/transport/dataparser/brest/AutobusDP.java) and [for Minsk trams](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport/src/main/java/ss/sonya/transport/dataparser/minsk/TramDP.java).
+Best way for import transport data - write data parser, which must be implement DataParser interface. Examples can be found here: [for Brest autobuses](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport/src/main/java/ss/sonya/transport/dataparser/brest/AutobusDP.java) and [for Minsk trams](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport/src/main/java/ss/sonya/transport/dataparser/minsk/TramDP.java).
 
 Note that the data parser name stored in route type special field in transport profile form. One parser for one route type.
 
