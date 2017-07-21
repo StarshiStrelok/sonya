@@ -1,5 +1,5 @@
 # Public transport web-service
-Configurable public transport web-service for multiple locations. OSM / OSRM-based
+Configurable public transport web-service for multiple locations. Based on OSM, OSRM, Angular2, Leaflet.
 
 ![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport-html5/src/assets/image/screenshots/0.png)
 
