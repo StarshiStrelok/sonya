@@ -17,6 +17,7 @@
 
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {NotificationsService} from 'angular2-notifications';
 
 import {DataService} from '../service/data.service';
 import {TransportProfile} from '../model/abs.model';
@@ -39,7 +40,8 @@ export class TransportProfileList extends AnimatedSlide implements OnInit {
     constructor(
         private dataService: DataService,
         private dialogService: DialogService,
-        private router: Router
+        private router: Router,
+        private notificationService: NotificationsService
     ) {super()};
     ngOnInit() {
         this.loadProfiles();
@@ -71,6 +73,12 @@ export class TransportProfileList extends AnimatedSlide implements OnInit {
     }
     openMap(id: number) {
         this.router.navigate([Links.PROFILE_MAP, id]);
+    }
+    globalUpdate() {
+        this.dataService.globalUpdate().then(res => {
+            this.notificationService.info('Success',
+                'See server log for details');
+        });
     }
 }
 

@@ -74,8 +74,8 @@ class ImportDataServiceImpl implements ImportDataService {
     private List<DataParser> parsers;
     @Override
     public List<ImportDataEvent> importData(final byte[] file,
-            final Integer tpId, final Integer rpId, final boolean isPersist)
-            throws ImportDataException {
+            final Integer tpId, final Integer rpId, final boolean isPersist,
+            final boolean reloadGraph) throws ImportDataException {
         LOG.info("==========> start import, transport profile [" + tpId
                 + "], route profile [" + rpId + "]");
         List<ImportDataEvent> events = new ArrayList<>();
@@ -112,7 +112,9 @@ class ImportDataServiceImpl implements ImportDataService {
             if (isPersist) {
                 rProfile.setLastUpdate(new Date());
                 dataService.update(rProfile);
-                graphConstructor.buildGraph(tProfile);
+                if (reloadGraph) {
+                    graphConstructor.buildGraph(tProfile);
+                }
             }
             LOG.info("==========> finish import");
             return events;
@@ -142,12 +144,18 @@ class ImportDataServiceImpl implements ImportDataService {
                             byte[] binData = serializer.serialize(data);
                             List<ImportDataEvent> events = this
                                     .importData(binData, profile.getId(),
-                                    routeType.getId(), false);
+                                    routeType.getId(), false, false);
                             report.append(parserName).append(" - events [")
                                     .append(events.size()).append("]\n");
                             if (!events.isEmpty()) {
+                                LOG.info("====== EVENTS | " + parserName
+                                        + " =======");
+                                events.forEach(event -> {
+                                    LOG.info(event);
+                                });
+                                LOG.info("===================================");
                                 this.importData(binData, profile.getId(),
-                                        routeType.getId(), true);
+                                        routeType.getId(), true, false);
                             }
                         } catch (Exception e) {
                             report.append(parserName).append(" update error: ")

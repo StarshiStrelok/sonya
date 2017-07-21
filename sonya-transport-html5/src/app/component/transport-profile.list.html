@@ -40,6 +40,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <button md-fab color="primary" (click)="newProfile()"
                 mdTooltip="{{ 'transport-profiles.new' | translate }}">
             <md-icon>add</md-icon></button>
+        <button md-fab color="primary" (click)="globalUpdate()" style="margin-left: 20px"
+                mdTooltip="Update data for all profiles">
+            <md-icon>autorenew</md-icon></button>
     </md-card-actions>
 </md-card>
 

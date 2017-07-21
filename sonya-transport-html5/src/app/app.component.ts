@@ -133,6 +133,9 @@ export class AppComponent {
         }, 1000);
         this.ga.sendEvent(EventCategory.INTERFACE, EventAction.SWITCH_THEME);
     }
+    openSourceCode() {
+        window.open('https://github.com/StarshiStrelok/sonya', '_blank');
+    }
 }
 
 export class AnimatedSlide {

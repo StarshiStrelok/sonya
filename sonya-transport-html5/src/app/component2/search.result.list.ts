@@ -129,7 +129,7 @@ export class SearchResultList {
         if (this.activePath.schedule) {
             let range: BusStopTime[] = this.activePath.schedule.data[index];
             let delta = (range[1].time - range[0].time) / 1000 / 60;
-            return delta.toFixed(0) + ' min';
+            return delta.toFixed(0);
         } else {
             return p['distance'] + ' km';
         }

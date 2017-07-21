@@ -97,7 +97,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                   (click)="flyToWay(activePath.way[i])">
                         <p class="srl-d-bs-lbl">{{p.description}}</p>
                     </md-grid-tile>
-                    <md-grid-tile colspan="2">{{pathTripDuration(i, p)}}</md-grid-tile>
+                    <md-grid-tile colspan="2">{{pathTripDuration(i, p)}} {{'common.time.min' | translate}}</md-grid-tile>
                     
                     <md-grid-tile colspan="2">
                         <img [src]="'/rest/data/transport-profile/route/marker/' + p.route.type.id">

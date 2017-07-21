@@ -81,8 +81,7 @@
             "interval": "Interval of movement",
             "interval2": "interval",
             "was-updated": "Schedule was updated",
-            "show-on-map": "Show route on map",
-            "clear-filter": "Clear filter"
+            "show-on-map": "Show route on map"
         }
     },
     "common": {
@@ -134,7 +133,8 @@
     "toolbar": {
         "title": "Public transport search web-service",
         "select-theme": "Select theme!",
-        "select-lang": "Select language"
+        "select-lang": "Select language",
+        "github": "Source code"
     },
     "map": {
         "OpenStreetMaps": "Standard",
@@ -144,7 +144,8 @@
     },
     "lang": {
         "en": "English",
-        "ru": "Russian"
+        "ru": "Russian",
+        "by": "Belarussian"
     },
     "skin": {
         "deeppurple-amber": "Deeppurple amber",

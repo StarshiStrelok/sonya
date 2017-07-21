@@ -107,6 +107,10 @@ export class DataService {
             this.dataUrl + ModelClass.PATH + '/schedule/' + id, {headers: this.headers}
         ).toPromise().then(res => res.json() as Trip[]).catch(err => this.handleErrorUI(err));
     }
+    globalUpdate(): Promise<any> {
+        return this.http.post(this.dataUrl + 'global-import', '', {}
+        ).toPromise().then(res => res).catch(err => this.handleErrorUI(err));
+    }
     statFilter(): Promise<string> {
         return this.http.get(this.dataUrl + 'statistic'
         ).toPromise().then(res => res.text())

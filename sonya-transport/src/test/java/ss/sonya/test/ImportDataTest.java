@@ -83,7 +83,7 @@ public class ImportDataTest extends TestConfig {
         MultipartFile file = new MockMultipartFile("file", binData);
         List<ImportDataEvent> events = importDataService.importData(
                 file.getBytes(), tp.getId(),
-                tp.getRouteProfiles().iterator().next().getId(), false);
+                tp.getRouteProfiles().iterator().next().getId(), false, false);
         Assert.assertTrue(!events.isEmpty());
     }
     @Test

@@ -52,6 +52,16 @@ public class CommonWS {
             @PathVariable("rid") Integer rid,
             @PathVariable("persist") boolean persist,
             @RequestBody MultipartFile file) throws Exception {
-        return importDataService.importData(file.getBytes(), tid, rid, persist);
+        return importDataService
+                .importData(file.getBytes(), tid, rid, persist, persist);
+    }
+    /**
+     * Update all data using exists data parsers.
+     * @throws Exception critical error.
+     */
+    @RequestMapping(value = "/global-import",
+            method = RequestMethod.POST)
+    public void globalImport() throws Exception {
+        importDataService.globalUpdate();
     }
 }

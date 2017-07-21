@@ -28,6 +28,12 @@
     <md-menu #langMenu="mdMenu" [overlapTrigger]="false">
         <md-grid-list cols="2">
             <md-grid-tile>
+                <button md-button (click)="changeLanguage('by')"
+                        mdTooltip="{{'lang.by' | translate}}">
+                    <img src="/assets/image/flag/by_32.png" class="lang-menu-icon">
+                </button>
+            </md-grid-tile>
+            <md-grid-tile>
                 <button md-button (click)="changeLanguage('en')"
                         mdTooltip="{{'lang.en' | translate}}">
                     <img src="/assets/image/flag/en_32.png" class="lang-menu-icon">
@@ -47,6 +53,11 @@
             </md-grid-tile>
         </md-grid-list>
     </md-menu>
+    
+    <button md-icon-button (click)="openSourceCode()">
+        <img src="assets/image/github.svg" mdTooltip="{{'toolbar.github' | translate}}">
+    </button>
+    
 </md-toolbar>
 <router-outlet></router-outlet>
 <simple-notifications [options]="options"></simple-notifications>

@@ -31,11 +31,12 @@ public interface ImportDataService {
      * @param tpId transport profile ID.
      * @param rtID route profile ID.
      * @param isPersist persist changes flag, if false - changes not committed.
+     * @param reloadGraph reload graph after import.
      * @return list changes.
      * @throws ImportDataException import error.
      */
     List<ImportDataEvent> importData(byte[] file,
-            Integer tpId, Integer rtID, boolean isPersist)
+            Integer tpId, Integer rtID, boolean isPersist, boolean reloadGraph)
             throws ImportDataException;
     /**
      * Global data update.
