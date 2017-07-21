@@ -78,3 +78,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     right: 50px;
     position: fixed;
 }
+.sr-link {
+    text-decoration: underline;
+    opacity: .7;
+}
+.sr-link:hover {
+    cursor: pointer;
+}

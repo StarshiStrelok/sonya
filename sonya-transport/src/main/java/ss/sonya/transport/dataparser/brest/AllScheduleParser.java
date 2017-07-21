@@ -329,8 +329,9 @@ class AllScheduleParser {
                         table = new Table();
                         busstops = new ArrayList<>();
                         schList = new ArrayList<>();
-                    } else if (lastRouteType != null
-                            && !lastRouteType.isEmpty() && val.isEmpty()) {
+                    } else if ((lastRouteType != null
+                            && !lastRouteType.isEmpty() && val.isEmpty())
+                            || ((i + 1 == lastRowNum) && isBus)) {
                         // end of table
                         if (table != null) {
                             table.setBusstops(new ArrayList<>(busstops));
@@ -350,7 +351,6 @@ class AllScheduleParser {
                                         "corrupted table: " + table);
                                 }
                             }
-                            LOG.debug(table.toString());
                             if (isBus) {
                                 tables.addAll(splitTable(table));
                             } else {
@@ -362,7 +362,13 @@ class AllScheduleParser {
                         }
                     }
                     if (!val.isEmpty()) {   // inside table
-                        schList.add(new ArrayList<>());
+                        if (isBus) {
+                            if (i + 1 != lastRowNum) {
+                                schList.add(new ArrayList<>());
+                            }
+                        } else {
+                            schList.add(new ArrayList<>());
+                        }
                     }
                     lastRouteType = val;
                 } else if (j == 1) {        // route name

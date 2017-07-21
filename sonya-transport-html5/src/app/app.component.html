@@ -34,15 +34,15 @@
                 </button>
             </md-grid-tile>
             <md-grid-tile>
-                <button md-button (click)="changeLanguage('en')"
-                        mdTooltip="{{'lang.en' | translate}}">
-                    <img src="/assets/image/flag/en_32.png" class="lang-menu-icon">
-                </button>
-            </md-grid-tile>
-            <md-grid-tile>
                 <button md-button (click)="changeLanguage('ru')"
                         mdTooltip="{{'lang.ru' | translate}}">
                     <img src="/assets/image/flag/ru_32.png" class="lang-menu-icon">
+                </button>
+            </md-grid-tile>
+            <md-grid-tile>
+                <button md-button (click)="changeLanguage('en')"
+                        mdTooltip="{{'lang.en' | translate}}">
+                    <img src="/assets/image/flag/en_32.png" class="lang-menu-icon">
                 </button>
             </md-grid-tile>
             <md-grid-tile *ngIf="isControlVisible">
@@ -54,9 +54,9 @@
         </md-grid-list>
     </md-menu>
     
-    <button md-icon-button (click)="openSourceCode()">
+<!--    <button md-icon-button (click)="openSourceCode()">
         <img src="assets/image/github.svg" mdTooltip="{{'toolbar.github' | translate}}">
-    </button>
+    </button>-->
     
 </md-toolbar>
 <router-outlet></router-outlet>

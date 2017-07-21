@@ -16,14 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div style="min-height: 100px;">
-    <h4 [hidden]="result.length > 0" style="text-align: center;"
+    
+    <div [hidden]="result.length > 0">
+        <h4 style="text-align: center;"
         [translate]="'transport-map.search-result.no-result'"></h4>
-    <h5 [hidden]="result.length > 0"
-        [translate]="'transport-map.search-result.no-result-desc'"></h5>
-    <h5 [hidden]="result.length > 0"
-        [translate]="'transport-map.search-result.no-result-geocoder'"></h5>
-    <h5 [hidden]="result.length > 0"
-        [translate]="'transport-map.search-result.no-result-tooltip'"></h5>
+        <h5 [translate]="'transport-map.search-result.no-result-desc'"></h5>
+        <h5 [translate]="'transport-map.search-result.no-result-geocoder'"></h5>
+        <h5>{{'transport-map.search-result.no-result-plain-schedule' | translate}}
+            <span class="sr-link" (click)="goToSchedule()">{{'transport-map.search-result.no-result-plain-schedule-link' | translate}}</span></h5>
+        <h5 [translate]="'transport-map.search-result.no-result-tooltip'"></h5>
+    </div>
     
     <md-list *ngIf="mapComponent.activeProfile && result.length === 0">
         <h3 md-subheader class="srl-result-h"

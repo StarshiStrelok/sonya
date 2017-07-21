@@ -26,6 +26,8 @@
             "no-result-desc": "Click left mouse button on map and set start and end point of the route, or use geocoder",
             "no-result-geocoder": "Geocoder is the service for search coordinates of geographical object by it name or address. For example, input street name and house number for object which you search and press Enter",
             "no-result-tooltip": "If you want to see tooltip - hover cursor on the element of the interface (for mobile devices - longpress the element, button for example)",
+            "no-result-plain-schedule": "The schedule of public transport in the form of tables can be viewed ",
+            "no-result-plain-schedule-link": "here",
             "found-results": "Found results {{count}}",
             "open-details": "Open details",
             "trip-details": "Trip details",

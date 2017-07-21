@@ -19,7 +19,7 @@ import {Component, Input} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/animations'
 
 import {OptimalPath, BusStop, BusStopTime, Path} from '../model/abs.model';
-import {TransportMap} from '../component2/transport.map';
+import {TransportMap, SidenavItem} from '../component2/transport.map';
 
 @Component({
     selector: 'search-result',
@@ -50,7 +50,7 @@ export class SearchResultList {
         var i = 0, l = res.length;
         this.result = [];
         var orig = this.result;
-        let itr = function() {
+        let itr = function () {
             if (!res[i]) {
                 // interrupt
                 return;
@@ -153,10 +153,15 @@ export class SearchResultList {
         }
         this.mapComponent.layerEndpoint.searchRouteCtrl.flyToBounds(way, 0);
     }
+    goToSchedule() {
+        this.mapComponent.sideNav.close().then(res => {
+            this.mapComponent.openMenu(SidenavItem.SCHEDULE);
+        });
+    }
     private convertMSToTime(ms: number) {
         var d = new Date(ms);
         var t = (d.getHours() < 10 ? '0' + d.getHours() : d.getHours()) + ':'
-        + (d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes());
+            + (d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes());
         return t;
     }
 }

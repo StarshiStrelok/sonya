@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import ss.sonya.entity.BusStop;
@@ -35,6 +36,7 @@ import ss.sonya.transport.api.ImportDataService;
 import ss.sonya.transport.component.ImportDataEvent;
 import ss.sonya.transport.component.JsonDataSerializer;
 import ss.sonya.transport.component.JsonImportData;
+import ss.sonya.transport.dataparser.DataParser;
 import ss.sonya.transport.iface.ImportData;
 
 /**
@@ -46,6 +48,8 @@ public class ImportDataTest extends TestConfig {
     private JsonDataSerializer serializer;
     @Autowired
     private ImportDataService importDataService;
+    @Autowired @Qualifier("BrestAutobus")
+    private DataParser dataParser;
     @Test
     @Ignore
     public void test() throws Exception {
@@ -88,8 +92,7 @@ public class ImportDataTest extends TestConfig {
     }
     @Test
     @Ignore
-    public void test2() {
-        System.out.println("TEST------------------>");
-        importDataService.globalUpdate();
+    public void test2() throws Exception {
+        dataParser.parse();
     }
 }
