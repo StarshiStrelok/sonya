@@ -87,7 +87,7 @@ For creating new transport profile press 'Create new transport profile button' a
 
 ![image](https://github.com/StarshiStrelok/sonya/blob/master/sonya-transport-html5/src/assets/image/screenshots/5.png)
 
-- Search settings.
+- Search settings
 
   Search using the schedule - to enable only if the schedule for all types of transport is loaded. Affects search relevance, if disable - the shortest paths will be at the top, else, if enable - the fastest in time.
  
