@@ -32,7 +32,6 @@ import {SearchTab} from './component2/search.tab';
 import {SearchSettingsForm} from './component2/search.settings.form';
 import {SearchResultList} from './component2/search.result.list';
 import {SchedulePanel, FilterByBusStopPipe, SafeHtmlPipe} from './component2/schedule.panel';
-import {StatFilterPanel} from './security/stat.filter.panel';
 // ---------------------- Services --------------------------------------------
 import {DataService} from './service/data.service';
 import {DialogService} from './service/dialog.service';
@@ -62,7 +61,6 @@ import 'hammerjs';
         PathForm,
         ConfirmImport,
         RegistrationForm,
-        StatFilterPanel,
         Window,
         WindowDirective,
         SideNavContentDirective,
@@ -96,7 +94,7 @@ import 'hammerjs';
     ],
     entryComponents: [
         Window, BusStopForm, RouteForm, RoutesGrid, PathsGrid, PathForm, BusStopGrid, ConfirmImport,
-        RegistrationForm, StatFilterPanel
+        RegistrationForm
     ],
     providers: [DataService, DialogService, OSRMService, CookieService, SecurityService, GAService],
     bootstrap: [AppComponent]
